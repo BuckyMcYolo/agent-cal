@@ -1,0 +1,4 @@
+To add a new Shadcn Component 
+
+1. cd into apps/web
+2. run `pnpm dlx shadcn@canary add [COMPONENT]`

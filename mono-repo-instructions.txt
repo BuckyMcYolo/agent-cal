@@ -1,0 +1,9 @@
+To run the dev server 
+
+- turbo dev (runs all apps in the monorepo)
+OR 
+- turbo dev --filter=[app-name]
+
+Add a new, empty app or package to your monorepo.
+
+- turbo gen workspace (will open cmd line prompts to configure the new workspace)
