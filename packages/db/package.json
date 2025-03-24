@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/db",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/pg": "^8.11.11",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.7.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.41.0",
+    "pg": "^8.14.1"
+  }
+}
