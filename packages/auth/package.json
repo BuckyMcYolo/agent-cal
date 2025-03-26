@@ -2,6 +2,11 @@
   "name": "@workspace/auth",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
+  "main": "./src/lib/index.ts",
+  "exports": {
+    ".": "./src/lib/index.ts"
+  },
   "dependencies": {
     "@workspace/db": "workspace:*",
     "better-auth": "^1.2.4",

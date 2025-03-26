@@ -1,11 +1,14 @@
 import { serve } from "@hono/node-server"
 import { Hono } from "hono"
+import { auth } from "@workspace/auth"
 
 const app = new Hono()
 
 app.get("/", (c) => {
   return c.text("Hello Hono!")
 })
+
+auth.api
 
 serve(
   {

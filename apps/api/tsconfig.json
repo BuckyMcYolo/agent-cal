@@ -5,10 +5,15 @@
     "strict": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/auth": ["../../packages/auth/src"],
+      "@workspace/auth/*": ["../../packages/auth/src/*"],
+      "@workspace/db": ["../../packages/db/src"],
+      "@workspace/db/*": ["../../packages/db/src/*"]
+    }
   }
 }
