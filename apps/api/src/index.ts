@@ -8,7 +8,8 @@ app.get("/", (c) => {
   return c.text("Hello Hono!")
 })
 
-auth.api
+//handle all better-auth routes
+app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw))
 
 serve(
   {

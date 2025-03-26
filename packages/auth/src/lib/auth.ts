@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, organization, apiKey, openAPI } from "better-auth/plugins"
-import { db } from "@workspace/db/src"
+import { db } from "@workspace/db"
 
 import dotenv from "dotenv"
 
