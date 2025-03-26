@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@workspace/auth": "workspace:*",
+    "@workspace/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*"
+  }
+}
