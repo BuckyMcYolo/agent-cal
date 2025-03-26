@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@workspace/db": "workspace:*"
+    "@workspace/db": "workspace:*",
+    "better-auth": "^1.2.4",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
