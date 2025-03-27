@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@workspace/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,15 +10,22 @@
     "lint": "echo 'Add lint script here'"
   },
   "dependencies": {
-    "@workspace/db": "workspace:*",
-    "@workspace/auth": "workspace:*",
     "@hono/node-server": "^1.14.0",
-    "hono": "^4.7.5"
+    "@hono/zod-openapi": "^0.19.2",
+    "@hono/zod-validator": "^0.4.3",
+    "@workspace/auth": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "hono": "^4.7.5",
+    "hono-openapi": "^0.4.6",
+    "hono-pino": "^0.8.0",
+    "pino": "^9.6.0",
+    "zod": "^3.24.2",
+    "zod-openapi": "^4.2.3"
   },
   "devDependencies": {
+    "@types/node": "^20.11.17",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "@types/node": "^20.11.17",
     "tsx": "^4.7.1"
   }
 }

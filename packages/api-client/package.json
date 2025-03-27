@@ -2,9 +2,14 @@
   "name": "@workspace/api-client",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "dev": "tsc --watch",
+    "lint": "eslint"
+  },
   "dependencies": {
     "@workspace/auth": "workspace:*",
-    "@workspace/db": "workspace:*"
+    "@workspace/db": "workspace:*",
+    "@workspace/api": "workspace:*"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
