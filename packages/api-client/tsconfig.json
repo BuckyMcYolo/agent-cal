@@ -1,0 +1,15 @@
+{
+    "extends": "@workspace/typescript-config/base.json",
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "rootDir": "src",
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "dist"
+      },
+      "watchOptions": {
+        "excludeDirectories": ["**/node_modules", "**/apps/web", "**/docs","**/packages/auth","**/packages/db"] 
+      },
+      "include": ["src"]
+    
+}

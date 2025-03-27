@@ -2,6 +2,13 @@
   "name": "@workspace/api-client",
   "version": "0.0.0",
   "private": true,
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
