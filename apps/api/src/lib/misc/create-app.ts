@@ -3,10 +3,25 @@ import { pinoLoggerMiddleware } from "@/middleware/pino-logger"
 import env from "@/env"
 import type { AppBindings } from "@/lib/types/app-types"
 
-function createApp() {
-  const app = new OpenAPIHono<AppBindings>({
+export function createRouter() {
+  return new OpenAPIHono<AppBindings>({
     strict: false,
+    defaultHook: (result, c) => {
+      if (!result.success) {
+        return c.json(
+          {
+            success: result.success,
+            error: result.error,
+          },
+          422 // unprocessable entity status code,
+        )
+      }
+    },
   })
+}
+
+function createApp() {
+  const app = createRouter()
 
   app.use(pinoLoggerMiddleware())
 
