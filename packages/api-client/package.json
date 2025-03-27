@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "tsc --watch",
+    "dev123": "tsc --watch",
     "build": "rm -rf dist && tsc",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"

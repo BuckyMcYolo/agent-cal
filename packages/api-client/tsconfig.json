@@ -8,7 +8,10 @@
     "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@workspace/api/*": ["../../apps/api/src/*"]
-    }
+    },
+    "moduleResolution": "Bundler",
+    "target": "ESNext",
+    "module": "ESNext",
   }, 
   "watchOptions": {
     "excludeDirectories": [
