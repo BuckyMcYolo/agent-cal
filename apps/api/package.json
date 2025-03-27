@@ -27,5 +27,8 @@
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "tsx": "^4.7.1"
+  },
+  "exports": {
+    "./app": "./src/app.ts"
   }
 }

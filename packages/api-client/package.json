@@ -10,9 +10,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@workspace/api": "workspace:*",
     "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
-    "@workspace/api": "workspace:*"
+    "hono": "^4.7.5"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

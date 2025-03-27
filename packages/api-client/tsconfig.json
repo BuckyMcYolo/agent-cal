@@ -1,15 +1,23 @@
 {
-    "extends": "@workspace/typescript-config/base.json",
-    "compilerOptions": {
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "rootDir": "src",
-        "declaration": true,
-        "declarationMap": true,
-        "outDir": "dist"
-      },
-      "watchOptions": {
-        "excludeDirectories": ["**/node_modules", "**/apps/web", "**/docs","**/packages/auth","**/packages/db"] 
-      },
-      "include": ["src"]
-    
+  "extends": "@workspace/typescript-config/base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "@workspace/api/*": ["../../apps/api/src/*"]
+    }
+  }, 
+  "watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/apps/web",
+      "**/docs",
+      "**/packages/auth",
+      "**/packages/db"
+    ]
+  },
+  "include": ["src/**/*"]
 }

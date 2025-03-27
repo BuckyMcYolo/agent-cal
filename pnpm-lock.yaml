@@ -124,6 +124,9 @@ importers:
       '@workspace/db':
         specifier: workspace:*
         version: link:../db
+      hono:
+        specifier: ^4.7.5
+        version: 4.7.5
     devDependencies:
       '@workspace/eslint-config':
         specifier: workspace:*
