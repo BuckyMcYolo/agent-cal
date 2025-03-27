@@ -12,7 +12,8 @@
     "paths": {
       "@workspace/auth": ["../../packages/auth/src"],
       "@workspace/db": ["../../packages/db/src/index.ts"],
-      "@workspace/db/*": ["../../packages/db/src/*"]
+      "@workspace/db/*": ["../../packages/db/src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules"]

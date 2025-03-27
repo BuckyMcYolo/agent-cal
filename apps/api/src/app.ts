@@ -1,11 +1,25 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-
 import { auth } from "@workspace/auth"
-import { pinoLoggerMiddleware } from "./middleware/pino-logger"
+import { pinoLoggerMiddleware } from "@/middleware/pino-logger"
+import type { PinoLogger } from "hono-pino"
+import { config } from "dotenv"
+import { expand } from "dotenv-expand"
+import env from "@/env"
 
-const app = new OpenAPIHono()
+interface AppBindings {
+  Variables: {
+    logger: PinoLogger
+  }
+}
+
+expand(config())
+
+const app = new OpenAPIHono<AppBindings>()
+
+app.use(pinoLoggerMiddleware())
 
 app.get("/", (c) => {
+  c.var.logger.warn("Hello Hono!")
   return c.text("Hello Hono!")
 })
 
@@ -27,16 +41,13 @@ app.onError((err, c) => {
   const currentStatus =
     "status" in err ? (err.status as number) : c.newResponse(null).status
   const statusCode = currentStatus !== 200 ? currentStatus : 500
-  const env = process.env?.NODE_ENV
   return c.json(
     {
       message: err.message,
-      stack: env === "production" ? undefined : err.stack,
+      stack: env.NODE_ENV === "production" ? undefined : err.stack,
     },
     statusCode as 404 | 500
   )
 })
-
-app.use(pinoLoggerMiddleware())
 
 export default app
