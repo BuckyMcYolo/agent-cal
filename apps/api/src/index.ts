@@ -1,7 +1,8 @@
 import { serve } from "@hono/node-server"
 import app from "@/app"
+import env from "@/env"
 
-const port = parseInt(process.env.PORT!) || 8080
+const port = env.PORT || 8080
 
 serve(
   {
