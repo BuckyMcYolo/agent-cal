@@ -6,7 +6,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "studio": "pnpm --filter @workspace/db exec drizzle-kit studio"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

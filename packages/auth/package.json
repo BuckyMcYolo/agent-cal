@@ -5,8 +5,8 @@
   "type": "module",
   "dependencies": {
     "@workspace/db": "workspace:*",
-    "better-auth": "^1.2.4",
-    "dotenv": "^16.4.7"
+    "@workspace/env-config": "workspace:*",
+    "better-auth": "^1.2.4"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

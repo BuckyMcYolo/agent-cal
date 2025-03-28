@@ -1,6 +1,6 @@
 import { serve } from "@hono/node-server"
 import app from "@/app"
-import env from "@/env"
+import env from "@workspace/env-config"
 
 const port = env.PORT || 8080
 

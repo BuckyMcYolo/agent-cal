@@ -15,6 +15,7 @@
     "@hono/zod-validator": "^0.4.3",
     "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
+    "@workspace/env-config": "workspace:*",
     "dotenv": "^16.4.7",
     "dotenv-expand": "^12.0.1",
     "hono": "^4.7.5",

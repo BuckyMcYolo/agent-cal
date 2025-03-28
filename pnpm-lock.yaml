@@ -41,6 +41,9 @@ importers:
       '@workspace/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@workspace/env-config':
+        specifier: workspace:*
+        version: link:../../packages/env-config
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -84,6 +87,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@workspace/env-config':
+        specifier: workspace:*
+        version: link:../../packages/env-config
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -149,12 +155,12 @@ importers:
       '@workspace/db':
         specifier: workspace:*
         version: link:../db
+      '@workspace/env-config':
+        specifier: workspace:*
+        version: link:../env-config
       better-auth:
         specifier: ^1.2.4
         version: 1.2.4(typescript@5.7.3)
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
     devDependencies:
       '@workspace/eslint-config':
         specifier: workspace:*
@@ -165,9 +171,6 @@ importers:
 
   packages/db:
     dependencies:
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
       drizzle-orm:
         specifier: ^0.41.0
         version: 0.41.0(@types/pg@8.11.11)(gel@2.0.1)(kysely@0.27.6)(pg@8.14.1)(postgres@3.4.5)
@@ -178,6 +181,9 @@ importers:
       '@types/pg':
         specifier: ^8.11.11
         version: 8.11.11
+      '@workspace/env-config':
+        specifier: workspace:*
+        version: link:../env-config
       '@workspace/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
@@ -191,7 +197,30 @@ importers:
         specifier: ^4.7.1
         version: 4.19.3
 
+  packages/env-config:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      dotenv-expand:
+        specifier: ^12.0.1
+        version: 12.0.1
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
+    devDependencies:
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+
   packages/eslint-config:
+    dependencies:
+      eslint-config-turbo:
+        specifier: ^2.4.4
+        version: 2.4.4(eslint@9.20.1(jiti@2.4.2))(turbo@2.4.2)
     devDependencies:
       '@next/eslint-plugin-next':
         specifier: ^15.1.7
@@ -2101,6 +2130,12 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
+  eslint-config-turbo@2.4.4:
+    resolution: {integrity: sha512-4w/heWywWkFw09a5MY5lCvb9suJlhBSkzNtGTwM5+zRif4rksubaMYy1pD0++5rqoDVcQax25jCrtii9ptsNDw==}
+    peerDependencies:
+      eslint: '>6.6.0'
+      turbo: '>2.0.0'
+
   eslint-plugin-only-warn@1.1.0:
     resolution: {integrity: sha512-2tktqUAT+Q3hCAU0iSf4xAN1k9zOpjK5WO8104mB0rT/dGhOa09582HN5HlbxNbPRZ0THV7nLGvzugcNOSjzfA==}
     engines: {node: '>=6'}
@@ -2119,6 +2154,12 @@ packages:
 
   eslint-plugin-turbo@2.4.2:
     resolution: {integrity: sha512-67IZtvOFaWDnUmYMV3luRIE1kqL+ok5MxPEsIPUqH2vQggML7jmZFZx/P9jhXAoFH+pViEz5QEzDa2DBLHqzQg==}
+    peerDependencies:
+      eslint: '>6.6.0'
+      turbo: '>2.0.0'
+
+  eslint-plugin-turbo@2.4.4:
+    resolution: {integrity: sha512-myEnQTjr3FkI0j1Fu0Mqnv1z8n0JW5iFTOUNzHaEevjzl+1uzMSsFwks/x8i3rGmI3EYtC1BY8K2B2pS0Vfx6w==}
     peerDependencies:
       eslint: '>6.6.0'
       turbo: '>2.0.0'
@@ -5446,6 +5487,12 @@ snapshots:
     dependencies:
       eslint: 9.20.1(jiti@2.4.2)
 
+  eslint-config-turbo@2.4.4(eslint@9.20.1(jiti@2.4.2))(turbo@2.4.2):
+    dependencies:
+      eslint: 9.20.1(jiti@2.4.2)
+      eslint-plugin-turbo: 2.4.4(eslint@9.20.1(jiti@2.4.2))(turbo@2.4.2)
+      turbo: 2.4.2
+
   eslint-plugin-only-warn@1.1.0: {}
 
   eslint-plugin-react-hooks@5.1.0(eslint@9.20.1(jiti@2.4.2)):
@@ -5475,6 +5522,12 @@ snapshots:
       string.prototype.repeat: 1.0.0
 
   eslint-plugin-turbo@2.4.2(eslint@9.20.1(jiti@2.4.2))(turbo@2.4.2):
+    dependencies:
+      dotenv: 16.0.3
+      eslint: 9.20.1(jiti@2.4.2)
+      turbo: 2.4.2
+
+  eslint-plugin-turbo@2.4.4(eslint@9.20.1(jiti@2.4.2))(turbo@2.4.2):
     dependencies:
       dotenv: 16.0.3
       eslint: 9.20.1(jiti@2.4.2)

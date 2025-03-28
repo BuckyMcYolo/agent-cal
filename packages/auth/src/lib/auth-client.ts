@@ -4,10 +4,11 @@ import {
   organizationClient,
   apiKeyClient,
 } from "better-auth/client/plugins"
+import env from "@workspace/env-config"
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient(
   {
     plugins: [adminClient(), organizationClient(), apiKeyClient()],
-    baseURL: "http://localhost:3000",
+    baseURL: env.API_URL,
   }
 )

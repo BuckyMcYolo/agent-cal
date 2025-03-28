@@ -10,11 +10,11 @@
     "@types/pg": "^8.11.11",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
+    "@workspace/env-config": "workspace:*",
     "drizzle-kit": "^0.30.5",
     "tsx": "^4.7.1"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.41.0",
     "postgres": "^3.4.5"
   },

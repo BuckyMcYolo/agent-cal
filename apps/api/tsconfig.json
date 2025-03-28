@@ -13,6 +13,7 @@
       "@workspace/auth": ["../../packages/auth/src"],
       "@workspace/db": ["../../packages/db/src/index.ts"],
       "@workspace/db/*": ["../../packages/db/src/*"],
+      "@workspace/env-config/*": ["../../packages/env-config/src/*"],
       "@/*": ["./src/*"]
     }
   },

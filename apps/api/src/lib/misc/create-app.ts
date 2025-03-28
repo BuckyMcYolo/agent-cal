@@ -1,6 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { pinoLoggerMiddleware } from "@/middleware/pino-logger"
-import env from "@/env"
+import env from "@workspace/env-config"
 import type { AppBindings } from "@/lib/types/app-types"
 
 export function createRouter() {
