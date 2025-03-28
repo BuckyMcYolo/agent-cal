@@ -27,17 +27,15 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Introduction",
             "pages": ["api-reference/introduction"]
           },
           {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "Reference",
+            "openapi": {
+              "source": "/docs/api-reference/openapi.json",
+              "directory": "api-reference"
+            }
           }
         ]
       }
