@@ -11,7 +11,7 @@ const routes = [index]
 
 routes.forEach((route) => app.route("/", route))
 
-app.get("/", (c) => {
+app.get("/test", (c) => {
   c.var.logger.warn("Hello Hono!")
   return c.text("Hello Hono!")
 })
