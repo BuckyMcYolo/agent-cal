@@ -9,7 +9,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
     "docs:dev": "cd docs && mintlify dev --port 4000",
-    "generate:better-auth": "cd packages/auth && npx @better-auth/cli@latest generate --output ../../../db/generated-schema.ts"
+    "generate:better-auth": "cd packages/auth && npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

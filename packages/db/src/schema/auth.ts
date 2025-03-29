@@ -4,9 +4,9 @@
 
 // to generate the schema, run the following command at the project root:
 // pnpm generate:better-auth
+// the generated schema will be saved in packages/db/src/generated-schema.ts
 
-// you can read more about the available plugin options in the better-auth documentation:
-// https://www.better-auth.com/docs/concepts/plugins
+// you can read more about the available plugin options in the better-auth documentation: https://www.better-auth.com/docs/concepts/plugins
 
 import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core"
 export const user = pgTable("user", {
