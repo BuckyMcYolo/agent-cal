@@ -1,5 +1,7 @@
 import { createRouter } from "@/lib/misc/create-app"
 import { createRoute, z } from "@hono/zod-openapi"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
 
 const router = createRouter().openapi(
   createRoute({
@@ -7,22 +9,21 @@ const router = createRouter().openapi(
     path: "/",
     tags: ["users"],
     responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: z.object({
-              message: z.string(),
-            }),
-          },
-        },
+      [HttpStatusCodes.OK]: jsonContent({
+        schema: z.object({
+          message: z.string(),
+        }),
         description: "Hello Hono!",
-      },
+      }),
     },
   }),
   (c) => {
-    return c.json({
-      message: "Hello Hono!",
-    })
+    return c.json(
+      {
+        message: "Hello Hono!",
+      },
+      HttpStatusCodes.OK
+    )
   }
 )
 
