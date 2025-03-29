@@ -1,10 +1,19 @@
 {
   "openapi": "3.0.0",
-  "info": { "version": "1.0.0", "title": "Booker API reference" },
-  "components": { "schemas": {}, "parameters": {} },
+  "info": {
+    "version": "1.0.0",
+    "title": "Booker API reference"
+  },
+  "components": {
+    "schemas": {},
+    "parameters": {}
+  },
   "paths": {
     "/": {
       "get": {
+        "tags": [
+          "users"
+        ],
         "responses": {
           "200": {
             "description": "Hello Hono!",
@@ -12,8 +21,14 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "message": { "type": "string" } },
-                  "required": ["message"]
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
                 }
               }
             }
