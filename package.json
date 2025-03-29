@@ -7,7 +7,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "studio": "pnpm --filter @workspace/db exec drizzle-kit studio"
+    "studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
+    "docs:dev": "cd docs && mintlify dev --port 4000"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

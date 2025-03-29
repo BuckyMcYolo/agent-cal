@@ -5,6 +5,7 @@ const router = createRouter().openapi(
   createRoute({
     method: "get",
     path: "/",
+    tags: ["users"],
     responses: {
       200: {
         content: {
