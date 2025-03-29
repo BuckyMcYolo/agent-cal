@@ -19,4 +19,9 @@ app.get("/test", (c) => {
 //handle all better-auth routes
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw))
 
+app.get("/docs/auth", async (c) => {
+  const openAPIAuth = await auth.api.generateOpenAPISchema()
+  return c.json(openAPIAuth)
+})
+
 export default app

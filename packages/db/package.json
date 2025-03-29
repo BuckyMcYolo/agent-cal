@@ -8,14 +8,15 @@
   },
   "devDependencies": {
     "@types/pg": "^8.11.11",
+    "@workspace/env-config": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "@workspace/env-config": "workspace:*",
     "drizzle-kit": "^0.30.5",
     "tsx": "^4.7.1"
   },
   "dependencies": {
     "drizzle-orm": "^0.41.0",
+    "drizzle-zod": "^0.7.1",
     "postgres": "^3.4.5"
   },
   "exports": {
