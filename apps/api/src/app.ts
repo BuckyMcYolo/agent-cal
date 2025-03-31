@@ -4,6 +4,8 @@ import configureOpenAPI from "@/lib/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import tasksRouter from "./routes/tasks"
 import { cors } from "hono/cors"
+import env from "@workspace/env-config/index"
+import generateOpenAPI from "./lib/openapi/generate-open-api-doc"
 
 const app = createApp()
 
@@ -11,7 +13,7 @@ app.use(
   "*",
   cors({
     origin: "*",
-    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   })
 )
 
@@ -28,5 +30,10 @@ app.get("/docs/auth", async (c) => {
 })
 
 routes.forEach((route) => app.route("/", route))
+
+app.get("/mint", async (c) => {
+  generateOpenAPI(app)
+  return c.json({ message: "OpenAPI docs generated" })
+})
 
 export default app

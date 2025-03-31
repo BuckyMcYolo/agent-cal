@@ -1,17 +1,57 @@
-import { db } from "@workspace/db"
-import type { CreateRoute, ListRoute } from "./routes"
+import { db, eq } from "@workspace/db"
+import type { CreateRoute, ListRoute, GetOneRoute, PatchRoute } from "./routes"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import { insertTasksSchema, tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const tasks = await db.query.tasks.findMany()
   return c.json(tasks)
 }
 
-export const create: AppRouteHandler<CreateRoute> = async (c) => {
-  const body = await c.req.json()
-  const task = insertTasksSchema.parse(body)
+export const createTask: AppRouteHandler<CreateRoute> = async (c) => {
+  const task = c.req.valid("json")
   const [inserted] = await db.insert(tasks).values(task).returning()
-  return c.json(inserted, HttpStatusCodes.OK)
+  return c.json(inserted)
+}
+
+export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
+  const { id } = c.req.valid("param")
+  const task = await db.query.tasks.findFirst({
+    where(fields, operators) {
+      return operators.eq(fields.id, id)
+    },
+  })
+  if (!task) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND
+    )
+  }
+
+  return c.json(task, HttpStatusCodes.OK)
+}
+
+export const patch: AppRouteHandler<PatchRoute> = async (c) => {
+  const { id } = c.req.valid("param")
+  const updates = c.req.valid("json")
+  const [task] = await db
+    .update(tasks)
+    .set(updates)
+    .where(eq(tasks.id, id))
+    .returning()
+
+  if (!task) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND
+    )
+  }
+
+  return c.json(task, HttpStatusCodes.OK)
 }

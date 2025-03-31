@@ -1,5 +1,9 @@
 import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core"
-import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod"
 
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().unique().defaultRandom(),
@@ -14,7 +18,9 @@ export const tasks = pgTable("tasks", {
 
 export const selectTasksSchema = createSelectSchema(tasks)
 
-export const insertTasksSchema = createInsertSchema(tasks)
+export const insertTasksSchema = createInsertSchema(tasks, {
+  name: (schema) => schema.min(1).max(255),
+})
   .omit({
     id: true,
     createdAt: true,
@@ -24,3 +30,5 @@ export const insertTasksSchema = createInsertSchema(tasks)
     done: true,
     name: true,
   })
+
+export const updateTasksSchema = insertTasksSchema.partial()

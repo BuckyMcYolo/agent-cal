@@ -14,45 +14,25 @@
   },
   "favicon": "/favicon.ico",
   "navigation": {
-    "tabs": [
-      {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": ["introduction", "quickstart"]
-          },
-          {
-            "group": "Essentials",
-            "pages": []
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Introduction",
-            "pages": ["api-reference/introduction"]
-          },
-          {
-            "group": "Reference",
-            "openapi": {
-              "source": "/api-reference/openapi.json"
-            }
-          }
-        ]
-      }
-    ],
     "global": {
       "anchors": [
         {
-          "anchor": "Testing",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "introduction",
+          "href": "http://localhost:5000/api-reference"
         }
       ]
-    }
+    },
+    "dropdowns": [
+      {
+        "dropdown": "Getting Started",
+        "icon": "book-open",
+        "pages": ["introduction", "quickstart"]
+      },
+      {
+        "dropdown": "API reference",
+        "openapi": "/api-reference/openapi.json"
+      }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
