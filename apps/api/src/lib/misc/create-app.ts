@@ -1,53 +1,28 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { pinoLoggerMiddleware } from "@/middleware/pino-logger"
-import env from "@workspace/env-config"
-import type { AppBindings } from "@/lib/types/app-types"
+import type { Schema } from "hono"
+import type { AppBindings, AppOpenAPI } from "@/lib/types/app-types"
+import defaultHook from "./default-hook"
+import onError from "@/middleware/on-error"
+import notFound from "@/middleware/not-found"
+import { requestId } from "hono/request-id"
 
 export function createRouter() {
   return new OpenAPIHono<AppBindings>({
     strict: false,
-    defaultHook: (result, c) => {
-      if (!result.success) {
-        return c.json(
-          {
-            success: result.success,
-            error: result.error,
-          },
-          422 // unprocessable entity status code,
-        )
-      }
-    },
+    defaultHook,
   })
 }
 
-function createApp() {
+export default function createApp() {
   const app = createRouter()
+  app.use(requestId()).use(pinoLoggerMiddleware())
 
-  app.use(pinoLoggerMiddleware())
-
-  //not found JSON handler
-  app.notFound((c) => {
-    return c.json(
-      {
-        message: `Not Found - ${c.req.path}`,
-      },
-      404
-    )
-  })
-  //default error handler
-  app.onError((err, c) => {
-    const currentStatus =
-      "status" in err ? (err.status as number) : c.newResponse(null).status
-    const statusCode = currentStatus !== 200 ? currentStatus : 500
-    return c.json(
-      {
-        message: err.message,
-        stack: env.NODE_ENV === "production" ? undefined : err.stack,
-      },
-      statusCode as 404 | 500
-    )
-  })
+  app.notFound(notFound)
+  app.onError(onError)
   return app
 }
 
-export default createApp
+export function createTestApp<S extends Schema>(router: AppOpenAPI<S>) {
+  return createApp().route("/", router)
+}

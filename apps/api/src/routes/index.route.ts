@@ -13,14 +13,14 @@ const router = createRouter().openapi(
         schema: z.object({
           message: z.string(),
         }),
-        description: "Hello Hono!",
+        description: "Server is running",
       }),
     },
   }),
   (c) => {
     return c.json(
       {
-        message: "Hello Hono!",
+        message: "Server is running",
       },
       HttpStatusCodes.OK
     )

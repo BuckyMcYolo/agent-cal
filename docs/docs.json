@@ -7,6 +7,11 @@
     "light": "#8B5CF6",
     "dark": "#4C1D95"
   },
+  "api": {
+    "playground": {
+      "proxy": false
+    }
+  },
   "favicon": "/favicon.ico",
   "navigation": {
     "tabs": [

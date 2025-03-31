@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "turbo build",
     "dev": "turbo dev",
+    "dev:docs": "cd docs && mintlify dev --port 5000",
+    "build": "turbo build",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
-    "docs:dev": "cd docs && mintlify dev --port 4000",
-    "generate:better-auth": "cd packages/auth && npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts"
+    "db:studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
+    "db:pull": "pnpm --filter @workspace/db exec drizzle-kit pull",
+    "db:push": "pnpm --filter @workspace/db exec drizzle-kit push",
+    "db:generate": "pnpm --filter @workspace/db exec drizzle-kit generate",
+    "generate:better-auth": "pnpm --filter @workspace/auth exec npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

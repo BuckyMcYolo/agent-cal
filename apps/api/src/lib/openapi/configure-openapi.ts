@@ -8,5 +8,11 @@ export default function configureOpenAPI(app: AppOpenAPI) {
       version: packageJson.version,
       title: "Booker API reference",
     },
+    servers: [
+      {
+        url: "http://localhost:8080",
+        description: "Local server",
+      },
+    ],
   })
 }

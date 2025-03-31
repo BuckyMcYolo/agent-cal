@@ -1,4 +1,4 @@
-import type { ZodSchema } from "./types.ts"
+import type { ZodSchema } from "./types"
 
 const jsonContent = <T extends ZodSchema>({
   schema,
