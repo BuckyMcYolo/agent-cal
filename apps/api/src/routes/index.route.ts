@@ -1,4 +1,4 @@
-import { createRouter } from "@/lib/misc/create-app"
+import { createRouter } from "@/lib/helpers/app/create-app"
 import { createRoute, z } from "@hono/zod-openapi"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import jsonContent from "@/lib/helpers/openapi/schemas/json-content"

@@ -10,6 +10,7 @@ import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-requ
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import { db } from "@workspace/db"
 import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
+import createErrorSchema from "@/lib/helpers/openapi/schemas/create-error-schema"
 
 const tags = ["Tasks"]
 
@@ -39,6 +40,10 @@ export const create = createRoute({
     [HttpStatusCodes.OK]: jsonContent({
       schema: zodSchemaToOpenAPI(insertTasksSchema),
       description: "The created task",
+    }),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent({
+      schema: createErrorSchema(insertTasksSchema),
+      description: "Validation error",
     }),
   },
 })
