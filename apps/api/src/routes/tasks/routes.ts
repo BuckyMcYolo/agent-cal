@@ -21,6 +21,9 @@ const tags = ["Tasks"]
 export const list = createRoute({
   path: "/tasks",
   method: "get",
+  summary: "Get all tasks",
+  description:
+    "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
   tags,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
@@ -33,6 +36,7 @@ export const list = createRoute({
 export const create = createRoute({
   path: "/tasks",
   method: "post",
+  summary: "Create a new task",
   request: {
     body: jsonContentRequired({
       schema: zodSchemaToOpenAPI(insertTasksSchema),
@@ -54,6 +58,7 @@ export const create = createRoute({
 
 export const getOne = createRoute({
   path: "/tasks/{id}",
+  summary: "Get a task by ID",
   method: "get",
   request: {
     params: UUIDParamsSchema,
@@ -77,6 +82,7 @@ export const getOne = createRoute({
 
 export const patch = createRoute({
   path: "/tasks/{id}",
+  summary: "Update a task",
   method: "patch",
   request: {
     params: UUIDParamsSchema,
@@ -104,7 +110,35 @@ export const patch = createRoute({
   },
 })
 
+export const remove = createRoute({
+  path: "/tasks/{id}",
+  summary: "Delete a task",
+  method: "delete",
+  description: "Delete a task by ID",
+  request: {
+    params: UUIDParamsSchema,
+  },
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: z.object({
+        message: z.string().openapi("Task deleted successfully"),
+      }),
+      description: "The task was deleted successfully",
+    }),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Task not found",
+    }),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent({
+      schema: createErrorSchema(UUIDParamsSchema),
+      description: "Validation error",
+    }),
+  },
+})
+
 export type ListRoute = typeof list
 export type CreateRoute = typeof create
 export type GetOneRoute = typeof getOne
 export type PatchRoute = typeof patch
+export type RemoveRoute = typeof remove

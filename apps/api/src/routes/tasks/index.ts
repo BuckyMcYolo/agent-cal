@@ -8,5 +8,6 @@ const tasksRouter = createRouter()
   .openapi(routes.create, handlers.createTask)
   .openapi(routes.getOne, handlers.getOne)
   .openapi(routes.patch, handlers.patch)
+  .openapi(routes.remove, handlers.remove)
 
 export default tasksRouter

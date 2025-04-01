@@ -44,6 +44,8 @@
     },
     "/tasks": {
       "get": {
+        "summary": "Get all tasks",
+        "description": "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
         "tags": [
           "Tasks"
         ],
@@ -89,6 +91,7 @@
         }
       },
       "post": {
+        "summary": "Create a new task",
         "tags": [
           "Tasks"
         ],
@@ -244,6 +247,7 @@
     },
     "/tasks/{id}": {
       "get": {
+        "summary": "Get a task by ID",
         "tags": [
           "Tasks"
         ],
@@ -399,7 +403,7 @@
         }
       },
       "patch": {
-        "operationId": "updateTask",
+        "summary": "Update a task",
         "tags": [
           "Tasks"
         ],
@@ -628,6 +632,144 @@
                         "error"
                       ]
                     }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a task",
+        "description": "Delete a task by ID",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The task was deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "Task deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "example": {
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "issues": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "path": {
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    }
+                                  ]
+                                }
+                              },
+                              "message": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "code",
+                              "path"
+                            ]
+                          }
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "issues",
+                        "name"
+                      ],
+                      "example": {
+                        "issues": [
+                          {
+                            "code": "invalid_type",
+                            "expected": "string",
+                            "received": "undefined",
+                            "path": [
+                              "id"
+                            ],
+                            "message": "Required"
+                          }
+                        ],
+                        "name": "ZodError"
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "error"
                   ]
                 }
               }

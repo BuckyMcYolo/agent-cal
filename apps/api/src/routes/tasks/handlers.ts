@@ -1,5 +1,11 @@
 import { db, eq } from "@workspace/db"
-import type { CreateRoute, ListRoute, GetOneRoute, PatchRoute } from "./routes"
+import type {
+  CreateRoute,
+  ListRoute,
+  GetOneRoute,
+  PatchRoute,
+  RemoveRoute,
+} from "./routes"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import { insertTasksSchema, tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
@@ -54,4 +60,25 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
   }
 
   return c.json(task, HttpStatusCodes.OK)
+}
+
+export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
+  const { id } = c.req.valid("param")
+  const [deletedTask] = await db.delete(tasks).where(eq(tasks.id, id))
+
+  if (!deletedTask) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND
+    )
+  }
+
+  return c.json(
+    {
+      message: "Task deleted successfully",
+    },
+    HttpStatusCodes.OK
+  )
 }
