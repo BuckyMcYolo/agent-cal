@@ -9,6 +9,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "baseUrl": ".",
+    "outDir": "./dist",
     "paths": {
       "@workspace/auth": ["../../packages/auth/src"],
       "@workspace/db": ["../../packages/db/src/index.ts"],

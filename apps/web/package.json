@@ -14,6 +14,7 @@
   "dependencies": {
     "@workspace/ui": "workspace:*",
     "@workspace/env-config": "workspace:*",
+    "@workspace/api-client": "workspace:*",
     "lucide-react": "^0.475.0",
     "next": "^15.2.0",
     "next-themes": "^0.4.4",

@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "echo 'Add build script here'",
-    "test": "echo 'Add test script here'",
+    "test": "LOG_LEVEL=silent vitest",
     "lint": "echo 'Add lint script here'"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
-    "@hono/zod-openapi": "0.19.2 ",
+    "@hono/zod-openapi": "^0.19.2 ",
     "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
     "@workspace/env-config": "workspace:*",
@@ -25,7 +25,8 @@
     "@types/node": "^20.11.17",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.1",
+    "vitest": "^3.1.1"
   },
   "exports": {
     "./app": "./src/app.ts"

@@ -11,8 +11,8 @@
     },
     "moduleResolution": "Bundler",
     "target": "ESNext",
-    "module": "ESNext",
-  }, 
+    "module": "ESNext"
+  },
   "watchOptions": {
     "excludeDirectories": [
       "**/node_modules",

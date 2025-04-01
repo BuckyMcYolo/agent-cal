@@ -13,7 +13,15 @@ const EnvSchema = z
     NODE_ENV: z.string().default("development"),
     PORT: z.coerce.number().default(8080),
     DATABASE_URL: z.string().url(),
-    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]),
+    LOG_LEVEL: z.enum([
+      "fatal",
+      "error",
+      "warn",
+      "info",
+      "debug",
+      "trace",
+      "silent",
+    ]),
     DATABASE_AUTH_TOKEN: z.string().optional(),
   })
   .superRefine((input, ctx) => {

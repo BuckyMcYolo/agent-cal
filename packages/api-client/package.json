@@ -2,7 +2,7 @@
   "name": "@workspace/api-client",
   "version": "0.0.0",
   "private": true,
-  "main": "./dist/index.js",
+  "main": "./dist/packages/api-client/src/index.js",
   "type": "module",
   "scripts": {
     "dev123": "tsc --watch",
@@ -12,12 +12,18 @@
   },
   "dependencies": {
     "@workspace/api": "workspace:*",
-    "@workspace/auth": "workspace:*",
-    "@workspace/db": "workspace:*",
     "hono": "^4.7.5"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/packages/api-client/src/index.js",
+        "types": "./dist/packages/api-client/src/index.d.ts"
+      }
+    }
   }
 }
