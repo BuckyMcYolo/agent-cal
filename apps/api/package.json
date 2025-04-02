@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc && tsc-alias",
-    "test": "LOG_LEVEL=silent vitest"
+    "test": "LOG_LEVEL=silent vitest",
+    "start": "node dist/src/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",

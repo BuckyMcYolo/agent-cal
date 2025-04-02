@@ -30,7 +30,7 @@
     },
     "./schema/*": {
       "types": "./dist/schema/*.d.js",
-      "default": "./dist/schema/*.d.js"
+      "default": "./dist/schema/*.js"
     }
   }
 }

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "rm -rf dist && tsc"
   },
   "dependencies": {
     "@workspace/db": "workspace:*",
@@ -19,11 +20,11 @@
   "exports": {
     ".": {
       "types": "./src/lib/auth.ts",
-      "default": "./src/lib/auth.ts"
+      "default": "./dist/lib/auth.js"
     },
     "./client": {
       "types": "./src/lib/auth-client.ts",
-      "default": "./src/lib/auth-client.ts"
+      "default": "./dist/lib/auth-client.js"
     }
   }
 }

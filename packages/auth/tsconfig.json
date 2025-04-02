@@ -1,13 +1,15 @@
+// We have to turn declartions off and not compile this because typescript complains about the better-auth type being exported, 'The inferred type of 'auth' cannot be named without a reference to '@/node_modules/better-auth/dist/shared/better-auth.BAfIsot3'. This is likely not portable. A type annotation is necessary.ts(2742)'
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+    "declaration": false, //must be false because of the better-auth type error
+    "declarationMap": false, //must be false because of the better-auth type error
     "paths": {
-      "@/*": ["./*"],
       "@workspace/env-config/*": ["../../packages/env-config/src/*"]
     }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
-} 
+}
