@@ -8,6 +8,7 @@ import {
   emailOTP,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
+// import { env } from "@workspace/env-config"
 
 export const auth = betterAuth({
   appName: "Booker",
@@ -17,13 +18,6 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-  },
-  socialProviders: {
-    google: {
-      enabled: true,
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
   },
 
   databaseHooks: {
@@ -40,7 +34,7 @@ export const auth = betterAuth({
     admin(),
     apiKey(),
     openAPI(),
-    organization(),
+    // organization() as ReturnType<typeof organization>, //not currently working with typescript
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address

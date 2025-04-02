@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "echo 'Add build script here'",
-    "test": "LOG_LEVEL=silent vitest",
-    "lint": "echo 'Add lint script here'"
+    "build": "tsc && tsc-alias",
+    "test": "LOG_LEVEL=silent vitest"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
@@ -25,10 +24,14 @@
     "@types/node": "^20.11.17",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
+    "tsc-alias": "^1.8.13",
     "tsx": "^4.7.1",
     "vitest": "^3.1.1"
   },
   "exports": {
-    "./app": "./src/app.ts"
+    "./app": {
+      "default": "./dist/src/app.js",
+      "types": "./dist/src/app.d.ts"
+    }
   }
 }

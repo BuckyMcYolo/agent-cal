@@ -2,10 +2,9 @@
   "name": "@workspace/api-client",
   "version": "0.0.0",
   "private": true,
-  "main": "./dist/packages/api-client/src/index.js",
   "type": "module",
   "scripts": {
-    "dev123": "tsc --watch",
+    "dev": "tsc --watch",
     "build": "rm -rf dist && tsc",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
@@ -20,10 +19,8 @@
   },
   "exports": {
     ".": {
-      "import": {
-        "default": "./dist/packages/api-client/src/index.js",
-        "types": "./dist/packages/api-client/src/index.d.ts"
-      }
+      "types": "./dist/index.d.js",
+      "default": "./dist/index.js"
     }
   }
 }

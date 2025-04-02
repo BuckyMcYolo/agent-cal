@@ -18,8 +18,11 @@ import {
 } from "@workspace/ui/components/select"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { honoClient } from "@workspace/api-client"
 
 export default function Page() {
+  const client = honoClient("http://localhost:3000")
+
   return (
     <div className="flex items-center justify-center min-h-svh">
       <div className="flex flex-col items-center justify-center gap-4">

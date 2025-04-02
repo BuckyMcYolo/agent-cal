@@ -2,12 +2,19 @@
   "name": "@workspace/env-config",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*"
   },
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "default": "./dist/index.ts",
+      "types": "./dist/index.d.ts"
+    }
   },
   "dependencies": {
     "dotenv": "^16.4.7",

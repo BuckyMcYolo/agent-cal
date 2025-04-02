@@ -2,16 +2,11 @@
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "declaration": true,
-    "declarationMap": true,
     "outDir": "dist",
-    "typeRoots": ["./node_modules/@types"],
+    "rootDir": "src",
     "paths": {
-      "@workspace/api/*": ["../../apps/api/src/*"]
+      "@workspace/api/*": ["../../apps/api/src/app*"]
     },
-    "moduleResolution": "Bundler",
-    "target": "ESNext",
-    "module": "ESNext"
   },
   "watchOptions": {
     "excludeDirectories": [
@@ -22,5 +17,6 @@
       "**/packages/db"
     ]
   },
-  "include": ["src/**/*"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

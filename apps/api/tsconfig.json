@@ -1,29 +1,27 @@
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "verbatimModuleSyntax": true,
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "baseUrl": ".",
-    "outDir": "./dist",
+    "baseUrl": ".", 
+    "outDir": "dist",
     "paths": {
-      "@workspace/auth": ["../../packages/auth/src"],
-      "@workspace/db": ["../../packages/db/src/index.ts"],
-      "@workspace/db/*": ["../../packages/db/src/*"],
-      "@workspace/env-config/*": ["../../packages/env-config/src/*"],
+      "@workspace/auth": ["../../packages/auth/dist"],
+      "@workspace/db": ["../../packages/db/dist"],
+      "@workspace/db/*": ["../../packages/db/dist/*"],
+      "@workspace/env-config/*": ["../../packages/env-config/dist/*"],
       "@/*": ["./src/*"]
-    }
+    },
+    
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.js",
-    "src/**/*.jsx",
-    "src/**/*.json"
+    "src",
+    "package.json"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
+  }
 }
