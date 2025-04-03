@@ -12,7 +12,8 @@
     "db:pull": "pnpm --filter @workspace/db exec drizzle-kit pull",
     "db:push": "pnpm --filter @workspace/db exec drizzle-kit push",
     "db:generate": "pnpm --filter @workspace/db exec drizzle-kit generate",
-    "generate:better-auth": "pnpm --filter @workspace/auth exec npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts"
+    "generate:better-auth": "pnpm --filter @workspace/auth exec npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts",
+    "start:server": "pnpm --filter @workspace/api start"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

@@ -3,8 +3,15 @@ import path from "path"
 import { z } from "zod"
 import { config } from "dotenv"
 import { expand } from "dotenv-expand"
+import { fileURLToPath } from "url"
 
-expand(config({ path: path.resolve(__dirname, "../../../.env") }))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Only load .env file in development
+if (process.env.NODE_ENV !== "production") {
+  expand(config({ path: path.resolve(__dirname, "../../../.env") }))
+}
 
 const EnvSchema = z
   .object({

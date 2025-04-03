@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/api": "workspace:*",
-    "hono": "^4.7.5"
+    "hono": "^4.7.5",
+    "@workspace/api": "workspace:*"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
@@ -19,7 +19,7 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.js",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   }

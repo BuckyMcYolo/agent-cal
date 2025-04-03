@@ -1,5 +1,4 @@
 import type { AppOpenAPI } from "../types/app-types"
-import packageJson from "../../../package.json"
 import * as fs from "fs"
 import * as path from "path"
 import { fileURLToPath } from "url"
@@ -8,7 +7,7 @@ export default function generateOpenAPI(app: AppOpenAPI) {
   const openApiDoc = app.getOpenAPIDocument({
     openapi: "3.0.0",
     info: {
-      version: packageJson.version,
+      version: "1.0.1",
       title: "Booker API reference",
     },
     servers: [

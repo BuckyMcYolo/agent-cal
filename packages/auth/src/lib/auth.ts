@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth"
+import { betterAuth, type BetterAuthOptions } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
   admin,
@@ -34,7 +34,7 @@ export const auth = betterAuth({
     admin(),
     apiKey(),
     openAPI(),
-    // organization() as ReturnType<typeof organization>, //not currently working with typescript
+    organization(), //not currently working with typescript
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address

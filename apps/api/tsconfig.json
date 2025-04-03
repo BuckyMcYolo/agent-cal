@@ -16,10 +16,7 @@
     },
     
   },
-  "include": [
-    "src",
-    "package.json"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules"],
   "tsc-alias": {
     "resolveFullPaths": true,

@@ -7,7 +7,7 @@
     "studio": "drizzle-kit studio",
     "push": "drizzle-kit push",
     "pull": "drizzle-kit pull",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc && tsc-alias"
   },
   "devDependencies": {
     "@types/pg": "^8.11.11",
@@ -15,7 +15,8 @@
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "drizzle-kit": "^0.30.5",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.1",
+    "tsc-alias": "^1.8.13"
   },
   "dependencies": {
     "drizzle-orm": "^0.41.0",
@@ -25,11 +26,11 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.js",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./schema/*": {
-      "types": "./dist/schema/*.d.js",
+      "types": "./dist/schema/*.d.ts",
       "default": "./dist/schema/*.js"
     }
   }
