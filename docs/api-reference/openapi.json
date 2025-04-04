@@ -1,8 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.0.0",
-    "title": "Booker API reference"
+    "version": "1.0.1",
+    "title": "Booker API reference",
+    "description": "API documentation for the Booker service"
   },
   "servers": [
     {
@@ -11,7 +12,11 @@
     }
   ],
   "components": {
-    "schemas": {},
+    "schemas": {
+      "Task deleted successfully": {
+        "type": "string"
+      }
+    },
     "parameters": {}
   },
   "paths": {
@@ -669,10 +674,12 @@
                   "type": "object",
                   "properties": {
                     "message": {
-                      "type": "string",
-                      "default": "Task deleted successfully"
+                      "$ref": "#/components/schemas/Task deleted successfully"
                     }
-                  }
+                  },
+                  "required": [
+                    "message"
+                  ]
                 }
               }
             }

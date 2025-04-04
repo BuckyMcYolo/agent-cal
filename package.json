@@ -13,7 +13,8 @@
     "db:push": "pnpm --filter @workspace/db exec drizzle-kit push",
     "db:generate": "pnpm --filter @workspace/db exec drizzle-kit generate",
     "generate:better-auth": "pnpm --filter @workspace/auth exec npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts",
-    "start:server": "pnpm --filter @workspace/api start"
+    "start:server": "pnpm --filter @workspace/api start",
+    "write-openapi": "pnpm --filter @workspace/api run write-openapi"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
