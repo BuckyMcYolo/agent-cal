@@ -115,13 +115,13 @@ export const remove = createRoute({
   summary: "Delete a task",
   method: "delete",
   description: "Delete a task by ID",
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   request: {
     params: UUIDParamsSchema,
+    headers: z.object({
+      Authorization: z.string().openapi({
+        description: "Authorization token",
+      }),
+    }),
   },
   tags,
   responses: {

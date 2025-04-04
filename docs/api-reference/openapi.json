@@ -653,7 +653,7 @@
         "description": "Delete a task by ID",
         "security": [
           {
-            "Bearer": []
+            "authorization": []
           }
         ],
         "tags": [
@@ -672,6 +672,16 @@
             "required": true,
             "name": "id",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Authorization token",
+              "example": "Bearer <token>"
+            },
+            "required": true,
+            "name": "authorization",
+            "in": "header"
           }
         ],
         "responses": {
