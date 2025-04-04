@@ -75,10 +75,5 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
     )
   }
 
-  return c.json(
-    {
-      message: "Task deleted successfully",
-    },
-    HttpStatusCodes.OK
-  )
+  return c.body(null, HttpStatusCodes.NO_CONTENT)
 }

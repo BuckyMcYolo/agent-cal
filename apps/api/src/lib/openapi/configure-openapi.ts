@@ -1,6 +1,13 @@
 import type { AppOpenAPI } from "../types/app-types"
 
 export default function configureOpenAPI(app: AppOpenAPI) {
+  app.openAPIRegistry.registerComponent("securitySchemes", "API KEY", {
+    type: "apiKey",
+    scheme: "header",
+    name: "Authorization",
+    description: "Bearer token",
+  })
+
   app.doc("/docs", {
     openapi: "3.0.0",
     info: {

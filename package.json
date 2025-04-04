@@ -14,7 +14,8 @@
     "db:generate": "pnpm --filter @workspace/db exec drizzle-kit generate",
     "generate:better-auth": "pnpm --filter @workspace/auth exec npx @better-auth/cli@latest generate --output ../../packages/db/src/generated-schema.ts",
     "start:server": "pnpm --filter @workspace/api start",
-    "write-openapi": "pnpm --filter @workspace/api run write-openapi"
+    "write-openapi": "pnpm --filter @workspace/api run write-openapi",
+    "watch": "turbo watch"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
@@ -25,6 +26,6 @@
   },
   "packageManager": "pnpm@10.4.1",
   "engines": {
-    "node": ">=20.9.0 <21.0.0"
+    "node": ">=21.0.0"
   }
 }

@@ -12,11 +12,15 @@
     }
   ],
   "components": {
-    "schemas": {
-      "Task deleted successfully": {
-        "type": "string"
+    "securitySchemes": {
+      "API KEY": {
+        "type": "apiKey",
+        "scheme": "header",
+        "name": "Authorization",
+        "description": "Bearer token"
       }
     },
+    "schemas": {},
     "parameters": {}
   },
   "paths": {
@@ -647,6 +651,11 @@
       "delete": {
         "summary": "Delete a task",
         "description": "Delete a task by ID",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "tags": [
           "Tasks"
         ],
@@ -666,23 +675,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "The task was deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "$ref": "#/components/schemas/Task deleted successfully"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ]
-                }
-              }
-            }
+          "204": {
+            "description": "Task deleted successfully"
           },
           "404": {
             "description": "Task not found",

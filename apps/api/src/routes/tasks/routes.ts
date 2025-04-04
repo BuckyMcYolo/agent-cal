@@ -115,17 +115,19 @@ export const remove = createRoute({
   summary: "Delete a task",
   method: "delete",
   description: "Delete a task by ID",
+  security: [
+    {
+      Bearer: [],
+    },
+  ],
   request: {
     params: UUIDParamsSchema,
   },
   tags,
   responses: {
-    [HttpStatusCodes.OK]: jsonContent({
-      schema: z.object({
-        message: z.string().openapi("Task deleted successfully"),
-      }),
-      description: "The task was deleted successfully",
-    }),
+    [HttpStatusCodes.NO_CONTENT]: {
+      description: "Task deleted successfully",
+    },
     [HttpStatusCodes.NOT_FOUND]: jsonContent({
       schema: notFoundSchema,
       description: "Task not found",
