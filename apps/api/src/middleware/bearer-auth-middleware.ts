@@ -23,7 +23,6 @@ export const extractBearerToken = (headers: Headers): string | null => {
  * Middleware that authenticates using a Bearer token.
  * The token can be either an API key (prefixed with 'booker_') or a user access token
  */
-
 export const bearerAuthMiddleware = async (
   c: Context<AppBindings>,
   next: Next
@@ -52,9 +51,11 @@ export const bearerAuthMiddleware = async (
     if (isApiKey) {
       // If it's an API key, set it in the x-api-key header for Better Auth
       authHeaders.set("x-api-key", token)
+    } else {
+      // do nothing
+      // If it's a user access token, don't do anything, it will automatically work using the better auth Bearer token plugin
+      // See https://www.better-auth.com/docs/plugins/bearer
     }
-    // If it's a user access token, dont do anything, it will work using the better auth Bearer token plugin
-
     const session = await auth.api.getSession({ headers: authHeaders })
 
     if (!session) {

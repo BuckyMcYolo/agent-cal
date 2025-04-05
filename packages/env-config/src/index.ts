@@ -5,12 +5,13 @@ import { config } from "dotenv"
 import { expand } from "dotenv-expand"
 import { fileURLToPath } from "url"
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+// Rename __filename to currentFilename to avoid conflict
+const currentFilename = fileURLToPath(import.meta.url)
+const currentDirname = path.dirname(currentFilename)
 
 // Only load .env file in development
 if (process.env.NODE_ENV !== "production") {
-  expand(config({ path: path.resolve(__dirname, "../../../.env") }))
+  expand(config({ path: path.resolve(currentDirname, "../../../.env") }))
 }
 
 const EnvSchema = z

@@ -16,6 +16,9 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
+  advanced: {
+    cookiePrefix: "BS_", // booker session
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -33,10 +36,14 @@ export const auth = betterAuth({
 
   plugins: [
     admin(),
-    apiKey(),
+    apiKey({
+      defaultPrefix: "booker_",
+    }),
     openAPI(),
-    organization(), //not currently working with typescript
-    bearer(),
+    organization({}), //not currently working with typescript declaration files
+    bearer({
+      requireSignature: true, // By Default all cookie are signed using the better auth secret. See https://www.better-auth.com/docs/concepts/cookies
+    }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address

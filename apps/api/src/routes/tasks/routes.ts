@@ -68,10 +68,11 @@ export const getOne = createRoute({
     params: UUIDParamsSchema,
   },
   tags,
+  // middleware: [bearerAuthMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: selectTasksSchema,
-      description: "List of tasks",
+      description: "The requested task",
     }),
     [HttpStatusCodes.NOT_FOUND]: jsonContent({
       schema: notFoundSchema,
@@ -81,6 +82,7 @@ export const getOne = createRoute({
       schema: createErrorSchema(UUIDParamsSchema),
       description: "Invalid UUID error",
     }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 

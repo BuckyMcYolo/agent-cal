@@ -16,5 +16,20 @@ export const authClient: ReturnType<typeof createAuthClient> = createAuthClient(
       emailOTPClient(),
     ],
     baseURL: env.API_URL,
+    fetchOptions: {
+      onSuccess(context) {
+        const authToken = context.response.headers.get("set-auth-token")
+        if (authToken) {
+          localStorage.setItem("auth-token", authToken)
+        }
+      },
+      auth: {
+        type: "Bearer",
+        token: () => {
+          const token = localStorage.getItem("auth-token")
+          return token || ""
+        },
+      },
+    },
   }
 )
