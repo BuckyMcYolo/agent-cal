@@ -6,6 +6,7 @@ import {
   apiKey,
   openAPI,
   emailOTP,
+  bearer,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
 // import { env } from "@workspace/env-config"
@@ -35,6 +36,7 @@ export const auth = betterAuth({
     apiKey(),
     openAPI(),
     organization(), //not currently working with typescript
+    bearer(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address

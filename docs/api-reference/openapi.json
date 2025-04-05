@@ -13,11 +13,11 @@
   ],
   "components": {
     "securitySchemes": {
-      "API KEY": {
-        "type": "apiKey",
-        "scheme": "header",
-        "name": "Authorization",
-        "description": "Bearer token"
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Value must be `Bearer <token>` where `<token>` is API key prefixed with booker_ or user access token"
       }
     },
     "schemas": {},
@@ -651,11 +651,6 @@
       "delete": {
         "summary": "Delete a task",
         "description": "Delete a task by ID",
-        "security": [
-          {
-            "authorization": []
-          }
-        ],
         "tags": [
           "Tasks"
         ],
@@ -676,10 +671,10 @@
           {
             "schema": {
               "type": "string",
-              "description": "Authorization token",
-              "example": "Bearer <token>"
+              "example": "Bearer booker_abcdef123456"
             },
             "required": true,
+            "description": "value must be `Bearer <token>` where `<token>` is API key prefixed with 'booker_' or user access token",
             "name": "authorization",
             "in": "header"
           }
@@ -687,6 +682,83 @@
         "responses": {
           "204": {
             "description": "Task deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "issues": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "path": {
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    }
+                                  ]
+                                }
+                              },
+                              "message": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "code",
+                              "path"
+                            ]
+                          }
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "issues",
+                        "name"
+                      ],
+                      "example": {
+                        "issues": [
+                          {
+                            "code": "invalid_type",
+                            "expected": "string",
+                            "received": "undefined",
+                            "path": [
+                              "message"
+                            ],
+                            "message": "Required"
+                          }
+                        ],
+                        "name": "ZodError"
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "error"
+                  ]
+                }
+              }
+            }
           },
           "404": {
             "description": "Task not found",

@@ -15,6 +15,7 @@ import createErrorSchema from "@/lib/helpers/openapi/schemas/create-error-schema
 import IdParamsSchema from "@/lib/helpers/openapi/schemas/id-params"
 import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/uuid-params"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/not-found"
+import bearerAuthSchema from "@/lib/helpers/openapi/schemas/bearer-auth-schema"
 
 const tags = ["Tasks"]
 
@@ -118,9 +119,7 @@ export const remove = createRoute({
   request: {
     params: UUIDParamsSchema,
     headers: z.object({
-      Authorization: z.string().openapi({
-        description: "Authorization token",
-      }),
+      authorization: bearerAuthSchema,
     }),
   },
   tags,
@@ -135,6 +134,16 @@ export const remove = createRoute({
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent({
       schema: createErrorSchema(UUIDParamsSchema),
       description: "Validation error",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent({
+      schema: createErrorSchema(
+        z.object({
+          message: z.string().openapi({
+            example: "Unauthorized",
+          }),
+        })
+      ),
+      description: "Unauthorized",
     }),
   },
 })
