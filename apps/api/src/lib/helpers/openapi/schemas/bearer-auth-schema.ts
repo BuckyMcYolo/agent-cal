@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi"
 
 const bearerAuthSchema = z.string().openapi({
   param: {
-    name: "authorization",
+    name: "Authorization",
     in: "header",
     required: true,
     description:

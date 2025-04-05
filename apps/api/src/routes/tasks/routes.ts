@@ -11,11 +11,12 @@ import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-requ
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import { db } from "@workspace/db"
 import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
-import createErrorSchema from "@/lib/helpers/openapi/schemas/create-error-schema"
-import IdParamsSchema from "@/lib/helpers/openapi/schemas/id-params"
-import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/uuid-params"
-import { notFoundSchema } from "@/lib/helpers/openapi/schemas/not-found"
+import createErrorSchema from "@/lib/helpers/openapi/schemas/error/create-error-schema"
+import IdParamsSchema from "@/lib/helpers/openapi/schemas/params/id-params"
+import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
+import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import bearerAuthSchema from "@/lib/helpers/openapi/schemas/bearer-auth-schema"
+import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
 
 const tags = ["Tasks"]
 
@@ -119,7 +120,7 @@ export const remove = createRoute({
   request: {
     params: UUIDParamsSchema,
     headers: z.object({
-      authorization: bearerAuthSchema,
+      Authorization: bearerAuthSchema,
     }),
   },
   tags,
@@ -135,16 +136,7 @@ export const remove = createRoute({
       schema: createErrorSchema(UUIDParamsSchema),
       description: "Validation error",
     }),
-    [HttpStatusCodes.UNAUTHORIZED]: jsonContent({
-      schema: createErrorSchema(
-        z.object({
-          message: z.string().openapi({
-            example: "Unauthorized",
-          }),
-        })
-      ),
-      description: "Unauthorized",
-    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 

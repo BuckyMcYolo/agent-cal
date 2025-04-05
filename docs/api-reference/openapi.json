@@ -671,11 +671,11 @@
           {
             "schema": {
               "type": "string",
-              "example": "Bearer booker_abcdef123456"
+              "example": "Bearer booker_e2g55fa3f4a0d1e4e2fbaac"
             },
             "required": true,
             "description": "value must be `Bearer <token>` where `<token>` is API key prefixed with 'booker_' or user access token",
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header"
           }
         ],
@@ -684,78 +684,27 @@
             "description": "Task deleted successfully"
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized Error",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean",
-                      "example": false
+                      "type": "boolean"
                     },
                     "error": {
-                      "type": "object",
-                      "properties": {
-                        "issues": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "code": {
-                                "type": "string"
-                              },
-                              "path": {
-                                "type": "array",
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "type": "string"
-                                    },
-                                    {
-                                      "type": "number"
-                                    }
-                                  ]
-                                }
-                              },
-                              "message": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "code",
-                              "path"
-                            ]
-                          }
-                        },
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "issues",
-                        "name"
-                      ],
-                      "example": {
-                        "issues": [
-                          {
-                            "code": "invalid_type",
-                            "expected": "string",
-                            "received": "undefined",
-                            "path": [
-                              "message"
-                            ],
-                            "message": "Required"
-                          }
-                        ],
-                        "name": "ZodError"
-                      }
+                      "type": "string"
                     }
                   },
                   "required": [
                     "success",
                     "error"
-                  ]
+                  ],
+                  "example": {
+                    "success": false,
+                    "error": "Unauthorized"
+                  }
                 }
               }
             }

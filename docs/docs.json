@@ -14,23 +14,41 @@
   },
   "favicon": "/favicon.ico",
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "introduction",
-          "href": "http://localhost:5000/api-reference"
-        }
-      ]
-    },
-    "dropdowns": [
+    "anchors": [
       {
-        "dropdown": "Getting Started",
+        "anchor": "Getting Started",
         "icon": "book-open",
-        "pages": ["introduction", "quickstart"]
+        "groups": [
+          {
+            "group": "Hello World",
+
+            "pages": ["introduction", "quickstart"]
+          }
+        ]
       },
       {
-        "dropdown": "API reference",
-        "openapi": "/api-reference/openapi.json"
+        "anchor": "Self Hosting",
+        "icon": "server"
+      },
+      {
+        "anchor": "API reference",
+        "icon": "square-terminal",
+        "groups": [
+          {
+            "group": "Intro",
+            "pages": ["api-reference/introduction", "api-reference/rate-limits"]
+          },
+          {
+            "group": "Tasks",
+            "pages": [
+              "api-reference/tasks/get-all",
+              "api-reference/tasks/get",
+              "api-reference/tasks/patch",
+              "api-reference/tasks/delete",
+              "api-reference/tasks/post"
+            ]
+          }
+        ]
       }
     ]
   },

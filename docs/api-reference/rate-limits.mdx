@@ -1,0 +1,37 @@
+---
+title: "Rate Limits"
+description: "Rate limits for the API endpoints"
+---
+
+# Rate Limits
+
+The API has rate limits to ensure fair usage and prevent abuse. The following rate limits apply:
+
+- **GET /tasks**: 100 requests per minute
+- **GET /tasks/\{id\}**: 100 requests per minute
+- **POST /tasks**: 50 requests per minute
+- **PATCH /tasks/\{id\}**: 50 requests per minute
+- **DELETE /tasks/\{id\}**: 50 requests per minute
+
+## Rate Limit Headers
+
+The API responses include the following headers to indicate your current rate limit status:
+
+- `X-RateLimit-Limit`: The maximum number of requests you can make in the current time window.
+- `X-RateLimit-Remaining`: The number of requests remaining in the current time window.
+- `X-RateLimit-Reset`: The time when the rate limit will reset, in UTC epoch seconds.
+
+## Handling Rate Limits
+
+If you exceed the rate limit, the API will return a `429 Too Many Requests` response. You should implement exponential backoff in your application to handle this gracefully.
+
+## Example Rate Limit Headers
+
+```http
+HTTP/1.1 200 OK
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 99
+X-RateLimit-Reset: 1633036800
+```
+
+This indicates that you have 99 requests remaining in the current time window, and the limit will reset at the specified epoch time.

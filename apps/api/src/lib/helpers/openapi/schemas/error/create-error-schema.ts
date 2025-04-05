@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi"
 
-import type { ZodSchema } from "./types"
+import type { ZodSchema } from "../types"
 
 const createErrorSchema = <T extends ZodSchema>(schema: T) => {
   const { error } = schema.safeParse(
