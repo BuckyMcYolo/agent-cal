@@ -13,7 +13,6 @@ export function createRouter() {
     defaultHook,
   })
 }
-
 export default function createApp() {
   const app = createRouter()
   app.use(requestId()).use(pinoLoggerMiddleware())

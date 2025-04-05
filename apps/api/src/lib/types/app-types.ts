@@ -1,10 +1,15 @@
 import type { PinoLogger } from "hono-pino"
 import type { RouteConfig, RouteHandler, OpenAPIHono } from "@hono/zod-openapi"
 import type { Schema } from "hono"
+import type { Session, User } from "@workspace/auth"
 
 export interface AppBindings {
   Variables: {
     logger: PinoLogger
+    user?: User
+    session?: Session
+    authMethod?: "api-key" | "user-token"
+    token?: string
   }
 }
 export type AppOpenAPI<S extends Schema = {}> = OpenAPIHono<AppBindings, S>

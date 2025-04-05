@@ -2,6 +2,7 @@
 import type { Context, Next } from "hono"
 import { auth } from "@workspace/auth"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import type { AppBindings } from "@/lib/types/app-types"
 
 /**
  * Extracts the bearer token from the Authorization header
@@ -22,7 +23,11 @@ export const extractBearerToken = (headers: Headers): string | null => {
  * Middleware that authenticates using a Bearer token.
  * The token can be either an API key (prefixed with 'booker_') or a user access token
  */
-export const bearerAuthMiddleware = async (c: Context, next: Next) => {
+
+export const bearerAuthMiddleware = async (
+  c: Context<AppBindings>,
+  next: Next
+) => {
   try {
     // Get headers from request
     const headers = c.req.raw.headers
@@ -33,7 +38,8 @@ export const bearerAuthMiddleware = async (c: Context, next: Next) => {
     if (!token) {
       return c.json(
         {
-          message: "Authentication required. Provide a Bearer token.",
+          success: false,
+          error: "Authentication required. Please provide a Bearer token.",
         },
         HttpStatusCodes.UNAUTHORIZED
       )
@@ -53,7 +59,10 @@ export const bearerAuthMiddleware = async (c: Context, next: Next) => {
 
     if (!session) {
       return c.json(
-        { message: "Invalid authentication token" },
+        {
+          success: false,
+          error: "Invalid authentication token",
+        },
         HttpStatusCodes.UNAUTHORIZED
       )
     }
@@ -68,7 +77,10 @@ export const bearerAuthMiddleware = async (c: Context, next: Next) => {
   } catch (error) {
     console.error("Authentication error:", error)
     return c.json(
-      { message: "Authentication failed" },
+      {
+        success: false,
+        error: "Authentication failed",
+      },
       HttpStatusCodes.UNAUTHORIZED
     )
   }

@@ -684,7 +684,7 @@
             "description": "Task deleted successfully"
           },
           "401": {
-            "description": "Unauthorized Error",
+            "description": "Unauthorized - Authentication required",
             "content": {
               "application/json": {
                 "schema": {

@@ -13,5 +13,5 @@ export const unauthorizedSchema = jsonContent({
         error: "Unauthorized",
       },
     }),
-  description: "Unauthorized Error",
+  description: "Unauthorized - Authentication required",
 })

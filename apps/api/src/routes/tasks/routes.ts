@@ -17,6 +17,7 @@ import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import bearerAuthSchema from "@/lib/helpers/openapi/schemas/bearer-auth-schema"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
+import { bearerAuthMiddleware } from "@/middleware/bearer-auth-middleware"
 
 const tags = ["Tasks"]
 
@@ -27,6 +28,7 @@ export const list = createRoute({
   description:
     "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
   tags,
+  middleware: [bearerAuthMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: z.array(selectTasksSchema),
@@ -124,6 +126,7 @@ export const remove = createRoute({
     }),
   },
   tags,
+  middleware: [bearerAuthMiddleware] as const,
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "Task deleted successfully",
