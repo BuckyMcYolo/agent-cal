@@ -28,17 +28,15 @@ export const bearerAuthMiddleware = async (
   next: Next
 ) => {
   try {
-    // Get headers from request
     const headers = c.req.raw.headers
 
-    // Extract bearer token
     const token = extractBearerToken(headers)
 
     if (!token) {
       return c.json(
         {
           success: false,
-          error: "Authentication required. Please provide a Bearer token.",
+          message: "Authentication required. Please provide a Bearer token.",
         },
         HttpStatusCodes.UNAUTHORIZED
       )
@@ -46,23 +44,24 @@ export const bearerAuthMiddleware = async (
 
     const isApiKey = token.startsWith("booker_")
 
-    const authHeaders = new Headers(headers)
+    // const authHeaders = new Headers(headers)
 
     if (isApiKey) {
       // If it's an API key, set it in the x-api-key header for Better Auth
-      authHeaders.set("x-api-key", token)
+      // authHeaders.set("x-api-key", token)
+      headers.set("x-api-key", token)
     } else {
       // do nothing
       // If it's a user access token, don't do anything, it will automatically work using the better auth Bearer token plugin
       // See https://www.better-auth.com/docs/plugins/bearer
     }
-    const session = await auth.api.getSession({ headers: authHeaders })
+    const session = await auth.api.getSession({ headers })
 
     if (!session) {
       return c.json(
         {
           success: false,
-          error: "Invalid authentication token",
+          message: "Invalid authentication token",
         },
         HttpStatusCodes.UNAUTHORIZED
       )
@@ -80,7 +79,7 @@ export const bearerAuthMiddleware = async (
     return c.json(
       {
         success: false,
-        error: "Authentication failed",
+        message: "Authentication failed",
       },
       HttpStatusCodes.UNAUTHORIZED
     )

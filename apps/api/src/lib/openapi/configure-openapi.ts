@@ -7,7 +7,7 @@ export default function configureOpenAPI(app: AppOpenAPI) {
     scheme: "bearer",
     bearerFormat: "JWT",
     description:
-      "Value must be `Bearer <token>` where `<token>` is API key prefixed with booker_ or user access token",
+      "Value must be `Bearer <token>` where `<token>` is a user access token or an API key prefixed with 'booker_' ",
   })
 
   app.doc("/docs", {

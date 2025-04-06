@@ -5,12 +5,12 @@ export const unauthorizedSchema = jsonContent({
   schema: z
     .object({
       success: z.boolean(),
-      error: z.string(),
+      message: z.string(),
     })
     .openapi({
       example: {
         success: false,
-        error: "Unauthorized",
+        message: "Unauthorized",
       },
     }),
   description: "Unauthorized - Authentication required",

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "tsc --watch",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build": "rm -rf dist && tsc"

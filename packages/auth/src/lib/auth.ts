@@ -19,6 +19,13 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: "BS_", // booker session
   },
+  //rate limiting
+  rateLimit: {
+    enabled: true,
+    storage: "memory", //will add secondary storage later
+    max: 1, // max requests
+    window: 600, //60 seconds
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -38,6 +45,7 @@ export const auth = betterAuth({
     admin(),
     apiKey({
       defaultPrefix: "booker_",
+      apiKeyHeaders: ["x-api-key"],
     }),
     openAPI(),
     organization({}), //not currently working with typescript declaration files

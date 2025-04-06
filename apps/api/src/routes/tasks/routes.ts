@@ -3,19 +3,14 @@ import { createRoute, z } from "@hono/zod-openapi"
 import {
   insertTasksSchema,
   selectTasksSchema,
-  tasks,
   updateTasksSchema,
 } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
-import type { AppRouteHandler } from "@/lib/types/app-types"
-import { db } from "@workspace/db"
 import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
 import createErrorSchema from "@/lib/helpers/openapi/schemas/error/create-error-schema"
-import IdParamsSchema from "@/lib/helpers/openapi/schemas/params/id-params"
 import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
-import bearerAuthSchema from "@/lib/helpers/openapi/schemas/bearer-auth-schema"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
 import { bearerAuthMiddleware } from "@/middleware/bearer-auth-middleware"
 
@@ -27,6 +22,11 @@ export const list = createRoute({
   summary: "Get all tasks",
   description:
     "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
   tags,
   middleware: [bearerAuthMiddleware] as const,
   responses: {
@@ -34,6 +34,7 @@ export const list = createRoute({
       schema: z.array(selectTasksSchema),
       description: "List of tasks",
     }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 
@@ -47,6 +48,12 @@ export const create = createRoute({
       description: "The task to create",
     }),
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  middleware: [bearerAuthMiddleware] as const,
   tags,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
@@ -57,6 +64,7 @@ export const create = createRoute({
       schema: createErrorSchema(insertTasksSchema),
       description: "Validation error",
     }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 
@@ -67,8 +75,13 @@ export const getOne = createRoute({
   request: {
     params: UUIDParamsSchema,
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
   tags,
-  // middleware: [bearerAuthMiddleware] as const,
+  middleware: [bearerAuthMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: selectTasksSchema,
@@ -97,7 +110,13 @@ export const patch = createRoute({
       description: "The task to update",
     }),
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
   tags,
+  middleware: [bearerAuthMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: selectTasksSchema,
@@ -113,6 +132,7 @@ export const patch = createRoute({
       ),
       description: "Validation error",
     }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 
@@ -123,10 +143,12 @@ export const remove = createRoute({
   description: "Delete a task by ID",
   request: {
     params: UUIDParamsSchema,
-    headers: z.object({
-      Authorization: bearerAuthSchema,
-    }),
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
   tags,
   middleware: [bearerAuthMiddleware] as const,
   responses: {

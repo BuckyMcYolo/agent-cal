@@ -5,6 +5,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "turbo dev",
+    "dev:server": "turbo dev --filter @workspace/api...",
     "dev:docs": "cd docs && mintlify dev --port 5000",
     "build": "turbo build",
     "lint": "turbo lint",

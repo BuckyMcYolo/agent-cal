@@ -13,13 +13,13 @@ import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const tasks = await db.query.tasks.findMany()
-  return c.json(tasks)
+  return c.json(tasks, HttpStatusCodes.OK)
 }
 
 export const createTask: AppRouteHandler<CreateRoute> = async (c) => {
   const task = c.req.valid("json")
   const [inserted] = await db.insert(tasks).values(task).returning()
-  return c.json(inserted)
+  return c.json(inserted, HttpStatusCodes.OK)
 }
 
 export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
@@ -33,6 +33,7 @@ export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
     return c.json(
       {
         message: HttpStatusPhrases.NOT_FOUND,
+        success: false,
       },
       HttpStatusCodes.NOT_FOUND
     )
@@ -54,6 +55,7 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
     return c.json(
       {
         message: HttpStatusPhrases.NOT_FOUND,
+        success: false,
       },
       HttpStatusCodes.NOT_FOUND
     )

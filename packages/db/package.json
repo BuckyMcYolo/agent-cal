@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "tsc --watch",
     "studio": "drizzle-kit studio",
     "push": "drizzle-kit push",
     "pull": "drizzle-kit pull",
