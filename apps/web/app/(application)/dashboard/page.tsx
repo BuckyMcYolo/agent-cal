@@ -1,7 +1,7 @@
 "use client"
 
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
+import { AppSidebar } from "@/components/nav/app-sidebar"
+import { SiteHeader } from "@/components/nav/site-header"
 import { clientEnv } from "@workspace/env-config"
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
 

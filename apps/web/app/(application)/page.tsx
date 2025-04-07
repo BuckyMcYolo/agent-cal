@@ -24,7 +24,7 @@ export default function Page() {
   const client = honoClient("http://localhost:3000")
 
   return (
-    <div className="flex items-center justify-center min-h-svh">
+    <div className="flex items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">Hello World</h1>
         <Button size="sm">Button</Button>
