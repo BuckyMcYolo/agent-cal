@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Inter } from "next/font/google"
 
 import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
@@ -13,6 +13,11 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+        className={`${fontSans.variable} ${fontMono.variable} ${inter.variable} font-sans antialiased `}
       >
         <Providers>{children}</Providers>
       </body>

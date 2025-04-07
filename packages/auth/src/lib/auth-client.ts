@@ -5,7 +5,7 @@ import {
   apiKeyClient,
   emailOTPClient,
 } from "better-auth/client/plugins"
-import env from "@workspace/env-config"
+import clientEnv from "@workspace/env-config/client-env"
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient(
   {
@@ -15,7 +15,7 @@ export const authClient: ReturnType<typeof createAuthClient> = createAuthClient(
       apiKeyClient(),
       emailOTPClient(),
     ],
-    baseURL: env.API_URL,
+    baseURL: clientEnv.NEXT_PUBLIC_API_URL,
     fetchOptions: {
       onSuccess(context) {
         const authToken = context.response.headers.get("set-auth-token")

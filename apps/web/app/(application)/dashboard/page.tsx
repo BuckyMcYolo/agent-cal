@@ -1,15 +1,16 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@workspace/ui/components/sidebar"
+import clientEnv from "@workspace/env-config/client-env"
+import env from "@workspace/env-config"
+import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
 
-export const iframeHeight = "800px"
+// export const iframeHeight = "800px"
 
-export const description = "A sidebar with a header and a search form."
-
+// export const description = "A sidebar with a header and a search form."
 export default function Page() {
+  console.log(env.DATABASE_URL)
+  console.log(clientEnv.NEXT_PUBLIC_API_URL)
+
   return (
     <div className="[--header-height:calc(--spacing(14))]">
       <SidebarProvider className="flex flex-col">

@@ -7,7 +7,7 @@
     "declaration": false, //must be false because of the better-auth type error
     "declarationMap": false, //must be false because of the better-auth type error
     "paths": {
-      "@workspace/env-config/*": ["../../packages/env-config/src/*"]
+      "@workspace/env-config/*": ["../../packages/env-config/dist/*"]
     }
   },
   "include": ["src"],

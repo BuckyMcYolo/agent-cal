@@ -5,8 +5,11 @@ import {
   Bell,
   ChevronsUpDown,
   CreditCard,
+  Laptop,
   LogOut,
+  Moon,
   Sparkles,
+  Sun,
 } from "lucide-react"
 
 import {
@@ -29,6 +32,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@workspace/ui/components/toggle-group"
+import { useTheme } from "next-themes"
 
 export function NavUser({
   user,
@@ -40,6 +48,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { setTheme, theme } = useTheme()
 
   return (
     <SidebarMenu>
@@ -79,6 +88,40 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuItem
+              className="cursor-default w-full"
+              onClick={(e) => {
+                e.preventDefault()
+              }}
+            >
+              Theme
+              <ToggleGroup
+                size={"sm"}
+                type="single"
+                className="bg-background flex gap-1 items-center border border-muted-background rounded-xl px-1 ml-2 h-8 w-full"
+                value={theme}
+                onValueChange={(value) => setTheme(value)}
+              >
+                <ToggleGroupItem
+                  className="h-6 w-6 p-1.5 rounded-md"
+                  value="light"
+                >
+                  <Sun className="h-5 w-5" />
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  className="h-6 w-6 p-1.5 rounded-md"
+                  value="dark"
+                >
+                  <Moon className="h-5 w-5" />
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  className="h-6 w-6 p-1.5 rounded-md"
+                  value="system"
+                >
+                  <Laptop className="h-5 w-5" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
