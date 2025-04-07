@@ -5,7 +5,7 @@ import {
   apiKeyClient,
   emailOTPClient,
 } from "better-auth/client/plugins"
-import clientEnv from "@workspace/env-config/client-env"
+import { clientEnv } from "@workspace/env-config"
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient(
   {

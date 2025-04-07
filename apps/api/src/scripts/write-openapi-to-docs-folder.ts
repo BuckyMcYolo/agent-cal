@@ -6,7 +6,7 @@ import type { AppOpenAPI } from "../lib/types/app-types"
 import * as fs from "fs"
 import * as path from "path"
 import { fileURLToPath } from "url"
-import env from "@workspace/env-config/index"
+import { serverEnv } from "@workspace/env-config/index"
 import app from "../app"
 
 export async function generateOpenAPI(app: AppOpenAPI) {
@@ -26,7 +26,7 @@ export async function generateOpenAPI(app: AppOpenAPI) {
       ],
     })
 
-    if (env.NODE_ENV !== "development") {
+    if (serverEnv.NODE_ENV !== "development") {
       console.log("Skipping OpenAPI document generation in production mode.")
       return false
     }

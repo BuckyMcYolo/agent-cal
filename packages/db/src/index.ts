@@ -3,7 +3,7 @@ import postgres from "postgres"
 import * as betterAuthSchema from "./schema/auth"
 import * as taskSchema from "./schema/tasks"
 import * as bookingSchema from "./schema/bookings"
-import env from "@workspace/env-config"
+import { serverEnv } from "@workspace/env-config"
 import {
   eq,
   ne,
@@ -32,7 +32,7 @@ import {
   getTableColumns,
 } from "drizzle-orm"
 
-const client = postgres(env.DATABASE_URL)
+const client = postgres(serverEnv.DATABASE_URL)
 export const db = drizzle({
   client,
   logger: true,

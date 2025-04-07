@@ -14,6 +14,9 @@ expand(config({ path: path.resolve(currentDirname, "../../.env") }))
 
 const nextConfig = {
   transpilePackages: ["@workspace/ui", "@workspace/env-config"],
+  env: {
+    NEXT_JS: "true",
+  },
 }
 
 export default nextConfig
