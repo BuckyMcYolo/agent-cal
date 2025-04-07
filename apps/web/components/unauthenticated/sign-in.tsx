@@ -102,8 +102,8 @@ export default function SignIn() {
 
           <div
             className={cn(
-              "w-full gap-2 flex items-center",
-              "justify-between flex-col"
+              "w-full gap-3 flex items-center",
+              "justify-between flex-col pt-2"
             )}
           >
             <Button
@@ -187,6 +187,17 @@ export default function SignIn() {
               Sign in with Github
             </Button>
           </div>
+        </div>
+        <div>
+          <p className="pt-4 text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/sign-up"
+              className="font-semibold text-primary hover:text-primary/80"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
       </CardContent>
     </Card>

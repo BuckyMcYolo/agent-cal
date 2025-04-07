@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { AppSidebar } from "./app-sidebar"
-import { SiteHeader } from "./site-header"
+import { AppSidebar } from "../nav/app-sidebar"
+import { SiteHeader } from "../nav/site-header"
 
 export const NavProvider = ({ children }: { children: React.ReactNode }) => {
   return (

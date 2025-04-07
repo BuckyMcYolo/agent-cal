@@ -26,6 +26,10 @@
     "./client": {
       "types": "./src/lib/auth-client.ts",
       "default": "./dist/lib/auth-client.js"
+    },
+    "./utils": {
+      "types": "./src/lib/auth-utils.ts",
+      "default": "./dist/lib/auth-utils.js"
     }
   }
 }

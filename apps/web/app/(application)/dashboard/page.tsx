@@ -1,35 +1,22 @@
-"use client"
-
 import { AppSidebar } from "@/components/nav/app-sidebar"
+import { ChartAreaInteractive } from "@/components/nav/chart-area-interactive"
+import { DataTable } from "@/components/nav/data-table"
+import { SectionCards } from "@/components/nav/section-cards"
 import { SiteHeader } from "@/components/nav/site-header"
-import { clientEnv } from "@workspace/env-config"
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
 
-// export const iframeHeight = "800px"
+import data from "./data.json"
 
-// export const description = "A sidebar with a header and a search form."
 export default function Page() {
-  // console.log(env.DATABASE_URL)
-  console.log(clientEnv.NEXT_PUBLIC_API_URL)
-
   return (
-    <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col">
-        <SiteHeader />
-        <div className="flex flex-1">
-          <AppSidebar />
-          <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4">
-              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-              </div>
-              <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-            </div>
-          </SidebarInset>
+    <div className="@container/main flex flex-1 flex-col gap-2">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <SectionCards />
+        <div className="px-4 lg:px-6">
+          <ChartAreaInteractive />
         </div>
-      </SidebarProvider>
+        <DataTable data={data} />
+      </div>
     </div>
   )
 }
