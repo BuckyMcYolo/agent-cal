@@ -6,10 +6,10 @@ import type { Session, User } from "@workspace/auth"
 export interface AppBindings {
   Variables: {
     logger: PinoLogger
-    user?: User
-    session?: Session
+    user?: User | null
+    session?: Session | null
     authMethod?: "api-key" | "user-token"
-    token?: string
+    token?: string | null
   }
 }
 export type AppOpenAPI<S extends Schema = {}> = OpenAPIHono<AppBindings, S>

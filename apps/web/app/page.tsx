@@ -55,13 +55,18 @@ export default function Page() {
                       <SelectItem value="nuxt">Nuxt.js</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Input
+                    id="framework"
+                    placeholder="Framework of your project"
+                    type="number"
+                  />
                 </div>
               </div>
             </form>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="outline">Cancel</Button>
-            <Button>Deploy</Button>
+            <Button onClick={() => console.log("Deploying...")}>Deploy</Button>
           </CardFooter>
         </Card>
       </div>
