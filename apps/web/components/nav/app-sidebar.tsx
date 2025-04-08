@@ -2,21 +2,13 @@
 
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
   IconFileWord,
-  IconFolder,
   IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav/nav-documents"
@@ -32,6 +24,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
+import {
+  BookOpen,
+  Calendar,
+  FileText,
+  Key,
+  Layout,
+  Link,
+  Plug,
+  WebhookIcon,
+  Workflow,
+} from "lucide-react"
+import { Separator } from "@workspace/ui/components/separator"
 
 const data = {
   user: {
@@ -43,75 +47,50 @@ const data = {
     {
       title: "Dashboard",
       url: "#",
-      icon: IconDashboard,
+      icon: <IconDashboard size={18} />,
     },
     {
-      title: "Lifecycle",
+      title: "Tasks",
       url: "#",
-      icon: IconListDetails,
+      icon: <IconListDetails size={18} />,
     },
     {
-      title: "Analytics",
+      title: "Calendar",
       url: "#",
-      icon: IconChartBar,
+      icon: <Calendar size={18} />,
     },
     {
-      title: "Projects",
+      title: "Event Types",
       url: "#",
-      icon: IconFolder,
+      icon: <Link size={18} />,
     },
     {
-      title: "Team",
+      title: "Connectors",
       url: "#",
-      icon: IconUsers,
+      icon: <Plug size={18} />,
+    },
+    {
+      title: "Canvas",
+      url: "#",
+      icon: <Layout size={18} />,
+    },
+    {
+      title: "Knowledge Base",
+      url: "#",
+      icon: <FileText size={18} />,
     },
   ],
-  navClouds: [
+
+  documents: [
     {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
+      name: "Webhooks",
       url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      icon: <WebhookIcon size={18} />,
     },
     {
-      title: "Proposal",
-      icon: IconFileDescription,
+      name: "API Keys",
       url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      icon: <Key size={18} />,
     },
   ],
   navSecondary: [
@@ -131,23 +110,6 @@ const data = {
       icon: IconSearch,
     },
   ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -158,13 +120,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-2"
+              variant={"default"}
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <BookOpen className="!size-5" />
+                <span className="text-lg font-semibold">Booker</span>
               </a>
             </SidebarMenuButton>
+            <Separator className="mt-[11px]" />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

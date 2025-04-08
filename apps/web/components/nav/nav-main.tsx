@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
+import React from "react"
 
 export function NavMain({
   items,
@@ -17,13 +18,13 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: Icon
+    icon?: React.ReactNode
   }[]
 }) {
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
+        {/* <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               tooltip="Quick Create"
@@ -41,12 +42,12 @@ export function NavMain({
               <span className="sr-only">Inbox</span>
             </Button>
           </SidebarMenuItem>
-        </SidebarMenu>
+        </SidebarMenu> */}
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
+              <SidebarMenuButton tooltip={item.title} isActive={false}>
+                {item.icon && <div>{item.icon}</div>}
                 <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
