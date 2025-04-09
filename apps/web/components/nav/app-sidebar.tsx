@@ -9,16 +9,18 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
+  IconWebhook,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav/nav-documents"
-import { NavMain } from "@/components/nav/nav-main"
 import { NavSecondary } from "@/components/nav/nav-secondary"
+import { NavMain } from "@/components/nav/nav-main"
+import { NavSettings } from "@/components/nav/nav-settings"
 import { NavUser } from "@/components/nav/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -26,12 +28,15 @@ import {
 } from "@workspace/ui/components/sidebar"
 import {
   BookOpen,
+  Brain,
   Calendar,
+  ChartColumn,
   FileText,
   Key,
   Layout,
   Link,
   Plug,
+  SendToBack,
   WebhookIcon,
   Workflow,
 } from "lucide-react"
@@ -44,51 +49,51 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    // {
+    //   title: "Dashboard",
+    //   url: "#",
+    //   icon: <IconDashboard size={18} />,
+    // },
     {
-      title: "Dashboard",
-      url: "#",
-      icon: <IconDashboard size={18} />,
-    },
-    {
-      title: "Tasks",
-      url: "#",
-      icon: <IconListDetails size={18} />,
-    },
-    {
-      title: "Calendar",
-      url: "#",
+      title: "Bookings",
+      url: "/bookings",
       icon: <Calendar size={18} />,
     },
     {
       title: "Event Types",
-      url: "#",
+      url: "/event-types",
       icon: <Link size={18} />,
     },
     {
       title: "Connectors",
-      url: "#",
+      url: "/connectors",
       icon: <Plug size={18} />,
     },
     {
-      title: "Canvas",
-      url: "#",
-      icon: <Layout size={18} />,
+      title: "Agent Canvas",
+      url: "/agent-canvas",
+      icon: <SendToBack size={18} />,
     },
     {
       title: "Knowledge Base",
-      url: "#",
-      icon: <FileText size={18} />,
+      url: "/knowledge-base",
+      icon: <Brain size={18} />,
+    },
+    {
+      title: "Monitoring",
+      url: "/monitoring",
+      icon: <ChartColumn size={18} />,
     },
   ],
 
   documents: [
     {
-      name: "Webhooks",
+      title: "Webhooks",
       url: "#",
-      icon: <WebhookIcon size={18} />,
+      icon: <IconWebhook size={18} />,
     },
     {
-      name: "API Keys",
+      title: "API Keys",
       url: "#",
       icon: <Key size={18} />,
     },
@@ -97,24 +102,24 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: IconSettings,
+      icon: <IconSettings size={18} />,
     },
     {
       title: "Get Help",
       url: "#",
-      icon: IconHelp,
+      icon: <IconHelp size={18} />,
     },
     {
       title: "Search",
       url: "#",
-      icon: IconSearch,
+      icon: <IconSearch size={18} />,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -128,14 +133,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <span className="text-lg font-semibold">Booker</span>
               </a>
             </SidebarMenuButton>
-            <Separator className="mt-[11px]" />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.documents} /> */}
+        <NavSettings items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

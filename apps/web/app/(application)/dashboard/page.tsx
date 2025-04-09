@@ -1,9 +1,6 @@
-import { AppSidebar } from "@/components/nav/app-sidebar"
-import { ChartAreaInteractive } from "@/components/nav/chart-area-interactive"
-import { DataTable } from "@/components/nav/data-table"
-import { SectionCards } from "@/components/nav/section-cards"
-import { SiteHeader } from "@/components/nav/site-header"
-import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
+import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive"
+import { DataTable } from "@/components/dashboard/data-table"
+import { SectionCards } from "@/components/dashboard/section-cards"
 
 import data from "./data.json"
 

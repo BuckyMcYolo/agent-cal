@@ -1,8 +1,5 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
-
-import { Button } from "@workspace/ui/components/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,6 +8,8 @@ import {
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
 import React from "react"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -21,35 +20,24 @@ export function NavMain({
     icon?: React.ReactNode
   }[]
 }) {
+  const pathname = usePathname()
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        {/* <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Quick Create"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-            >
-              <IconCirclePlusFilled />
-              <span>Quick Create</span>
-            </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <IconMail />
-              <span className="sr-only">Inbox</span>
-            </Button>
-          </SidebarMenuItem>
-        </SidebarMenu> */}
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} isActive={false}>
-                {item.icon && <div>{item.icon}</div>}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
+              <Link href={item.url} passHref>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  isActive={item.url === pathname}
+                  className="data-[active=true]:bg-primary/85 dark:data-[active=true]:bg-primary/50 data-[active=true]:text-primary-foreground data-[active=true]:font-semibold"
+                >
+                  {item.icon && <div>{item.icon}</div>}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
