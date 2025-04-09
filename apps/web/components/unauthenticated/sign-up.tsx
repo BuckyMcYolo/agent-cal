@@ -1,8 +1,18 @@
+"use client"
+
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
+import { EyeIcon, EyeOff } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function SignUp() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordType, setPasswordType] = useState<"password" | "text">(
+    "password"
+  )
+
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-8">
@@ -12,19 +22,48 @@ export default function SignUp() {
             Already have an account?{" "}
             <Link
               href="/sign-in"
-              className="font-semibold text-primary hover:text-primary/80"
+              className="font-semibold text-primary hover:underline"
             >
               Sign in
             </Link>
           </p>
         </div>
-        <form className="space-y-4">
-          <Input placeholder="Email" type="email" required />
-          <Input placeholder="Password" type="password" required />
-          <Button type="submit" className="w-full">
-            Sign Up
-          </Button>
-        </form>
+        <div className="space-y-4">
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            className="text-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="flex items-center justify-center relative">
+            <Input
+              id="password"
+              type={passwordType}
+              placeholder="••••••••"
+              className="text-sm"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              variant="ghost"
+              className="absolute right-0"
+              onClick={() =>
+                setPasswordType((prev) =>
+                  prev === "text" ? "password" : "text"
+                )
+              }
+            >
+              {passwordType === "text" ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
+          <Button className="w-full">Sign Up</Button>
+        </div>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-muted" />
@@ -82,14 +121,14 @@ export default function SignUp() {
             By signing up, you agree to our{" "}
             <Link
               href="/terms"
-              className="font-semibold text-primary hover:text-primary/80"
+              className="font-semibold text-primary hover:underline"
             >
               Terms of Service
             </Link>{" "}
             and{" "}
             <Link
               href="/privacy"
-              className="font-semibold text-primary hover:text-primary/80"
+              className="font-semibold text-primary hover:underline"
             >
               Privacy Policy
             </Link>

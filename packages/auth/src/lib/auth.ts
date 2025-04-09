@@ -9,6 +9,7 @@ import {
   bearer,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
+import serverEnv from "@workspace/env-config/server-env"
 // import { env } from "@workspace/env-config"
 
 export const auth = betterAuth({
@@ -40,7 +41,12 @@ export const auth = betterAuth({
       },
     },
   },
-
+  secret: serverEnv.BETTER_AUTH_SECRET,
+  trustedOrigins: [
+    serverEnv.NODE_ENV === "production"
+      ? "https://booker.com"
+      : "http://localhost:3000",
+  ],
   plugins: [
     admin(),
     apiKey({
