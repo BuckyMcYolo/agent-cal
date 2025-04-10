@@ -5,13 +5,51 @@ import { Input } from "@workspace/ui/components/input"
 import { EyeIcon, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { SignUpForm, signUpSchema } from "./auth-utils"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { authClient } from "@workspace/auth/client"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function SignUp() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [passwordType, setPasswordType] = useState<"password" | "text">(
     "password"
   )
+  const [loading, setLoading] = useState(false)
+
+  const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, touchedFields },
+    reset,
+  } = useForm<SignUpForm>({
+    resolver: zodResolver(signUpSchema),
+    mode: "all",
+  })
+
+  const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+    setLoading(true)
+    await authClient.signUp.email(
+      {
+        email: data.email,
+        password: data.password,
+        name: data.firstName + " " + data.lastName,
+      },
+      {
+        onRequest: () => setLoading(true),
+        onResponse: () => setLoading(false),
+        onSuccess(context) {
+          router.replace("/onboarding")
+        },
+        onError(context) {
+          toast.error("Error: " + context.error.message)
+        },
+      }
+    )
+  }
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -28,27 +66,72 @@ export default function SignUp() {
             </Link>
           </p>
         </div>
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex space-x-2">
+            <Input
+              {...register("firstName")}
+              error={Boolean(
+                errors?.firstName?.message && touchedFields.firstName
+              )}
+              helperText={
+                errors?.firstName?.message && touchedFields.firstName
+                  ? errors.firstName.message
+                  : undefined
+              }
+              id="firstName"
+              type="text"
+              placeholder="First Name"
+              className="text-sm"
+            />
+            <Input
+              {...register("lastName")}
+              error={Boolean(
+                errors?.lastName?.message && touchedFields.lastName
+              )}
+              helperText={
+                errors?.lastName?.message && touchedFields.lastName
+                  ? errors.lastName.message
+                  : undefined
+              }
+              id="lastName"
+              type="text"
+              placeholder="Last Name"
+              className="text-sm"
+            />
+          </div>
           <Input
+            {...register("email")}
+            error={Boolean(errors?.email?.message && touchedFields.email)}
+            helperText={
+              errors?.email?.message && touchedFields.email
+                ? errors.email.message
+                : undefined
+            }
             id="email"
             type="email"
             placeholder="name@example.com"
             className="text-sm"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
-          <div className="flex items-center justify-center relative">
+          <div className="relative">
             <Input
+              {...register("password")}
+              error={
+                Boolean(errors?.password?.message) && touchedFields.password
+              }
+              helperText={
+                errors?.password?.message && touchedFields.password
+                  ? errors.password.message
+                  : undefined
+              }
               id="password"
               type={passwordType}
               placeholder="••••••••"
               className="text-sm"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
+              type="button"
               variant="ghost"
-              className="absolute right-0"
+              className="absolute right-0 top-0"
               onClick={() =>
                 setPasswordType((prev) =>
                   prev === "text" ? "password" : "text"
@@ -62,8 +145,10 @@ export default function SignUp() {
               )}
             </Button>
           </div>
-          <Button className="w-full">Sign Up</Button>
-        </div>
+          <Button className="w-full" type="submit" loading={loading}>
+            Sign Up
+          </Button>
+        </form>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-muted" />

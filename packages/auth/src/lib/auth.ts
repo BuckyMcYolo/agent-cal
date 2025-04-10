@@ -9,8 +9,7 @@ import {
   bearer,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
-import serverEnv from "@workspace/env-config/server-env"
-// import { env } from "@workspace/env-config"
+import { serverEnv } from "@workspace/env-config"
 
 export const auth = betterAuth({
   appName: "Booker",

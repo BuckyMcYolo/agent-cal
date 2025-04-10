@@ -4,25 +4,52 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Label } from "@workspace/ui/components/label"
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@workspace/ui/components/card"
+import { Card, CardHeader, CardFooter } from "@workspace/ui/components/card"
 import { useState } from "react"
-import { Loader2, KeyRound, EyeIcon, EyeOff } from "lucide-react"
+import { KeyRound, EyeIcon, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { authClient } from "@workspace/auth/client"
+import { toast } from "sonner"
+import { z } from "zod"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { SignInForm, signInSchema } from "./auth-utils"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [passwordType, setPasswordType] = useState<"password" | "text">(
     "password"
   )
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, touchedFields },
+    reset,
+  } = useForm<SignInForm>({
+    resolver: zodResolver(signInSchema),
+    mode: "all",
+  })
+
+  const onSubmit: SubmitHandler<SignInForm> = async (data) => {
+    setLoading(true)
+    await authClient.signIn.email(
+      {
+        email: data.email,
+        password: data.password,
+        rememberMe,
+        callbackURL: "/bookings",
+      },
+      {
+        onRequest: () => setLoading(true),
+        onResponse: () => setLoading(false),
+        onError(context) {
+          toast.error(context.error.message)
+        },
+      }
+    )
+  }
 
   return (
     <Card className="max-w-md mx-auto border-0 shadow-none">
@@ -36,17 +63,22 @@ export default function SignIn() {
         </p>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {/* Email Input */}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
+            {...register("email")}
+            error={Boolean(errors?.email?.message && touchedFields.email)}
+            helperText={
+              errors?.email?.message && touchedFields.email
+                ? errors.email.message
+                : undefined
+            }
             id="email"
             type="email"
             placeholder="name@example.com"
             className="h-10 text-sm"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -58,18 +90,26 @@ export default function SignIn() {
               Forgot password?
             </Link>
           </div>
-          <div className="flex items-center justify-center relative">
+          <div className="relative">
             <Input
+              {...register("password")}
+              error={
+                Boolean(errors?.password?.message) && touchedFields.password
+              }
+              helperText={
+                errors?.password?.message && touchedFields.password
+                  ? errors.password.message
+                  : undefined
+              }
               id="password"
               type={passwordType}
               placeholder="••••••••"
-              className="h-10 text-sm"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              className="h-10 text-sm pr-10"
             />
             <Button
+              type="button"
               variant="ghost"
-              className="absolute right-0"
+              className="absolute right-0 top-0 h-10"
               onClick={() =>
                 setPasswordType((prev) =>
                   prev === "text" ? "password" : "text"
@@ -99,23 +139,10 @@ export default function SignIn() {
 
         {/* Sign In Button */}
         <Button
-          type="submit"
           className="w-full"
-          disabled={loading}
-          onClick={async () => {
-            await authClient.signIn.email(
-              {
-                email,
-                password,
-              },
-              {
-                onRequest: () => setLoading(true),
-                onResponse: () => setLoading(false),
-              }
-            )
-          }}
+          type="submit"
+          loading={isSubmitting || loading}
         >
-          {loading ? <Loader2 size={16} className="animate-spin mr-2" /> : null}
           Sign in
         </Button>
 
@@ -133,23 +160,7 @@ export default function SignIn() {
 
         {/* Social Logins */}
         <div className="grid grid-cols-2 gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={loading}
-            onClick={async () => {
-              await authClient.signIn.social(
-                {
-                  provider: "google",
-                  callbackURL: "/dashboard",
-                },
-                {
-                  onRequest: () => setLoading(true),
-                  onResponse: () => setLoading(false),
-                }
-              )
-            }}
-          >
+          <Button variant="outline" size="sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -176,23 +187,7 @@ export default function SignIn() {
             </svg>
             Google
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={loading}
-            onClick={async () => {
-              await authClient.signIn.social(
-                {
-                  provider: "github",
-                  callbackURL: "/dashboard",
-                },
-                {
-                  onRequest: () => setLoading(true),
-                  onResponse: () => setLoading(false),
-                }
-              )
-            }}
-          >
+          <Button variant="outline" size="sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -208,7 +203,7 @@ export default function SignIn() {
             GitHub
           </Button>
         </div>
-      </CardContent>
+      </form>
 
       <CardFooter className="flex flex-col items-center pt-0">
         <p className="text-center text-sm text-muted-foreground mt-2">
