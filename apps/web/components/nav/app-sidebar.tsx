@@ -35,6 +35,7 @@ import {
   Key,
   Layout,
   Link,
+  ListCheck,
   Plug,
   SendToBack,
   WebhookIcon,
@@ -49,11 +50,11 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
-    // {
-    //   title: "Dashboard",
-    //   url: "#",
-    //   icon: <IconDashboard size={18} />,
-    // },
+    {
+      title: "Tasks (testing)",
+      url: "/tasks",
+      icon: <ListCheck size={18} />,
+    },
     {
       title: "Bookings",
       url: "/bookings",

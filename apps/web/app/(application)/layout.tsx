@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} ${inter.variable} font-sans antialiased `}
       >
-        <Toaster richColors theme="dark" />
+        <Toaster richColors />
         <ThemeProvider>
           <NavProvider>{children}</NavProvider>
         </ThemeProvider>
