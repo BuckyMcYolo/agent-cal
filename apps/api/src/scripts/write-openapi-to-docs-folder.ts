@@ -15,8 +15,8 @@ export async function generateOpenAPI(app: AppOpenAPI) {
       openapi: "3.0.0",
       info: {
         version: "1.0.1",
-        title: "Booker API reference",
-        description: "API documentation for the Booker service",
+        title: "AgentCal API reference",
+        description: "API documentation for the AgentCal service",
       },
       servers: [
         {

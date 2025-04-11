@@ -7,14 +7,14 @@ export default function configureOpenAPI(app: AppOpenAPI) {
     scheme: "bearer",
     bearerFormat: "JWT",
     description:
-      "Value must be `Bearer <token>` where `<token>` is a user access token or an API key prefixed with 'booker_' ",
+      "Value must be `Bearer <token>` where `<token>` is a user access token or an API key prefixed with 'agentcal_' ",
   })
 
   app.doc("/docs", {
     openapi: "3.0.0",
     info: {
       version: "1.0.1",
-      title: "Booker API reference",
+      title: "AgentCal API reference",
     },
     servers: [
       {

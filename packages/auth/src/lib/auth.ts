@@ -12,12 +12,12 @@ import { db } from "@workspace/db"
 import { serverEnv } from "@workspace/env-config"
 
 export const auth = betterAuth({
-  appName: "Booker",
+  appName: "AgentCal",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
   advanced: {
-    cookiePrefix: "BS_", // booker session
+    cookiePrefix: "AC", // AgentCal session
   },
   //rate limiting
   rateLimit: {
@@ -43,13 +43,13 @@ export const auth = betterAuth({
   secret: serverEnv.BETTER_AUTH_SECRET,
   trustedOrigins: [
     serverEnv.NODE_ENV === "production"
-      ? "https://booker.com"
+      ? "https://agentcal.ai"
       : "http://localhost:3000",
   ],
   plugins: [
     admin(),
     apiKey({
-      defaultPrefix: "booker_",
+      defaultPrefix: "agentcal_",
       apiKeyHeaders: ["x-api-key"],
     }),
     openAPI(),

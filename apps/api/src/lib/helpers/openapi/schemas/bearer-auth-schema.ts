@@ -7,9 +7,9 @@ const bearerAuthSchema = z.object({
       in: "header",
       required: true,
       description:
-        "value must be `Bearer <token>` where `<token>` is API key prefixed with 'booker_' or user access token",
+        "value must be `Bearer <token>` where `<token>` is API key prefixed with 'agentcal_' or user access token",
     },
-    example: "Bearer booker_e2g55fa3f4a0d1e4e2fbaac",
+    example: "Bearer agentcal_e2g55fa3f4a0d1e4e2fbaac",
   }),
 })
 

@@ -131,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <BookOpen className="!size-5" />
-                <span className="text-lg font-semibold">Booker</span>
+                <span className="text-lg font-semibold">AgentCal</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

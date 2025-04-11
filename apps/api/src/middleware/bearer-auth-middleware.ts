@@ -21,7 +21,7 @@ export const extractBearerToken = (headers: Headers): string | null => {
 
 /**
  * Middleware that authenticates using a Bearer token.
- * The token can be either an API key (prefixed with 'booker_') or a user access token
+ * The token can be either an API key (prefixed with 'agentcal_') or a user access token
  */
 export const bearerAuthMiddleware = async (
   c: Context<AppBindings>,
@@ -42,7 +42,7 @@ export const bearerAuthMiddleware = async (
       )
     }
 
-    const isApiKey = token.startsWith("booker_")
+    const isApiKey = token.startsWith("agentcal_")
 
     // const authHeaders = new Headers(headers)
 

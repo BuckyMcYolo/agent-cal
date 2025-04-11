@@ -1,10 +1,10 @@
-# Booker
+# AgentCal
 
 An open-source, AI-powered scheduling platform with intelligent phone agents built in.
 
 ## About
 
-Booker is an open-source scheduling platform that allows users and teams to schedule events and meetings. It can be hosted on our platform or self-hosted on your own infrastructure.
+AgentCal is an open-source scheduling platform that allows users and teams to schedule events and meetings. It can be hosted on our platform or self-hosted on your own infrastructure.
 
 ## Key Features
 

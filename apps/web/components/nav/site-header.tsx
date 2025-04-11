@@ -15,7 +15,7 @@ import {
 } from "@workspace/ui/components/breadcrumb"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
-import { generateBreadcrumbs } from "@/lib/utils/generate0breadcrumbs"
+import { generateBreadcrumbs } from "@/lib/utils/generate-breadcrumbs"
 
 export function SiteHeader() {
   const pathname = usePathname()

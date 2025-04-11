@@ -4,7 +4,7 @@ import { getSessionCookie } from "@workspace/auth/utils"
 export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request, {
     // Optionally pass config if cookie name or prefix is customized in auth config.
-    cookiePrefix: "BS_",
+    cookiePrefix: "AC", // AgentCal
   })
 
   if (!sessionCookie) {
