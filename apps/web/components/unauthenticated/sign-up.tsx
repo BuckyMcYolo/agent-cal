@@ -8,7 +8,7 @@ import { useState } from "react"
 import { SignUpForm, signUpSchema } from "./auth-utils"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { authClient } from "@workspace/auth/client"
+import { authClient } from "@/lib/utils/auth-client"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
@@ -41,9 +41,6 @@ export default function SignUp() {
       {
         onRequest: () => setLoading(true),
         onResponse: () => setLoading(false),
-        onSuccess(context) {
-          router.replace("/onboarding")
-        },
         onError(context) {
           toast.error("Error: " + context.error.message)
         },

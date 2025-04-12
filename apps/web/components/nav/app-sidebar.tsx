@@ -2,17 +2,12 @@
 
 import * as React from "react"
 import {
-  IconDashboard,
-  IconFileWord,
   IconHelp,
-  IconListDetails,
-  IconReport,
   IconSearch,
   IconSettings,
   IconWebhook,
 } from "@tabler/icons-react"
 
-import { NavSecondary } from "@/components/nav/nav-secondary"
 import { NavMain } from "@/components/nav/nav-main"
 import { NavSettings } from "@/components/nav/nav-settings"
 import { NavUser } from "@/components/nav/nav-user"
@@ -20,7 +15,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -31,24 +25,14 @@ import {
   Brain,
   Calendar,
   ChartColumn,
-  FileText,
   Key,
-  Layout,
   Link,
   ListCheck,
   Plug,
   SendToBack,
-  WebhookIcon,
-  Workflow,
 } from "lucide-react"
-import { Separator } from "@workspace/ui/components/separator"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Tasks (testing)",
@@ -143,7 +127,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSettings items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

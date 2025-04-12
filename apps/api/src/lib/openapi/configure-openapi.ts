@@ -2,12 +2,12 @@ import type { AppOpenAPI } from "../types/app-types"
 
 export default function configureOpenAPI(app: AppOpenAPI) {
   // Register security scheme
-  app.openAPIRegistry.registerComponent("securitySchemes", "bearerAuth", {
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "JWT",
+  app.openAPIRegistry.registerComponent("securitySchemes", "apiKeyAuth", {
+    type: "apiKey",
+    in: "header",
+    name: "x-api-key",
     description:
-      "Value must be `Bearer <token>` where `<token>` is a user access token or an API key prefixed with 'agentcal_' ",
+      "API key required for authentication. \n\nKeys begin with 'agentcal_' prefix. Get your API key from the [Developer Dashboard](https://dashboard.agentcal.ai/settings/developers). Keys are scoped to an organization.",
   })
 
   app.doc("/docs", {

@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.1",
-    "title": "Booker API reference",
-    "description": "API documentation for the Booker service"
+    "title": "AgentCal API reference",
+    "description": "API documentation for the AgentCal service"
   },
   "servers": [
     {
@@ -13,11 +13,11 @@
   ],
   "components": {
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "Value must be `Bearer <token>` where `<token>` is a user access token or an API key prefixed with 'booker_' "
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "API key required for authentication. \n\nKeys begin with 'agentcal_' prefix. Get your API key from the [Developer Dashboard](https://dashboard.agentcal.com/settings/developers). Keys are scoped to an organization."
       }
     },
     "schemas": {},
@@ -57,7 +57,10 @@
         "description": "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
         "security": [
           {
-            "bearerAuth": []
+            "apiKeyAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "tags": [
@@ -134,7 +137,7 @@
         "summary": "Create a new task",
         "security": [
           {
-            "bearerAuth": []
+            "apiKeyAuth": []
           }
         ],
         "tags": [
@@ -321,7 +324,7 @@
         "summary": "Get a task by ID",
         "security": [
           {
-            "bearerAuth": []
+            "apiKeyAuth": []
           }
         ],
         "tags": [
@@ -513,7 +516,7 @@
         "summary": "Update a task",
         "security": [
           {
-            "bearerAuth": []
+            "apiKeyAuth": []
           }
         ],
         "tags": [
@@ -787,7 +790,7 @@
         "description": "Delete a task by ID",
         "security": [
           {
-            "bearerAuth": []
+            "apiKeyAuth": []
           }
         ],
         "tags": [

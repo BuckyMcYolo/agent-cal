@@ -4,6 +4,7 @@ import "@workspace/ui/globals.css"
 import { ThemeProvider } from "@/components/root/theme-provider"
 import { NavProvider } from "@/components/root/nav-provider"
 import { Toaster } from "@workspace/ui/components/sonner"
+import SideBarProvider from "@/components/root/sidebar-provider"
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -32,7 +33,9 @@ export default function RootLayout({
       >
         <Toaster richColors />
         <ThemeProvider>
-          <NavProvider>{children}</NavProvider>
+          <SideBarProvider>
+            <NavProvider>{children}</NavProvider>
+          </SideBarProvider>
         </ThemeProvider>
       </body>
     </html>

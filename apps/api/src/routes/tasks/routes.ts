@@ -12,7 +12,8 @@ import createErrorSchema from "@/lib/helpers/openapi/schemas/error/create-error-
 import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
-import { bearerAuthMiddleware } from "@/middleware/bearer-auth-middleware"
+import { authMiddleware } from "@/middleware/bearer-auth-middleware"
+import { apiKeySecuritySchema } from "@/lib/helpers/openapi/schemas/security-schemas"
 
 const tags = ["Tasks"]
 
@@ -22,13 +23,9 @@ export const list = createRoute({
   summary: "Get all tasks",
   description:
     "This is a test description because I would like to see how it looks in the OpenAPI documentation. This should be a longer description to test how it handles larger text and whether it wraps correctly in the generated docs.",
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
+  security: apiKeySecuritySchema,
   tags,
-  middleware: [bearerAuthMiddleware] as const,
+  middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: z.array(selectTasksSchema),
@@ -48,12 +45,8 @@ export const create = createRoute({
       description: "The task to create",
     }),
   },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
-  middleware: [bearerAuthMiddleware] as const,
+  security: apiKeySecuritySchema,
+  middleware: [authMiddleware] as const,
   tags,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
@@ -75,13 +68,9 @@ export const getOne = createRoute({
   request: {
     params: UUIDParamsSchema,
   },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
+  security: apiKeySecuritySchema,
   tags,
-  middleware: [bearerAuthMiddleware] as const,
+  middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: selectTasksSchema,
@@ -110,13 +99,9 @@ export const patch = createRoute({
       description: "The task to update",
     }),
   },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
+  security: apiKeySecuritySchema,
   tags,
-  middleware: [bearerAuthMiddleware] as const,
+  middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
       schema: selectTasksSchema,
@@ -144,13 +129,9 @@ export const remove = createRoute({
   request: {
     params: UUIDParamsSchema,
   },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
+  security: apiKeySecuritySchema,
   tags,
-  middleware: [bearerAuthMiddleware] as const,
+  middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "Task deleted successfully",

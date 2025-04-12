@@ -19,16 +19,25 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: "AC", // AgentCal session
   },
+  // Cookie cache
+  // This is used to cache the session in a cookie for faster access
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
   //rate limiting
   rateLimit: {
     enabled: true,
     storage: "memory", //will add secondary storage later
-    max: 1, // max requests
-    window: 600, //60 seconds
+    max: 50, // max requests
+    window: 60, //60 seconds
   },
 
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
   },
 
   databaseHooks: {
@@ -54,9 +63,6 @@ export const auth = betterAuth({
     }),
     openAPI(),
     organization({}), //not currently working with typescript declaration files
-    bearer({
-      requireSignature: true, // By Default all cookie are signed using the better auth secret. See https://www.better-auth.com/docs/concepts/cookies
-    }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address

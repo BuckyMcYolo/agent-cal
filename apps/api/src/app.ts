@@ -19,7 +19,7 @@ app.use(
         : ["http://localhost:3000", "http://127.0.0.1:3000"],
     allowHeaders: ["Content-Type", "Authorization", "x-api-key", "Accept"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    exposeHeaders: ["Content-Length"],
+    exposeHeaders: ["content-length", "keep-alive", "connection"],
     // Cache preflight for performance (in seconds)
     maxAge: 600,
     credentials: true,

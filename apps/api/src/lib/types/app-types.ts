@@ -9,7 +9,6 @@ export interface AppBindings {
     user?: User | null
     session?: Session | null
     authMethod?: "api-key" | "user-token"
-    token?: string | null
   }
 }
 export type AppOpenAPI<S extends Schema = {}> = OpenAPIHono<AppBindings, S>
