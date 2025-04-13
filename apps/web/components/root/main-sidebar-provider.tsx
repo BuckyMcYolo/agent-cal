@@ -1,9 +1,9 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { AppSidebar } from "../nav/app-sidebar"
+import { AppSidebar } from "../nav/main/app-sidebar"
 import { SiteHeader } from "../nav/site-header"
 import { cookies } from "next/headers"
 
-export default async function SideBarProvider({
+export default async function MainSideBarProvider({
   children,
 }: Readonly<{
   children: React.ReactNode

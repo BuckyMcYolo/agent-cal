@@ -28,7 +28,9 @@ import { ReactNode } from "react"
 
 export function NavSecondary({
   items,
+  title,
 }: {
+  title: string
   items: {
     title: string
     url: string
@@ -39,7 +41,7 @@ export function NavSecondary({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Developers</SidebarGroupLabel>
+      <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>

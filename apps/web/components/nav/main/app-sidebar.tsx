@@ -71,18 +71,6 @@ const data = {
     },
   ],
 
-  documents: [
-    {
-      title: "Webhooks",
-      url: "#",
-      icon: <IconWebhook size={18} />,
-    },
-    {
-      title: "API Keys",
-      url: "#",
-      icon: <Key size={18} />,
-    },
-  ],
   navSecondary: [
     {
       title: "Settings",
