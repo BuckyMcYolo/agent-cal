@@ -23,13 +23,13 @@ import {
 import {
   BookOpen,
   Brain,
-  Calendar,
+  CalendarClock,
   ChartColumn,
   Key,
-  Link,
   ListCheck,
   Plug,
   SendToBack,
+  Tags,
 } from "lucide-react"
 
 const data = {
@@ -40,14 +40,14 @@ const data = {
       icon: <ListCheck size={18} />,
     },
     {
-      title: "Bookings",
-      url: "/bookings",
-      icon: <Calendar size={18} />,
+      title: "Booking Types",
+      url: "/event-types",
+      icon: <Tags size={18} />,
     },
     {
-      title: "Event Types",
-      url: "/event-types",
-      icon: <Link size={18} />,
+      title: "Bookings",
+      url: "/bookings",
+      icon: <CalendarClock size={18} />,
     },
     {
       title: "Connectors",
@@ -86,7 +86,7 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: <IconSettings size={18} />,
     },
     {

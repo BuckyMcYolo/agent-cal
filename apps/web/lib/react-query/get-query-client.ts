@@ -1,4 +1,8 @@
-import { QueryClient, isServer } from "@tanstack/react-query"
+import {
+  QueryClient,
+  defaultShouldDehydrateQuery,
+  isServer,
+} from "@tanstack/react-query"
 
 function makeQueryClient() {
   return new QueryClient({
@@ -7,6 +11,20 @@ function makeQueryClient() {
         refetchOnWindowFocus: false,
         retry: false,
         staleTime: 1000 * 60,
+      },
+      dehydrate: {
+        // include pending queries in dehydration
+        shouldDehydrateQuery: (query) =>
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === "pending",
+        shouldRedactErrors: (error) => {
+          // We should not catch Next.js server errors
+          // as that's how Next.js detects dynamic pages
+          // so we cannot redact them.
+          // Next.js also automatically redacts errors for us
+          // with better digests.
+          return false
+        },
       },
     },
   })
