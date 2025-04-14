@@ -8,7 +8,13 @@
 
 // you can read more about the available plugin options in the better-auth documentation: https://www.better-auth.com/docs/concepts/plugins
 
+import { relations } from "drizzle-orm"
 import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core"
+import { eventType } from "./event-types"
+import { booking } from "./booking"
+import { eventHost } from "./event-host"
+import { bookingHost } from "./booking-host"
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -22,6 +28,32 @@ export const user = pgTable("user", {
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
 })
+
+export const userRelations = relations(user, ({ one, many }) => ({
+  sessions: many(session),
+  accounts: many(account),
+  apikeys: many(apikey),
+  members: many(member),
+  //booking relations
+  eventTypes: many(eventType),
+  bookings: many(booking),
+  eventHosts: many(eventHost),
+  bookingHosts: many(bookingHost),
+}))
+
+export const organization = pgTable("organization", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").unique(),
+  logo: text("logo"),
+  createdAt: timestamp("created_at").notNull(),
+  metadata: text("metadata"),
+})
+
+export const organizationRelations = relations(organization, ({ many }) => ({
+  members: many(member),
+  invitations: many(invitation),
+}))
 
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
@@ -37,6 +69,21 @@ export const session = pgTable("session", {
   impersonatedBy: text("impersonated_by"),
   activeOrganizationId: text("active_organization_id"),
 })
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
+  activeOrganization: one(organization, {
+    fields: [session.activeOrganizationId],
+    references: [organization.id],
+  }),
+  impersonatedByUser: one(user, {
+    fields: [session.impersonatedBy],
+    references: [user.id],
+  }),
+}))
 
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
@@ -55,6 +102,13 @@ export const account = pgTable("account", {
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
 })
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
+  }),
+}))
 
 export const verification = pgTable("verification", {
   id: text("id").primaryKey(),
@@ -91,14 +145,12 @@ export const apikey = pgTable("apikey", {
   metadata: text("metadata"),
 })
 
-export const organization = pgTable("organization", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").unique(),
-  logo: text("logo"),
-  createdAt: timestamp("created_at").notNull(),
-  metadata: text("metadata"),
-})
+export const apikeyRelations = relations(apikey, ({ one }) => ({
+  user: one(user, {
+    fields: [apikey.userId],
+    references: [user.id],
+  }),
+}))
 
 export const member = pgTable("member", {
   id: text("id").primaryKey(),
@@ -111,6 +163,17 @@ export const member = pgTable("member", {
   role: text("role").notNull(),
   createdAt: timestamp("created_at").notNull(),
 })
+
+export const memberRelations = relations(member, ({ one }) => ({
+  organization: one(organization, {
+    fields: [member.organizationId],
+    references: [organization.id],
+  }),
+  user: one(user, {
+    fields: [member.userId],
+    references: [user.id],
+  }),
+}))
 
 export const invitation = pgTable("invitation", {
   id: text("id").primaryKey(),
@@ -125,3 +188,14 @@ export const invitation = pgTable("invitation", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
 })
+
+export const invitationRelations = relations(invitation, ({ one }) => ({
+  organization: one(organization, {
+    fields: [invitation.organizationId],
+    references: [organization.id],
+  }),
+  inviter: one(user, {
+    fields: [invitation.inviterId],
+    references: [user.id],
+  }),
+}))

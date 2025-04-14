@@ -14,6 +14,9 @@ import {
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-zod"
+import { relations } from "drizzle-orm"
+import { booking } from "./booking"
+import { eventHost } from "./event-host"
 
 // Define event type scheduling enum
 export const schedulingTypeEnum = pgEnum("scheduling_type", [
@@ -46,14 +49,15 @@ export const eventType = pgTable("event_type", {
     .$onUpdate(() => new Date()),
 
   title: text().notNull(),
-  slug: text().notNull().unique(),
+  slug: text().notNull(),
   description: text(), // description will be shown to end users (ie. 'This is a 30 minute call to discuss your needs')
   length: integer().notNull(), // Duration in minutes, must be in increments of 15 minutes
   slotInterval: integer().default(15), // how long each time slot is in minutes (ie. 15, 30, 60), should be in increments of 15 minutes and by defult be the same as the length of the event type
   hidden: boolean().default(false), //whether the event type is hidden from the user interface and unable to be booked by end users
   listPosition: integer().default(0), // position of the event type in the list of event types (used for drag and drop ordering)
 
-  userId: text()
+  // Relations
+  ownerId: text()
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   organizationId: text().references(() => organization.id, {
@@ -109,4 +113,19 @@ export const eventType = pgTable("event_type", {
   // more tbd
 
   metadata: json(), // For extensibility/ not sure if we need this yet
+  //TODO: add a unique constraint to prevent duplicate event types for the same user/organization
+  // TODO add a unique constraint to prevent duplicate event types with the same slug for the same user/organization
 })
+
+export const eventTypeRelations = relations(eventType, ({ one, many }) => ({
+  owner: one(user, {
+    fields: [eventType.ownerId],
+    references: [user.id],
+  }),
+  organization: one(organization, {
+    fields: [eventType.organizationId],
+    references: [organization.id],
+  }),
+  bookings: many(booking),
+  eventHosts: many(eventHost),
+}))

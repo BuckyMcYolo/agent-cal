@@ -2,6 +2,9 @@ import { integer, json, pgEnum, uuid } from "drizzle-orm/pg-core"
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core"
 import { user, organization } from "./auth"
 import { eventType } from "./event-types"
+import { relations } from "drizzle-orm"
+import { attendee } from "./attendee"
+import { bookingHost } from "./booking-host"
 
 export const bookingStatusEnum = pgEnum("booking_status", [
   "SCHEDULED",
@@ -28,7 +31,9 @@ export const booking = pgTable("booking", {
   timezone: text().notNull(),
 
   // Relations
-  userId: text()
+
+  // the user who created the inital eventType and therefore is the defaut owner of the booking and can edit it and delete/remove other hosts & guests
+  eventTypeOwnerId: text()
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   organizationId: text().references(() => organization.id, {
@@ -37,12 +42,6 @@ export const booking = pgTable("booking", {
   eventTypeId: uuid().references(() => eventType.id, {
     onDelete: "set null",
   }),
-
-  // Guest information
-  // guestName: text().notNull(),
-  // guestEmail: text().notNull(),
-  // guestPhone: text(),
-  // guestCount: integer().default(1),
 
   // -------------FUTURE REFERENCE----------------
   // attendees: []
@@ -76,3 +75,20 @@ export const booking = pgTable("booking", {
   // Metadata for extensibility
   metadata: json(),
 })
+
+export const bookingRelations = relations(booking, ({ one, many }) => ({
+  eventTypeOwner: one(user, {
+    fields: [booking.eventTypeOwnerId],
+    references: [user.id],
+  }),
+  eventType: one(eventType, {
+    fields: [booking.eventTypeId],
+    references: [eventType.id],
+  }),
+  organization: one(organization, {
+    fields: [booking.organizationId],
+    references: [organization.id],
+  }),
+  attendees: many(attendee),
+  bookingHosts: many(bookingHost),
+}))

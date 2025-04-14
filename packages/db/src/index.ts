@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import * as betterAuthSchema from "./schema/auth"
 import * as taskSchema from "./schema/tasks"
-import * as bookingSchema from "./schema/bookings"
+import * as bookingSchema from "./schema/booking"
 import { serverEnv } from "@workspace/env-config"
 import {
   eq,
