@@ -53,6 +53,8 @@ export const organization = pgTable("organization", {
 export const organizationRelations = relations(organization, ({ many }) => ({
   members: many(member),
   invitations: many(invitation),
+  eventTypes: many(eventType),
+  bookings: many(booking),
 }))
 
 export const session = pgTable("session", {
