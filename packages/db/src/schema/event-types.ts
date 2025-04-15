@@ -41,7 +41,7 @@ export const bookingLimitTypeEnum = pgEnum("booking_limit_type", [
 ])
 
 export const eventType = pgTable("event_type", {
-  id: uuid().primaryKey().unique().defaultRandom(),
+  id: uuid().primaryKey().defaultRandom(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
     .notNull()

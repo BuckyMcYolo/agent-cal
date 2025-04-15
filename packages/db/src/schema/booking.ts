@@ -16,7 +16,7 @@ export const bookingStatusEnum = pgEnum("booking_status", [
 
 // Now let's expand our booking table to support the event types
 export const booking = pgTable("booking", {
-  id: uuid().primaryKey().unique().defaultRandom(),
+  id: uuid().primaryKey().defaultRandom(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
     .notNull()

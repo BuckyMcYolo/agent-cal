@@ -12,7 +12,7 @@ import { relations } from "drizzle-orm"
 
 // This table will store the available hosts for each event type
 export const eventHost = pgTable("event_host", {
-  id: uuid().primaryKey().unique().defaultRandom(),
+  id: uuid().primaryKey().defaultRandom(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
     .notNull()

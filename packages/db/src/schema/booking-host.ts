@@ -21,7 +21,7 @@ export const hostStatusEnum = pgEnum("host_status", [
 // This is different from the event-host table which only store the available hosts for each event type
 
 export const bookingHost = pgTable("booking_host", {
-  id: uuid("id").primaryKey().unique().defaultRandom(),
+  id: uuid("id").primaryKey().defaultRandom(),
 
   // When this host assignment was created and updated
   createdAt: timestamp("created_at").notNull().defaultNow(),

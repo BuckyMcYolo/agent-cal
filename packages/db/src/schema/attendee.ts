@@ -3,7 +3,7 @@ import { booking } from "./booking"
 import { relations } from "drizzle-orm"
 
 export const attendee = pgTable("attendee", {
-  id: uuid().primaryKey().unique().defaultRandom(),
+  id: uuid().primaryKey().defaultRandom(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
     .notNull()
