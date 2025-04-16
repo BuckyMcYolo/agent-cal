@@ -6,7 +6,7 @@ import {
 } from "drizzle-zod"
 
 export const tasks = pgTable("tasks", {
-  id: uuid("id").primaryKey().unique().defaultRandom(),
+  id: uuid("id").primaryKey().defaultRandom(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

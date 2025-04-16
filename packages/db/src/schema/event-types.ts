@@ -19,6 +19,7 @@ import {
 import { relations } from "drizzle-orm"
 import { booking } from "./booking"
 import { eventHost } from "./event-host"
+import { availabilitySchedule } from "./availability"
 
 // Define event type scheduling enum
 export const schedulingTypeEnum = pgEnum("scheduling_type", [
@@ -100,6 +101,9 @@ export const eventType = pgTable(
     //--------------FUTURE REFERENCE-------------------------
     //   availabilityScheduleId: uuid("availability_schedule_id"),
     // This will be a reference to a table that has the availability schedule for the event type
+    availabilityScheduleId: uuid().references(() => availabilitySchedule.id, {
+      onDelete: "set null",
+    }),
 
     // Additional data
     //--------------FUTURE REFERENCE-------------------------
