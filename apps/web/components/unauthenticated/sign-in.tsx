@@ -14,6 +14,7 @@ import { z } from "zod"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SignInForm, signInSchema } from "./auth-utils"
+import Image from "next/image"
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false)
@@ -55,7 +56,8 @@ export default function SignIn() {
     <Card className="max-w-md mx-auto border-0 shadow-none">
       <CardHeader className="space-y-1 text-center">
         <div className="flex justify-center mb-2">
-          <KeyRound className="h-10 w-10 text-primary" />
+          {/* <KeyRound className="h-10 w-10 text-primary" /> */}
+          <Image src={"/logo.png"} alt="logo" width={40} height={40} />
         </div>
         <h1 className="text-2xl font-bold">Welcome back</h1>
         <p className="text-sm text-muted-foreground">
