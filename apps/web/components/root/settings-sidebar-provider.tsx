@@ -1,8 +1,8 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { AppSidebar } from "../nav/main/app-sidebar"
+import { AppSidebar } from "../nav/app-sidebar"
 import { SiteHeader } from "../nav/site-header"
 import { cookies } from "next/headers"
-import { SettingsSidebar } from "../nav/settings/settings-sidebar"
+import { SettingsSidebar } from "../nav/settings-sidebar"
 
 export default async function SettingsSideBarProvider({
   children,
@@ -16,7 +16,7 @@ export default async function SettingsSideBarProvider({
       defaultOpen={defaultOpen}
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 64)",
+          "--sidebar-width": "calc(var(--spacing) * 60)",
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }

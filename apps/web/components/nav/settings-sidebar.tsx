@@ -34,7 +34,9 @@ import {
   User,
 } from "lucide-react"
 import Link from "next/link"
-import { NavSecondary } from "../nav-secondary"
+import { NavSecondary } from "./nav-secondary"
+import Image from "next/image"
+import LogoImage from "../../public/favicon.svg"
 
 const data = {
   user: [
@@ -86,7 +88,7 @@ export function SettingsSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
+        {/* <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
@@ -99,7 +101,47 @@ export function SettingsSidebar({
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+        </SidebarMenu> */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-0 data-[state=collapsed]:!p-0"
+              variant={"default"}
+            >
+              <a href="#">
+                <Image
+                  src={LogoImage}
+                  alt="logo"
+                  width={40}
+                  height={40}
+                  className="h-6 w-6 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
+                />
+                <span className="text-lg font-semibold">AgentCal</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
+        <SidebarMenu className="mt-6">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="flex items-center gap-2 text-sm font-medium"
+            >
+              <Link href="/event-types">
+                <ArrowBigLeft className="h-4 w-4" />
+                <span>Back to Calendar</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+
+        <div className="mt-2 px-3">
+          <h2 className="text-lg font-semibold text-accent-foreground">
+            Settings
+          </h2>
+          <p className="text-xs text-muted-foreground">Manage your account</p>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.user} title="User Settings" />

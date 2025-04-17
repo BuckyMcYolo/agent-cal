@@ -14,6 +14,7 @@ import { eventType } from "./event-types"
 import { booking } from "./booking"
 import { eventHost } from "./event-host"
 import { bookingHost } from "./booking-host"
+import { availabilitySchedule } from "./availability"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -39,6 +40,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
   bookings: many(booking),
   eventHosts: many(eventHost),
   bookingHosts: many(bookingHost),
+  availabilitySchedules: many(availabilitySchedule),
 }))
 
 export const organization = pgTable("organization", {
@@ -55,6 +57,7 @@ export const organizationRelations = relations(organization, ({ many }) => ({
   invitations: many(invitation),
   eventTypes: many(eventType),
   bookings: many(booking),
+  availabilitySchedules: many(availabilitySchedule),
 }))
 
 export const session = pgTable("session", {

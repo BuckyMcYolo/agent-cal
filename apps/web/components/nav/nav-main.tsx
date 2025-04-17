@@ -32,7 +32,7 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip={item.title}
                   isActive={item.url === pathname}
-                  className="data-[active=true]:bg-primary/85 dark:data-[active=true]:bg-primary/50 data-[active=true]:text-primary-foreground data-[active=true]:font-semibold"
+                  className="data-[active=true]:bg-primary dark:data-[active=true]:bg-primary/90 data-[active=true]:text-primary-foreground data-[active=true]:font-semibold"
                 >
                   {item.icon && <div>{item.icon}</div>}
                   <span>{item.title}</span>

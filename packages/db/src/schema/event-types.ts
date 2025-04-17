@@ -98,8 +98,6 @@ export const eventType = pgTable(
     timeZone: text(),
     lockTimezone: boolean().default(false), // whether to lock the timezone to the event types's timezone (useful for scheduling in person meetings)
 
-    //--------------FUTURE REFERENCE-------------------------
-    //   availabilityScheduleId: uuid("availability_schedule_id"),
     // This will be a reference to a table that has the availability schedule for the event type
     availabilityScheduleId: uuid().references(() => availabilitySchedule.id, {
       onDelete: "set null",
@@ -142,6 +140,10 @@ export const eventTypeRelations = relations(eventType, ({ one, many }) => ({
   organization: one(organization, {
     fields: [eventType.organizationId],
     references: [organization.id],
+  }),
+  availabilitySchedule: one(availabilitySchedule, {
+    fields: [eventType.availabilityScheduleId],
+    references: [availabilitySchedule.id],
   }),
   bookings: many(booking),
   eventHosts: many(eventHost),

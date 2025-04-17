@@ -8,17 +8,17 @@ import { useState } from "react"
 import { SignUpForm, signUpSchema } from "./auth-utils"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { authClient } from "@/lib/utils/auth-client"
+import { authClient } from "@workspace/auth/client"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import LogoImage from "../../public/logo.png"
+import Image from "next/image"
 
 export default function SignUp() {
   const [passwordType, setPasswordType] = useState<"password" | "text">(
     "password"
   )
   const [loading, setLoading] = useState(false)
-
-  const router = useRouter()
 
   const {
     register,
@@ -51,6 +51,9 @@ export default function SignUp() {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-8">
+        <div className="flex justify-center mb-2">
+          <Image src={LogoImage} alt="logo" width={200} height={40} />
+        </div>
         <div className="text-center">
           <h2 className="text-2xl font-bold">Create an account</h2>
           <p className="mt-2 text-sm text-muted-foreground">

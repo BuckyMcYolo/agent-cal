@@ -24,6 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { ReactNode } from "react"
 
 export function NavSecondary({
@@ -39,17 +41,24 @@ export function NavSecondary({
 }) {
   const { isMobile } = useSidebar()
 
+  const pathname = usePathname()
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild tooltip={item.title}>
-              <a href={item.url}>
+            <SidebarMenuButton
+              asChild
+              tooltip={item.title}
+              isActive={item.url === pathname}
+              className="data-[active=true]:bg-primary dark:data-[active=true]:bg-primary/90 data-[active=true]:text-primary-foreground data-[active=true]:font-semibold"
+            >
+              <Link href={item.url}>
                 {item.icon && <div>{item.icon}</div>}
                 <span>{item.title}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>

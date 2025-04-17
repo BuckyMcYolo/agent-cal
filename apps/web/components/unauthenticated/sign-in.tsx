@@ -8,13 +8,14 @@ import { Card, CardHeader, CardFooter } from "@workspace/ui/components/card"
 import { useState } from "react"
 import { KeyRound, EyeIcon, EyeOff } from "lucide-react"
 import Link from "next/link"
-import { authClient } from "@/lib/utils/auth-client"
+import { authClient } from "@workspace/auth/client"
 import { toast } from "sonner"
 import { z } from "zod"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SignInForm, signInSchema } from "./auth-utils"
 import Image from "next/image"
+import LogoImage from "../../public/logo.png"
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false)
@@ -56,8 +57,7 @@ export default function SignIn() {
     <Card className="max-w-md mx-auto border-0 shadow-none">
       <CardHeader className="space-y-1 text-center">
         <div className="flex justify-center mb-2">
-          {/* <KeyRound className="h-10 w-10 text-primary" /> */}
-          <Image src={"/logo.png"} alt="logo" width={40} height={40} />
+          <Image src={LogoImage} alt="logo" width={200} height={40} />
         </div>
         <h1 className="text-2xl font-bold">Welcome back</h1>
         <p className="text-sm text-muted-foreground">

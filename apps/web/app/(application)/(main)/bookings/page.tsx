@@ -1,6 +1,6 @@
 "use client"
 
-import { authClient } from "@/lib/utils/auth-client"
+import { authClient } from "@workspace/auth/client"
 import React from "react"
 
 const Page = () => {

@@ -31,6 +31,8 @@ import {
   SendToBack,
   Tags,
 } from "lucide-react"
+import Image from "next/image"
+import LogoImage from "../../public/favicon.svg"
 
 const data = {
   navMain: [
@@ -98,11 +100,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-2"
+              className="data-[slot=sidebar-menu-button]:!p-0 data-[state=collapsed]:!p-0"
               variant={"default"}
             >
               <a href="#">
-                <BookOpen className="!size-5" />
+                <Image
+                  src={LogoImage}
+                  alt="logo"
+                  width={40}
+                  height={40}
+                  className="h-6 w-6 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
+                />
                 <span className="text-lg font-semibold">AgentCal</span>
               </a>
             </SidebarMenuButton>

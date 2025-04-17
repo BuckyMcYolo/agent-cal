@@ -33,7 +33,7 @@ import {
 } from "@workspace/ui/components/toggle-group"
 import { Laptop, Loader2, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { authClient } from "@/lib/utils/auth-client"
+import { authClient } from "@workspace/auth/client"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { useRouter } from "next/navigation"
 

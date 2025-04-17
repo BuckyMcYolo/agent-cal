@@ -24,7 +24,6 @@
     "@workspace/auth": "workspace:*",
     "@workspace/env-config": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "better-auth": "^1.2.5",
     "dotenv": "^16.4.7",
     "dotenv-expand": "^12.0.1",
     "lucide-react": "^0.475.0",

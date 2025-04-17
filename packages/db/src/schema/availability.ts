@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core"
 import { relations, sql } from "drizzle-orm"
 import { user, organization } from "./auth"
+import { eventType } from "./event-types"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [
   "BLOCK", // Blocks time off (unavailable)
@@ -140,6 +141,7 @@ export const availabilityScheduleRelations = relations(
     }),
     weeklySlots: many(weeklyScheduleSlot),
     exceptions: many(availabilityException),
+    eventTypes: many(eventType),
   })
 )
 

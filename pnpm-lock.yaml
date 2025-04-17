@@ -114,9 +114,6 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      better-auth:
-        specifier: ^1.2.5
-        version: 1.2.5(typescript@5.7.3)
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -6032,24 +6029,6 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  better-auth@1.2.5(typescript@5.7.3):
-    dependencies:
-      '@better-auth/utils': 0.2.4
-      '@better-fetch/fetch': 1.1.17
-      '@noble/ciphers': 0.6.0
-      '@noble/hashes': 1.7.1
-      '@simplewebauthn/browser': 13.1.0
-      '@simplewebauthn/server': 13.1.1
-      better-call: 1.0.5
-      defu: 6.1.4
-      jose: 5.10.0
-      kysely: 0.27.6
-      nanostores: 0.11.4
-      valibot: 1.0.0-beta.15(typescript@5.7.3)
-      zod: 3.24.2
-    transitivePeerDependencies:
-      - typescript
-
   better-auth@1.2.5(typescript@5.8.2):
     dependencies:
       '@better-auth/utils': 0.2.4
@@ -8520,10 +8499,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   v8-compile-cache-lib@3.0.1: {}
-
-  valibot@1.0.0-beta.15(typescript@5.7.3):
-    optionalDependencies:
-      typescript: 5.7.3
 
   valibot@1.0.0-beta.15(typescript@5.8.2):
     optionalDependencies:
