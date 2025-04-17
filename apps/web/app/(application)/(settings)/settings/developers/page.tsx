@@ -1,5 +1,5 @@
-import React from "react"
+import { redirect } from "next/navigation"
 
 export default function Page() {
-  return <div>Page</div>
+  return redirect("/settings/developers/api-keys")
 }

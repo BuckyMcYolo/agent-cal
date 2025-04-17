@@ -1,14 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  IconHelp,
-  IconSearch,
-  IconSettings,
-  IconWebhook,
-} from "@tabler/icons-react"
-
-import { NavMain } from "@/components/nav/nav-main"
+import { IconHelp, IconSearch, IconWebhook } from "@tabler/icons-react"
 import { NavSettings } from "@/components/nav/nav-settings"
 import { NavUser } from "@/components/nav/nav-user"
 import {
@@ -20,19 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import {
-  ArrowBigLeft,
-  BookOpen,
-  Brain,
-  CalendarClock,
-  ChartColumn,
-  Key,
-  ListCheck,
-  Plug,
-  SendToBack,
-  Tags,
-  User,
-} from "lucide-react"
+import { ArrowBigLeft, BookOpen, Brain, Key, User } from "lucide-react"
 import Link from "next/link"
 import { NavSecondary } from "./nav-secondary"
 import Image from "next/image"
@@ -59,12 +40,12 @@ const data = {
   documents: [
     {
       title: "Webhooks",
-      url: "/settings/webhooks",
+      url: "/settings/developers/webhooks",
       icon: <IconWebhook size={18} />,
     },
     {
       title: "API Keys",
-      url: "/settings/api-keys",
+      url: "/settings/developers/api-keys",
       icon: <Key size={18} />,
     },
   ],
@@ -88,20 +69,6 @@ export function SettingsSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        {/* <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-2"
-              variant={"default"}
-            >
-              <Link href="/event-types">
-                <ArrowBigLeft className="!size-5" />
-                <span className="text-lg font-semibold">Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu> */}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -115,33 +82,32 @@ export function SettingsSidebar({
                   alt="logo"
                   width={40}
                   height={40}
-                  className="h-6 w-6 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
+                  className="size-7 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
                 />
                 <span className="text-lg font-semibold">AgentCal</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarMenu className="mt-6">
+        <SidebarMenu className="mt-3">
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               className="flex items-center gap-2 text-sm font-medium"
             >
               <Link href="/event-types">
-                <ArrowBigLeft className="h-4 w-4" />
+                <ArrowBigLeft className="!size-5" />
                 <span>Back to Calendar</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <div className="mt-3 px-3 group-data-[collapsible=icon]:hidden transition-all duration-400">
+            <h2 className="text-lg font-semibold text-accent-foreground">
+              Settings
+            </h2>
+            <p className="text-xs text-muted-foreground">Manage your account</p>
+          </div>
         </SidebarMenu>
-
-        <div className="mt-2 px-3">
-          <h2 className="text-lg font-semibold text-accent-foreground">
-            Settings
-          </h2>
-          <p className="text-xs text-muted-foreground">Manage your account</p>
-        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.user} title="User Settings" />

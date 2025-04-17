@@ -1,6 +1,5 @@
-import { SettingsDialog } from "@/components/settings/settings-dialog"
-import React from "react"
+import { redirect } from "next/navigation"
 
 export default function Page() {
-  return <div>{/* <SettingsDialog /> */}</div>
+  return redirect("/settings/account")
 }
