@@ -1,4 +1,3 @@
-import { getQueryClient } from "@/lib/react-query/get-query-client"
 import {
   HydrationBoundary,
   QueryClient,
@@ -9,7 +8,6 @@ import { apiClient } from "@/lib/utils/api-client"
 import TasksList from "@/components/tasks/tasks-list"
 
 const Page = async () => {
-  // const queryClient = getQueryClient()
   const queryClient = new QueryClient()
 
   queryClient.prefetchQuery({

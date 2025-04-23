@@ -60,6 +60,16 @@ export const auth = betterAuth({
     apiKey({
       defaultPrefix: "agentcal_",
       apiKeyHeaders: ["x-api-key"],
+      rateLimit: {
+        enabled: true,
+        timeWindow: 1000 * 60, // 1 minute
+        maxRequests: 100, //  100 requests per minute
+      },
+      permissions: {
+        defaultPermissions: {
+          bookings: ["read", "write"],
+        },
+      },
     }),
     openAPI(),
     organization({}), //not currently working with typescript declaration files

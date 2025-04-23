@@ -23,6 +23,7 @@ import {
 import {
   BookOpen,
   Brain,
+  Calendar,
   CalendarClock,
   ChartColumn,
   Key,
@@ -42,14 +43,14 @@ const data = {
       icon: <ListCheck size={18} />,
     },
     {
-      title: "Booking Types",
+      title: "Event Types",
       url: "/event-types",
       icon: <Tags size={18} />,
     },
     {
       title: "Bookings",
       url: "/bookings",
-      icon: <CalendarClock size={18} />,
+      icon: <Calendar size={18} />,
     },
     {
       title: "Connectors",
@@ -66,11 +67,11 @@ const data = {
       url: "/knowledge-base",
       icon: <Brain size={18} />,
     },
-    {
-      title: "Monitoring",
-      url: "/monitoring",
-      icon: <ChartColumn size={18} />,
-    },
+    // {
+    //   title: "Monitoring",
+    //   url: "/monitoring",
+    //   icon: <ChartColumn size={18} />,
+    // },
   ],
 
   navSecondary: [
@@ -109,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   alt="logo"
                   width={40}
                   height={40}
-                  className="size-7 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
+                  className="size-7 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-0.5"
                 />
                 <span className="text-lg font-semibold">AgentCal</span>
               </a>

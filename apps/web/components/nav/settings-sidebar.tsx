@@ -82,7 +82,7 @@ export function SettingsSidebar({
                   alt="logo"
                   width={40}
                   height={40}
-                  className="size-7 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-1"
+                  className="size-7 rounded-sm shrink-0 transition-all duration-400 group-data-[collapsible=icon]:translate-x-0.5"
                 />
                 <span className="text-lg font-semibold">AgentCal</span>
               </a>
