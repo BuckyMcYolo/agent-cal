@@ -39,14 +39,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import { Label } from "@workspace/ui/components/label"
 
 export default function APIKeysTable() {
@@ -62,11 +54,14 @@ export default function APIKeysTable() {
   } = useSuspenseQuery({
     queryKey: ["api-keys"],
     queryFn: async () => {
-      const { data, error } = await authClient.apiKey.list()
-      if (error) {
-        throw new Error(`Error: ${error?.statusText}`)
-      }
-      return data
+      const res = await authClient.apiKey.list({
+        fetchOptions: {
+          onError(context) {
+            throw new Error(context.error.message)
+          },
+        },
+      })
+      return res.data
     },
   })
 

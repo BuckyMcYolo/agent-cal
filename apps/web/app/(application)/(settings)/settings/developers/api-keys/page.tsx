@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
 
-export default function Page() {
+const Page = async () => {
   const queryClient = new QueryClient()
 
   queryClient.prefetchQuery({
@@ -31,3 +31,5 @@ export default function Page() {
     </HydrationBoundary>
   )
 }
+
+export default Page
