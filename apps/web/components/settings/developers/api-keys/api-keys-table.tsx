@@ -49,12 +49,65 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { Switch } from "@workspace/ui/components/switch"
+
+const apiKeySchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  expiration: z.enum(["1d", "7d", "30d", "1y", "never"]),
+  permissions: z.enum(["all", "read-only"]),
+})
+
+const convertToNumberInMS = (value: "1d" | "7d" | "30d" | "1y" | "never") => {
+  switch (value) {
+    case "1d":
+      return 86400000
+    case "7d":
+      return 604800000
+    case "30d":
+      return 2592000000
+    case "1y":
+      return 31536000000
+    default:
+      return undefined
+  }
+}
+
+type ApiKeyForm = z.infer<typeof apiKeySchema>
 
 export default function APIKeysTable() {
+  const [createKeyDialogOpen, setCreateKeyDialogOpen] = useState(false)
+  const [keyConfirmationDialogOpen, setKeyConfirmationDialogOpen] =
+    useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [apiKeyName, setApiKeyName] = useState("")
 
   const queryClient = useQueryClient()
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors, isSubmitting, touchedFields, isValid },
+    reset,
+  } = useForm<ApiKeyForm>({
+    resolver: zodResolver(apiKeySchema),
+    mode: "all",
+    defaultValues: {
+      name: "",
+      expiration: "never",
+      permissions: "all",
+    },
+  })
+
+  const onCreateKey: SubmitHandler<ApiKeyForm> = async (data) => {
+    console.log("data", data)
+    createApiKey({
+      name: data.name,
+    })
+  }
 
   const {
     data: apiKeys,
@@ -75,9 +128,16 @@ export default function APIKeysTable() {
   })
 
   const { mutate: createApiKey, isPending: isCreatingKey } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ name }: { name: string }) => {
+      const permissions =
+        getValues("permissions") === "all"
+          ? { all: ["read", "write"] }
+          : { all: ["read"] }
+
       const { error } = await authClient.apiKey.create({
-        name: apiKeyName,
+        name: name,
+        expiresIn: convertToNumberInMS(getValues("expiration")),
+        permissions: permissions,
       })
       if (error) {
         throw new Error(`Error: ${error?.statusText}`)
@@ -125,11 +185,15 @@ export default function APIKeysTable() {
       </p>
 
       <div className="flex items-center justify-end">
-        <AlertDialog>
+        <AlertDialog open={createKeyDialogOpen}>
           <AlertDialogTrigger asChild>
             <Button
               className="mb-4 mt-2"
               startIcon={<Plus className="size-4" />}
+              onClick={() => {
+                setCreateKeyDialogOpen(true)
+                reset()
+              }}
             >
               Create API key
             </Button>
@@ -143,27 +207,58 @@ export default function APIKeysTable() {
                 organization, this key will be disabled.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="flex flex-col gap-4">
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={handleSubmit(onCreateKey)}
+            >
               <div className="space-y-2">
                 <Label htmlFor="api-key-name">Name</Label>
                 <Input
+                  {...register("name")}
+                  error={Boolean(errors?.name?.message && touchedFields.name)}
+                  helperText={
+                    errors?.name?.message && touchedFields.name
+                      ? errors.name.message
+                      : undefined
+                  }
                   type="text"
                   placeholder="My API Key"
-                  value={apiKeyName}
-                  onChange={(e) => setApiKeyName(e.target.value)}
                   className="border p-2 rounded"
                 />{" "}
               </div>
               <div className="space-y-2">
-                <Label>Expiration</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Expiration</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="never-expire"
+                      checked={getValues("expiration") === "never"}
+                      onCheckedChange={(checked) => {
+                        setValue("expiration", checked ? "never" : "1d", {
+                          shouldValidate: true,
+                        })
+                      }}
+                    />
+                    <Label className="text-sm text-muted-foreground">
+                      Never expire
+                    </Label>
+                  </div>
+                </div>
 
-                <Select>
+                <Select
+                  value={getValues("expiration")}
+                  onValueChange={(value) => {
+                    setValue("expiration", value as ApiKeyForm["expiration"], {
+                      shouldValidate: true,
+                    })
+                  }}
+                  disabled={getValues("expiration") === "never"}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Expiration" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper">
                     <SelectGroup>
-                      <SelectLabel>Expiration</SelectLabel>
                       <SelectItem value="1d">1 Day</SelectItem>
                       <SelectItem value="7d">7 Days</SelectItem>
                       <SelectItem value="30d">30 Days</SelectItem>
@@ -173,34 +268,42 @@ export default function APIKeysTable() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-3">
                 <Label htmlFor="api-key-permissions">Permissions</Label>
-                <Tabs defaultValue="all" className="">
-                  <TabsList className="grid w-full grid-cols-2">
+                <Tabs
+                  defaultValue={getValues("permissions")}
+                  onValueChange={(value) => {
+                    setValue(
+                      "permissions",
+                      value as ApiKeyForm["permissions"],
+                      { shouldValidate: true }
+                    )
+                  }}
+                >
+                  <TabsList className="grid w-full md:w-1/2 h-8 grid-cols-2">
                     <TabsTrigger value="all">All</TabsTrigger>
                     <TabsTrigger value="read-only">Read Only</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
-            </div>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                onClick={() => {
-                  setApiKeyName("")
-                }}
-              >
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  createApiKey()
-                }}
-                loading={isCreatingKey}
-              >
-                Create
-              </AlertDialogAction>
-            </AlertDialogFooter>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  onClick={() => {
+                    setCreateKeyDialogOpen(false)
+                    reset()
+                  }}
+                >
+                  Close
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={!isValid}
+                  type="submit"
+                  loading={isCreatingKey}
+                >
+                  Create
+                </AlertDialogAction>
+              </AlertDialogFooter>{" "}
+            </form>
           </AlertDialogContent>
         </AlertDialog>
       </div>

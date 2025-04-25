@@ -67,7 +67,7 @@ export const auth = betterAuth({
       },
       permissions: {
         defaultPermissions: {
-          bookings: ["read", "write"],
+          all: ["read", "write"],
         },
       },
     }),

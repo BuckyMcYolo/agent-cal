@@ -25,9 +25,7 @@ const Page = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>
-        <APIKeysTable />
-      </div>
+      <APIKeysTable />
     </HydrationBoundary>
   )
 }

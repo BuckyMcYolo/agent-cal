@@ -56,7 +56,7 @@ export function NavUser() {
             >
               {isPending ? (
                 <>
-                  <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                     <Loader2 className="h-4 w-4 animate-spin" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
