@@ -40,6 +40,15 @@ import {
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
 import { Label } from "@workspace/ui/components/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
 
 export default function APIKeysTable() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -114,6 +123,7 @@ export default function APIKeysTable() {
       <p className="text-sm text-muted-foreground">
         Manage your API keys and permissions.
       </p>
+
       <div className="flex items-center justify-end">
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -129,27 +139,50 @@ export default function APIKeysTable() {
               <AlertDialogTitle>Create API Key</AlertDialogTitle>
               <AlertDialogDescription>
                 This API key is tied to your user and can make requests against
-                the selected project. If you are removed from the organization
-                or project, this key will be disabled.
+                resources in your organization. If you are removed from the
+                organization, this key will be disabled.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="flex flex-col gap-4">
-              <Input
-                type="text"
-                placeholder="API Key Name"
-                helperText="Give your API key a name to identify it later."
-                value={apiKeyName}
-                onChange={(e) => setApiKeyName(e.target.value)}
-                className="border p-2 rounded"
-              />
-              <Tabs defaultValue="all" className="">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="restricted">Restricted</TabsTrigger>
-                  <TabsTrigger value="read-only">Read Only</TabsTrigger>
-                </TabsList>
-                <TabsContent value="restricted"></TabsContent>
-              </Tabs>
+              <div className="space-y-2">
+                <Label htmlFor="api-key-name">Name</Label>
+                <Input
+                  type="text"
+                  placeholder="My API Key"
+                  value={apiKeyName}
+                  onChange={(e) => setApiKeyName(e.target.value)}
+                  className="border p-2 rounded"
+                />{" "}
+              </div>
+              <div className="space-y-2">
+                <Label>Expiration</Label>
+
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Expiration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Expiration</SelectLabel>
+                      <SelectItem value="1d">1 Day</SelectItem>
+                      <SelectItem value="7d">7 Days</SelectItem>
+                      <SelectItem value="30d">30 Days</SelectItem>
+                      <SelectItem value="1y">1 Year</SelectItem>
+                      <SelectItem value="never">Never</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <Label htmlFor="api-key-permissions">Permissions</Label>
+                <Tabs defaultValue="all" className="">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="read-only">Read Only</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
             </div>
             <AlertDialogFooter>
               <AlertDialogCancel
