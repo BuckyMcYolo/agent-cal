@@ -2,7 +2,7 @@
 
 import { getTasks } from "@/lib/queries/get-tasks"
 import { apiClient } from "@/lib/utils/api-client"
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
 import React from "react"
 
@@ -36,6 +36,24 @@ const TasksList = () => {
         return data
       }
       return null
+    },
+  })
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      const res = await apiClient.tasks.$post({
+        json: {
+          name: "Test Task",
+          done: false,
+        },
+      })
+
+      if (res.status == 200) {
+        const data = await res.json()
+      } else {
+        throw new Error("Failed to create task")
+      }
+      return data
     },
   })
 

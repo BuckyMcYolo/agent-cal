@@ -148,15 +148,15 @@ function AlertDialogAction({
       data-loading={loading}
     >
       {loading ? (
-        <div>
-          <Loader2 size={16} className="animate-spin mr-2" />
+        <div className="flex items-center gap-1">
+          <Loader2 size={16} className="animate-spin mr-1" />
           {children}
         </div>
       ) : (
-        <div>
-          {startIcon && <span className="mr-2">{startIcon}</span>}
+        <div className="flex items-center gap-1">
+          {startIcon && <span className="mr-1">{startIcon}</span>}
           {children}
-          {endIcon && <span className="ml-2">{endIcon}</span>}
+          {endIcon && <span className="ml-1">{endIcon}</span>}
         </div>
       )}
     </AlertDialogPrimitive.Action>

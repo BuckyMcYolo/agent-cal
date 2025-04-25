@@ -5,6 +5,7 @@ import index from "@/routes/index.route"
 import tasksRouter from "./routes/tasks"
 import { cors } from "hono/cors"
 import serverEnv from "@workspace/env-config/server-env"
+import apiKeysRouter from "./routes/api-keys"
 
 const app = createApp()
 
@@ -28,7 +29,7 @@ app.use(
 
 configureOpenAPI(app)
 
-const routes = [index, tasksRouter] as const
+const routes = [index, tasksRouter, apiKeysRouter] as const
 
 routes.forEach((route) => app.route("/", route))
 
