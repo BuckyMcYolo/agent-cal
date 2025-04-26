@@ -38,6 +38,7 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { Plus } from "lucide-react"
 import { apiClient } from "@/lib/utils/api-client"
+import { Badge } from "@workspace/ui/components/badge"
 
 export function CreateApiKeyDialog() {
   const [createKeyDialogOpen, setCreateKeyDialogOpen] = useState(false)
@@ -95,7 +96,6 @@ export function CreateApiKeyDialog() {
   })
 
   const onCreateKey: SubmitHandler<ApiKeyForm> = async (data) => {
-    console.log("data", data)
     createApiKey({
       name: data.name,
     })
@@ -284,7 +284,7 @@ export function CreateApiKeyDialog() {
               />
               <Button
                 size="sm"
-                className="absolute right-1 top-1 h-8"
+                className="absolute right-1 top-1 h-8 active:bg-primary/75"
                 onClick={() => {
                   navigator.clipboard.writeText(apiKey?.key ?? "")
                   toast.success("API key copied to clipboard")
@@ -300,11 +300,11 @@ export function CreateApiKeyDialog() {
                 <div className="flex items-center">
                   {apiKey.permissions.all.includes("read") &&
                   apiKey.permissions.all.includes("write") ? (
-                    <span>Read and Write</span>
+                    <Badge>Read and Write</Badge>
                   ) : apiKey.permissions.all.includes("read") ? (
-                    <span>Read Only</span>
+                    <Badge>Read Only</Badge>
                   ) : apiKey.permissions.all.includes("write") ? (
-                    <span>Write Only</span>
+                    <Badge>Write Only</Badge>
                   ) : (
                     <span className="text-muted-foreground">No access</span>
                   )}

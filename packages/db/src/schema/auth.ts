@@ -150,6 +150,8 @@ export const apikey = pgTable("apikey", {
   metadata: text("metadata"),
 })
 
+export type ApiKey = typeof apikey.$inferSelect
+
 export const apikeyRelations = relations(apikey, ({ one }) => ({
   user: one(user, {
     fields: [apikey.userId],

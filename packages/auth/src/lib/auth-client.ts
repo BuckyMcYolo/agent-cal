@@ -4,8 +4,10 @@ import {
   organizationClient,
   apiKeyClient,
   emailOTPClient,
+  inferAdditionalFields,
 } from "better-auth/client/plugins"
 import { clientEnv } from "@workspace/env-config"
+import { auth } from "./auth"
 
 export const authClient = createAuthClient({
   plugins: [
@@ -13,6 +15,7 @@ export const authClient = createAuthClient({
     organizationClient(),
     apiKeyClient(),
     emailOTPClient(),
+    inferAdditionalFields<typeof auth>(),
   ],
   baseURL: clientEnv.NEXT_PUBLIC_API_URL,
   fetchOptions: {

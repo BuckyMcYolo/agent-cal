@@ -5,7 +5,9 @@ import { INTERNAL_SERVER_ERROR, OK } from "@/lib/misc/http-status-codes"
 
 const onError: ErrorHandler = (err, c) => {
   const currentStatus =
-    "status" in err ? err.status : c.newResponse(null).status
+    "status" in err
+      ? err.status
+      : c.newResponse(null).status || INTERNAL_SERVER_ERROR
   const statusCode =
     currentStatus !== OK ? (currentStatus as StatusCode) : INTERNAL_SERVER_ERROR
   // eslint-disable-next-line node/prefer-global/process
