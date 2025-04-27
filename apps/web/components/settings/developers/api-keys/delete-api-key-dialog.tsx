@@ -34,7 +34,7 @@ export default function DeleteApiKeyDialog({ keyId }: { keyId: string }) {
     onSuccess: () => {
       toast.success("API key deleted successfully")
       queryClient.invalidateQueries({
-        queryKey: ["api-keys"],
+        queryKey: ["api-keys-user"],
       })
       setKeyToDelete(null)
     },

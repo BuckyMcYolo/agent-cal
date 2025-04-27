@@ -45,8 +45,6 @@ export default function UpdateApiKeyDialog({
 
   type ApiKeyForm = z.infer<typeof apiKeySchema>
 
-  console.log(keyName)
-
   const {
     register,
     handleSubmit,
@@ -117,7 +115,7 @@ export default function UpdateApiKeyDialog({
     onSuccess: (data) => {
       toast.success("API key updated successfully")
       queryClient.invalidateQueries({
-        queryKey: ["api-keys"],
+        queryKey: ["api-keys-user"],
       })
       setKeyToEdit(null)
       reset()

@@ -125,7 +125,7 @@ export function CreateApiKeyDialog() {
     onSuccess: (data) => {
       toast.success("API key created successfully")
       queryClient.invalidateQueries({
-        queryKey: ["api-keys"],
+        queryKey: ["api-keys-user"],
       })
       setCreateKeyDialogOpen(false)
       reset()

@@ -10,7 +10,7 @@ const Page = async () => {
   const queryClient = new QueryClient()
 
   queryClient.prefetchQuery({
-    queryKey: ["api-keys"],
+    queryKey: ["api-keys-user"],
     queryFn: async () => {
       const res = await authClient.apiKey.list({
         fetchOptions: {

@@ -52,7 +52,7 @@ export function NavSecondary({
             <SidebarMenuButton
               asChild
               tooltip={item.title}
-              isActive={item.url === pathname}
+              isActive={pathname.includes(item.url)}
               className="data-[active=true]:bg-primary dark:data-[active=true]:bg-primary/90 data-[active=true]:text-primary-foreground data-[active=true]:font-semibold"
             >
               <Link href={item.url}>

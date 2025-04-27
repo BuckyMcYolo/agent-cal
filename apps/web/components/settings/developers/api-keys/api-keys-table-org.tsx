@@ -21,7 +21,7 @@ export default function APIKeysTable() {
     isLoading,
     error,
   } = useSuspenseQuery({
-    queryKey: ["api-keys-user"],
+    queryKey: ["api-keys-org"],
     queryFn: async () => {
       const res = await authClient.apiKey.list({
         fetchOptions: {
