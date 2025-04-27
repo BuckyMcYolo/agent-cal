@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { User, Save, Camera, Check } from "lucide-react"
 
 // Import Shadcn components
@@ -39,22 +39,48 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
+import { authClient } from "@workspace/auth/client"
+import { useQuery } from "@tanstack/react-query"
+import { useUser } from "@/hooks/use-user"
 
 const UserAccountSettings = () => {
+  //   const { data: user, isLoading } = useQuery({
+  //     queryKey: ["user"],
+  //     queryFn: async () => {
+  //       const res = await authClient.getSession({
+  //         query: {
+  //           disableCookieCache: true,
+  //         },
+  //       })
+  //       return res.data?.user
+  //     },
+  //   })
+
+  const { user, isLoading } = useUser()
+
   const [formData, setFormData] = useState({
-    name: "Jacob Owens",
-    email: "jacobowens75@gmail.com",
-    phone: "(123) 456-7890",
-    timezone: "America/New_York",
-    language: "English",
+    name: "",
+    email: "",
+    phone: "",
+    timezone: "",
   })
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        timezone: user.timezone || "",
+      })
+    }
+  }, [user])
 
   interface UserFormData {
     name: string
     email: string
     phone: string
     timezone: string
-    language: string
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +102,14 @@ const UserAccountSettings = () => {
     e.preventDefault()
     // Handle form submission logic here
     console.log("Form submitted:", formData)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    )
   }
 
   return (
@@ -108,7 +142,7 @@ const UserAccountSettings = () => {
 
                 <div className="flex-1 space-y-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name" className="text-gray-400">
+                    <Label htmlFor="name" className="text-muted-foreground">
                       Name
                     </Label>
                     <Input
@@ -121,7 +155,7 @@ const UserAccountSettings = () => {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="email" className="text-gray-400">
+                    <Label htmlFor="email" className="text-muted-foreground">
                       Email
                     </Label>
                     <Input
@@ -135,11 +169,11 @@ const UserAccountSettings = () => {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="phone" className="text-gray-400">
+                    <Label htmlFor="phone" className="text-muted-foreground">
                       Phone Number
                     </Label>
                     <div className="flex">
-                      <div className="inline-flex items-center px-3 bg-zinc-100 dark:bg-zinc-700 border border-r-0 dark:border-zinc-700 text-neutral-700 dark:text-gray-400 text-sm rounded-l-md">
+                      <div className="inline-flex items-center px-3 bg-zinc-100 dark:bg-zinc-700 border border-r-0 dark:border-zinc-700 text-neutral-700 dark:text-muted-foreground text-sm rounded-l-md">
                         <span>+1</span>
                       </div>
                       <Input
@@ -207,8 +241,8 @@ const UserAccountSettings = () => {
                   <Button variant="outline">Change Password</Button>
                 </div>
 
-                <Separator className="my-4 " />
-
+                {/* <Separator className="my-4 " /> */}
+                {/* 
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-medium">
@@ -219,7 +253,7 @@ const UserAccountSettings = () => {
                     </p>
                   </div>
                   <Switch id="2fa" />
-                </div>
+                </div> */}
 
                 <Separator className="my-4" />
 

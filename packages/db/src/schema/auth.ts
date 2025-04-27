@@ -9,7 +9,14 @@
 // you can read more about the available plugin options in the better-auth documentation: https://www.better-auth.com/docs/concepts/plugins
 
 import { relations } from "drizzle-orm"
-import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core"
+import {
+  pgTable,
+  text,
+  integer,
+  timestamp,
+  boolean,
+  pgEnum,
+} from "drizzle-orm/pg-core"
 import { eventType } from "./event-types"
 import { booking } from "./booking"
 import { eventHost } from "./event-host"
@@ -32,6 +39,7 @@ export const user = pgTable("user", {
   phoneNumberVerified: boolean("phone_number_verified")
     .default(false)
     .notNull(),
+  timezone: text("timezone").default("America/New_York").notNull(),
 })
 
 export const userRelations = relations(user, ({ one, many }) => ({

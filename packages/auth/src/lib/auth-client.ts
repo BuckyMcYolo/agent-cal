@@ -52,5 +52,3 @@ export const authClient = createAuthClient({
     },
   },
 })
-
-export type ApiKey = Awaited<ReturnType<typeof authClient.apiKey.list>>[number]
