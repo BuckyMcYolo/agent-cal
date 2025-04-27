@@ -42,21 +42,10 @@ import {
 import { authClient } from "@workspace/auth/client"
 import { useQuery } from "@tanstack/react-query"
 import { useUser } from "@/hooks/use-user"
+import PhoneNumberInput from "@/components/misc/inputs/phone-number-input"
 
 const UserAccountSettings = () => {
-  //   const { data: user, isLoading } = useQuery({
-  //     queryKey: ["user"],
-  //     queryFn: async () => {
-  //       const res = await authClient.getSession({
-  //         query: {
-  //           disableCookieCache: true,
-  //         },
-  //       })
-  //       return res.data?.user
-  //     },
-  //   })
-
-  const { user, isLoading } = useUser()
+  const { user, isLoading, error } = useUser()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -85,13 +74,6 @@ const UserAccountSettings = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prevData: UserFormData) => ({
-      ...prevData,
-      [name]: value,
-    }))
-  }
-
-  const handleSelectChange = (name: string, value: string) => {
     setFormData((prevData: UserFormData) => ({
       ...prevData,
       [name]: value,
@@ -173,15 +155,22 @@ const UserAccountSettings = () => {
                       Phone Number
                     </Label>
                     <div className="flex">
-                      <div className="inline-flex items-center px-3 bg-zinc-100 dark:bg-zinc-700 border border-r-0 dark:border-zinc-700 text-neutral-700 dark:text-muted-foreground text-sm rounded-l-md">
-                        <span>+1</span>
-                      </div>
-                      <Input
+                      {/* <Input
                         id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
                         className="rounded-l-none "
+                      /> */}
+                      <PhoneNumberInput
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={(value) =>
+                          setFormData((prev) => ({ ...prev, phone: value }))
+                        }
+                        className="rounded-l-none flex-1"
+                        required={false}
                       />
                     </div>
                   </div>
@@ -201,30 +190,36 @@ const UserAccountSettings = () => {
                   <Label htmlFor="timezone" className="text-muted-foreground">
                     Timezone
                   </Label>
-                  <Select
-                    defaultValue={formData.timezone}
-                    onValueChange={(value) =>
-                      handleSelectChange("timezone", value)
-                    }
-                  >
-                    <SelectTrigger className="">
-                      <SelectValue placeholder="Select a timezone" />
-                    </SelectTrigger>
-                    <SelectContent className="">
-                      <SelectItem value="America/New_York">
-                        Eastern Time (US & Canada)
-                      </SelectItem>
-                      <SelectItem value="America/Chicago">
-                        Central Time (US & Canada)
-                      </SelectItem>
-                      <SelectItem value="America/Denver">
-                        Mountain Time (US & Canada)
-                      </SelectItem>
-                      <SelectItem value="America/Los_Angeles">
-                        Pacific Time (US & Canada)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {formData.timezone && (
+                    <Select
+                      value={formData.timezone}
+                      defaultValue={formData.timezone}
+                      onValueChange={(value) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          timezone: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a timezone" />
+                      </SelectTrigger>
+                      <SelectContent className="">
+                        <SelectItem value="America/New_York">
+                          Eastern Time (US & Canada)
+                        </SelectItem>
+                        <SelectItem value="America/Chicago">
+                          Central Time (US & Canada)
+                        </SelectItem>
+                        <SelectItem value="America/Denver">
+                          Mountain Time (US & Canada)
+                        </SelectItem>
+                        <SelectItem value="America/Los_Angeles">
+                          Pacific Time (US & Canada)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -241,8 +236,8 @@ const UserAccountSettings = () => {
                   <Button variant="outline">Change Password</Button>
                 </div>
 
-                {/* <Separator className="my-4 " /> */}
-                {/* 
+                <Separator className="my-4 " />
+
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-medium">
@@ -253,7 +248,7 @@ const UserAccountSettings = () => {
                     </p>
                   </div>
                   <Switch id="2fa" />
-                </div> */}
+                </div>
 
                 <Separator className="my-4" />
 
@@ -265,6 +260,7 @@ const UserAccountSettings = () => {
                     </p>
                   </div>
                   <Button
+                    type="button"
                     variant="link"
                     className="dark:text-violet-500 text-primary p-0 h-auto"
                   >

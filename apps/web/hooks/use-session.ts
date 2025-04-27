@@ -1,22 +1,22 @@
 import { useQuery } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
 
-export const useUser = (disableCache?: boolean) => {
+export const useSession = (disableCache?: boolean) => {
   const {
-    data: user,
+    data: session,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["session"],
     queryFn: async () => {
       const res = await authClient.getSession({
         query: {
           disableCookieCache: disableCache ?? true,
         },
       })
-      return res.data?.user
+      return res.data?.session
     },
   })
 
-  return { user, isLoading, error }
+  return { session, isLoading, error }
 }
