@@ -2,6 +2,11 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "AgentCal Docs",
+  "logo": {
+    "light": "/logo/logo.svg",
+    "dark": "/logo/logo-resized.png",
+    "href": "https://mintlify.com"
+  },
   "colors": {
     "primary": "#6D28D9",
     "light": "#8B5CF6",
@@ -21,7 +26,6 @@
         "groups": [
           {
             "group": "Hello World",
-
             "pages": ["introduction", "quickstart"]
           }
         ]
@@ -47,15 +51,16 @@
               "api-reference/tasks/delete",
               "api-reference/tasks/post"
             ]
+          },
+          {
+            "group": "Event Types",
+            "pages": ["api-reference/event-types/get-all"]
           }
         ]
       }
     ]
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
+
   "navbar": {
     "links": [
       {

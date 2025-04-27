@@ -943,6 +943,271 @@
           }
         }
       }
+    },
+    "/event-types": {
+      "get": {
+        "summary": "Get all Event Types",
+        "description": "Get all Event Types for a user or organization. If no query parameters are provided, all event types for the organization will be returned.",
+        "tags": [
+          "Event Types"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "tdlAgM7KV7m6Nwj9E6wHuCAkyHhSaPeQ"
+            },
+            "required": false,
+            "name": "orgId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "tdlAgM7KV7m6Nwj9E6wHuCAkyHhSaPeQ"
+            },
+            "required": false,
+            "name": "userId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Must be the full unique slug of the event type. Example: 'my-event-type'",
+              "example": "example-slug"
+            },
+            "required": false,
+            "name": "slug",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "length": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "slotInterval": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "hidden": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "listPosition": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "ownerId": {
+                        "type": "string"
+                      },
+                      "organizationId": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "schedulingType": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "ROUND_ROBIN",
+                          "COLLECTIVE",
+                          "INDIVIDUAL"
+                        ]
+                      },
+                      "minimumBookingNotice": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "beforeEventBuffer": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "afterEventBuffer": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "limitBookingFrequency": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "dailyFrequencyLimit": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "weeklyFrequencyLimit": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "monthlyFrequencyLimit": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "limitFutureBookings": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "maxDaysInFuture": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "requiresConfirmation": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "disableGuests": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "locationType": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "IN_PERSON",
+                          "VIRTUAL",
+                          "PHONE"
+                        ]
+                      },
+                      "timeZone": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "lockTimezone": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "availabilityScheduleId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                      },
+                      "aiEmailAssistantEnabled": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "aiPhoneAssistantEnabled": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "metadata": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          },
+                          {
+                            "nullable": true
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "nullable": true
+                            }
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "nullable": true
+                            }
+                          },
+                          {
+                            "nullable": true
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "createdAt",
+                      "updatedAt",
+                      "title",
+                      "slug",
+                      "description",
+                      "length",
+                      "slotInterval",
+                      "hidden",
+                      "listPosition",
+                      "ownerId",
+                      "organizationId",
+                      "schedulingType",
+                      "minimumBookingNotice",
+                      "beforeEventBuffer",
+                      "afterEventBuffer",
+                      "limitBookingFrequency",
+                      "dailyFrequencyLimit",
+                      "weeklyFrequencyLimit",
+                      "monthlyFrequencyLimit",
+                      "limitFutureBookings",
+                      "maxDaysInFuture",
+                      "requiresConfirmation",
+                      "disableGuests",
+                      "locationType",
+                      "timeZone",
+                      "lockTimezone",
+                      "availabilityScheduleId",
+                      "aiEmailAssistantEnabled",
+                      "aiPhoneAssistantEnabled",
+                      "metadata"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

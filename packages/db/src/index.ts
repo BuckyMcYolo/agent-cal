@@ -3,6 +3,11 @@ import postgres from "postgres"
 import * as betterAuthSchema from "./schema/auth"
 import * as taskSchema from "./schema/tasks"
 import * as bookingSchema from "./schema/booking"
+import * as eventTypeSchema from "./schema/event-types"
+import * as eventHostSchema from "./schema/event-host"
+import * as bookingHostSchema from "./schema/booking-host"
+import * as availabilitySchema from "./schema/availability"
+import * as attendeeSchema from "./schema/attendee"
 import { serverEnv } from "@workspace/env-config"
 import {
   eq,
@@ -36,7 +41,16 @@ const client = postgres(serverEnv.DATABASE_URL)
 export const db = drizzle({
   client,
   casing: "snake_case",
-  schema: { ...betterAuthSchema, ...taskSchema, ...bookingSchema },
+  schema: {
+    ...betterAuthSchema,
+    ...taskSchema,
+    ...bookingSchema,
+    ...bookingHostSchema,
+    ...eventTypeSchema,
+    ...eventHostSchema,
+    ...availabilitySchema,
+    ...attendeeSchema,
+  },
 })
 
 export {

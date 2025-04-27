@@ -148,3 +148,17 @@ export const eventTypeRelations = relations(eventType, ({ one, many }) => ({
   bookings: many(booking),
   eventHosts: many(eventHost),
 }))
+
+export const selectEventTypeSchema = createSelectSchema(eventType)
+
+export const insertEventTypeSchema = createInsertSchema(eventType, {
+  title: (schema) => schema.min(1).max(255),
+  slug: (schema) => schema.min(1).max(255),
+  description: (schema) => schema.max(1000).optional(),
+}).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateTasksSchema = insertEventTypeSchema.partial()
