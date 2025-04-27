@@ -17,7 +17,11 @@ app.use(
     origin:
       serverEnv.NODE_ENV === "production"
         ? "*"
-        : ["http://localhost:3000", "http://127.0.0.1:3000"],
+        : [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:5000",
+          ],
     allowHeaders: ["Content-Type", "Authorization", "x-api-key", "Accept"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     exposeHeaders: ["content-length", "keep-alive", "connection"],

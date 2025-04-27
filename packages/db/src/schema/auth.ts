@@ -28,6 +28,10 @@ export const user = pgTable("user", {
   banned: boolean("banned"),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+  phoneNumber: text("phone_number"),
+  phoneNumberVerified: boolean("phone_number_verified")
+    .default(false)
+    .notNull(),
 })
 
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -84,10 +88,10 @@ export const sessionRelations = relations(session, ({ one }) => ({
     fields: [session.activeOrganizationId],
     references: [organization.id],
   }),
-  impersonatedByUser: one(user, {
-    fields: [session.impersonatedBy],
-    references: [user.id],
-  }),
+  // impersonatedByUser: one(user, {
+  //   fields: [session.impersonatedBy],
+  //   references: [user.id],
+  // }),
 }))
 
 export const account = pgTable("account", {

@@ -21,6 +21,11 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
+export const metadata = {
+  title: "AgentCal",
+  description: "Your AI powered scheduling assistant",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{

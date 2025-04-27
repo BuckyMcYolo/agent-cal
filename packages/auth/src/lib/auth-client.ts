@@ -5,6 +5,7 @@ import {
   apiKeyClient,
   emailOTPClient,
   inferAdditionalFields,
+  phoneNumberClient,
 } from "better-auth/client/plugins"
 import { clientEnv } from "@workspace/env-config"
 import { auth } from "./auth"
@@ -16,6 +17,7 @@ export const authClient = createAuthClient({
     apiKeyClient(),
     emailOTPClient(),
     inferAdditionalFields<typeof auth>(),
+    phoneNumberClient(),
   ],
   baseURL: clientEnv.NEXT_PUBLIC_API_URL,
   fetchOptions: {
@@ -50,3 +52,5 @@ export const authClient = createAuthClient({
     },
   },
 })
+
+export type ApiKey = Awaited<ReturnType<typeof authClient.apiKey.list>>[number]

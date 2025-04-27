@@ -35,7 +35,6 @@ import {
 const client = postgres(serverEnv.DATABASE_URL)
 export const db = drizzle({
   client,
-  logger: true,
   casing: "snake_case",
   schema: { ...betterAuthSchema, ...taskSchema, ...bookingSchema },
 })

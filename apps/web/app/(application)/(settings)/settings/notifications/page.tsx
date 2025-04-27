@@ -1,10 +1,10 @@
-import UserAccountSettings from "@/components/settings/account"
+import Notifications from "@/components/settings/notifications"
 import React from "react"
 
 export default function Page() {
   return (
     <div>
-      <UserAccountSettings />
+      <Notifications />
     </div>
   )
 }

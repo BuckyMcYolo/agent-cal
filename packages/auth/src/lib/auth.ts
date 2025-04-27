@@ -7,6 +7,7 @@ import {
   openAPI,
   emailOTP,
   bearer,
+  phoneNumber,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
 import { serverEnv } from "@workspace/env-config"
@@ -56,6 +57,11 @@ export const auth = betterAuth({
       : "http://localhost:3000",
   ],
   plugins: [
+    phoneNumber({
+      sendOTP: ({ phoneNumber, code }, request) => {
+        // Implement sending OTP code via SMS
+      },
+    }),
     admin(),
     apiKey({
       defaultPrefix: "agentcal_",

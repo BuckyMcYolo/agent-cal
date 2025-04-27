@@ -13,7 +13,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import { ArrowBigLeft, BookOpen, Brain, Key, User } from "lucide-react"
+import {
+  ArrowBigLeft,
+  Bell,
+  BookOpen,
+  Brain,
+  CreditCard,
+  Key,
+  User,
+  Video,
+} from "lucide-react"
 import Link from "next/link"
 import { NavSecondary } from "./nav-secondary"
 import Image from "next/image"
@@ -27,14 +36,27 @@ const data = {
       icon: <User size={18} />,
     },
     {
+      title: "Notifications",
+      url: "/settings/notifications",
+      icon: <Bell size={18} />,
+    },
+
+    {
+      title: "Video Calls",
+      url: "/settings/video-calls",
+      icon: <Video size={18} />,
+    },
+  ],
+  org: [
+    {
       title: "Billing",
       url: "/settings/billing",
-      icon: <BookOpen size={18} />,
+      icon: <CreditCard size={18} />,
     },
     {
-      title: "Integrations",
-      url: "/settings/integrations",
-      icon: <Brain size={18} />,
+      title: "Team",
+      url: "/settings/team",
+      icon: <User size={18} />,
     },
   ],
   documents: [
@@ -111,6 +133,8 @@ export function SettingsSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.user} title="User Settings" />
+        <NavSecondary items={data.org} title="Organization Settings" />
+
         <NavSecondary items={data.documents} title="Developers" />
         <NavSettings items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

@@ -16,6 +16,7 @@ import { DateTime } from "luxon"
 import { CreateApiKeyDialog } from "./create-api-key-dialog"
 import DeleteApiKeyDialog from "./delete-api-key-dialog"
 import UpdateApiKeyDialog from "./update-api-key-dialog"
+import TableSkeleton from "@/components/misc/loaders/table-skeleton"
 
 export default function APIKeysTable() {
   const {

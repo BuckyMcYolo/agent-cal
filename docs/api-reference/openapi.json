@@ -17,7 +17,7 @@
         "type": "apiKey",
         "in": "header",
         "name": "x-api-key",
-        "description": "API key required for authentication. \n\nKeys begin with 'agentcal_' prefix. Get your API key from the [Developer Dashboard](https://dashboard.agentcal.com/settings/developers). Keys are scoped to an organization."
+        "description": "API key required for authentication. \n\nKeys begin with 'agentcal_' prefix. Get your API key from the [Developer Dashboard](https://dashboard.agentcal.ai/settings/developers). Keys are scoped to an organization."
       }
     },
     "schemas": {},
@@ -58,9 +58,6 @@
         "security": [
           {
             "apiKeyAuth": []
-          },
-          {
-            "cookieAuth": []
           }
         ],
         "tags": [
