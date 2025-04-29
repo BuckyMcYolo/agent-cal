@@ -110,12 +110,9 @@ export default function UpdateApiKeyDialog({
       if (res.status == 200) {
         const data = await res.json()
         return data
-      } else if (res.status == 401) {
-        const error = await res.json()
-        throw new Error(error.message)
       } else {
         const error = await res.json()
-        throw new Error(error.error)
+        throw new Error(error.message)
       }
     },
     mutationKey: ["update-api-key"],

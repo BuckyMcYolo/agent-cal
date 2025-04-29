@@ -9,6 +9,7 @@ import { selectApiKeySchema } from "@workspace/db/schema/auth"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
 import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
+import { paginationSchema } from "@/lib/helpers/openapi/schemas/response/pagination-schema"
 
 export const createKey = createRoute({
   path: "/api-keys",
@@ -97,13 +98,19 @@ export const listOrgKeys = createRoute({
   hide: true,
   request: {
     query: z.object({
-      page: z.number().optional(),
-      perPage: z.number().optional(),
+      page: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined)),
+      perPage: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined)),
     }),
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
-      schema: z.array(selectApiKeySchema),
+      schema: paginationSchema(selectApiKeySchema),
       description: "List of tasks",
     }),
     [HttpStatusCodes.FORBIDDEN]: jsonContent({

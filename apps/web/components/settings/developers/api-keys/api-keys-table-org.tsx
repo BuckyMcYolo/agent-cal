@@ -104,6 +104,7 @@ export default function APIKeysTable() {
                         keyId={key.id}
                         keyName={key.name ?? "Untitled"}
                         keyPermissions={key.permissions}
+                        keyEnabled={key.enabled}
                       />
                       {/* Delete API Key */}
                       <DeleteApiKeyDialog keyId={key.id} />

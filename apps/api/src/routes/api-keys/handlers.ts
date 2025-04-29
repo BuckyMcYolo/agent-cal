@@ -2,7 +2,7 @@ import type { AppRouteHandler } from "@/lib/types/app-types"
 import type { CreateKeyRoute, ListOrgKeysRoute, UpdateKeyRoute } from "./routes"
 import { auth } from "@workspace/auth"
 import * as HttpstatusCodes from "@/lib/misc/http-status-codes"
-import { db } from "@workspace/db"
+import { count, db, inArray } from "@workspace/db"
 import { getUserOrgbyUserId } from "@/lib/queries/users"
 import { apikey } from "@workspace/db/schema/auth"
 
@@ -135,6 +135,13 @@ export const listOrgKeys: AppRouteHandler<ListOrgKeysRoute> = async (c) => {
     })
 
     const userIds = orgUsers.map((user) => user.userId)
+
+    const totalKeysCount = await db
+      .select({ count: count() })
+      .from(apikey)
+      .where(inArray(apikey.userId, userIds))
+      .execute()
+
     const keys = await db.query.apikey.findMany({
       where: (apikey, { inArray }) => inArray(apikey.userId, userIds),
       orderBy: (apikeys, { desc }) => desc(apikeys.createdAt),
@@ -145,7 +152,23 @@ export const listOrgKeys: AppRouteHandler<ListOrgKeysRoute> = async (c) => {
       },
     })
 
-    return c.json(keys, HttpstatusCodes.OK)
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalKeysCount[0]?.count ?? 0 / perPage)
+
+    return c.json(
+      {
+        data: keys,
+        meta: {
+          currentPage: page,
+          perPage,
+          totalItems: totalKeysCount[0]?.count ?? 0,
+          totalPages,
+          nextPage: page < totalPages ? page + 1 : null,
+          prevPage: page > 1 ? page - 1 : null,
+        },
+      },
+      HttpstatusCodes.OK
+    )
   } catch (error) {
     console.error("Error listing Org API keys:", error)
     return c.json(
