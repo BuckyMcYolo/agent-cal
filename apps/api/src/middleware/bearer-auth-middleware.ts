@@ -7,13 +7,13 @@ import serverEnv from "@workspace/env-config/server-env"
 
 /**
  * Middleware that authenticates requests using Better Auth.
- * The headers can be either an API key (prefixed with 'agentcal_') or a user access token cookie.
+ * The headers can be either an API key (prefixed with 'agentcal_') or a user session token .
  */
 export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
   try {
     const headers = c.req.raw.headers
     // Better Auth automatically will create a session from an API Key so there is no need to do it manually
-    // we will get the auth type tho so we can do other things later (like rate limiting/ subtract credits based on if its an api key or user token)
+    // we will get the auth type tho so we can do other things later (like rate limiting/ subtract credits based on if its an api key or user token etc...)
 
     const session = await auth.api.getSession({ headers })
 
@@ -73,7 +73,7 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
         success: false,
         message: "Authentication failed",
       },
-      HttpStatusCodes.UNAUTHORIZED
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
     )
   }
 }

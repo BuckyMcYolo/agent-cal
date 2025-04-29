@@ -68,7 +68,7 @@ function TabsList({
       {/* Sliding indicator */}
       {selectedTab && (
         <div
-          className="absolute top-[3px] z-0 h-[calc(100%-5px)] rounded-md bg-background shadow-sm transition-all duration-200 ease-out"
+          className="absolute top-[2.5px] z-0 h-[calc(100%-5px)] rounded-md bg-background shadow-sm transition-all duration-200 ease-out"
           style={{
             left: `${indicatorStyle.left}px`,
             width: `${indicatorStyle.width}px`,

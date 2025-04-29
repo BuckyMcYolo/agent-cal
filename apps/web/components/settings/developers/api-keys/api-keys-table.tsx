@@ -14,6 +14,12 @@ import { DateTime } from "luxon"
 import { CreateApiKeyDialog } from "./create-api-key-dialog"
 import DeleteApiKeyDialog from "./delete-api-key-dialog"
 import UpdateApiKeyDialog from "./update-api-key-dialog"
+import { Switch } from "@workspace/ui/components/switch"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
 
 export default function APIKeysTable() {
   const {
@@ -99,11 +105,24 @@ export default function APIKeysTable() {
 
                   <TableCell className="text-right">
                     <div className="space-x-2">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Switch checked={key.enabled} disabled />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">
+                            {key.enabled ? "Enabled" : "Disabled"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
                       {/* Update API Key */}
                       <UpdateApiKeyDialog
                         keyId={key.id}
                         keyName={key.name ?? "Untitled"}
                         keyPermissions={key.permissions}
+                        keyEnabled={key.enabled}
                       />
                       {/* Delete API Key */}
                       <DeleteApiKeyDialog keyId={key.id} />

@@ -1,4 +1,4 @@
-import type { AppOpenAPI } from "../types/app-types"
+import type { AppOpenAPI } from "../../types/app-types"
 
 export default function configureOpenAPI(app: AppOpenAPI) {
   // Register security scheme

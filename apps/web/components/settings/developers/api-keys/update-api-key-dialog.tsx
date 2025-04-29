@@ -16,6 +16,7 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { Switch } from "@workspace/ui/components/switch"
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { SquarePen } from "lucide-react"
 import React, { useEffect, useState } from "react"
@@ -27,10 +28,12 @@ export default function UpdateApiKeyDialog({
   keyId,
   keyName,
   keyPermissions,
+  keyEnabled,
 }: {
   keyId: string
   keyName: string
   keyPermissions?: string
+  keyEnabled: boolean
 }) {
   const [keyToEdit, setKeyToEdit] = useState<string | null>(null)
 
@@ -41,6 +44,7 @@ export default function UpdateApiKeyDialog({
   const apiKeySchema = z.object({
     name: z.string().min(1, "Name is required"),
     permissions: z.enum(["all", "read-only"]),
+    enabled: z.boolean(),
   })
 
   type ApiKeyForm = z.infer<typeof apiKeySchema>
@@ -63,6 +67,7 @@ export default function UpdateApiKeyDialog({
           ? "all"
           : "read-only"
         : "all",
+      enabled: keyEnabled,
     },
   })
 
@@ -76,6 +81,7 @@ export default function UpdateApiKeyDialog({
             ? "all"
             : "read-only"
           : "all",
+        enabled: keyEnabled,
       })
     }
   }, [keyToEdit])
@@ -98,6 +104,7 @@ export default function UpdateApiKeyDialog({
         json: {
           name,
           permissions: permissions,
+          enabled: getValues("enabled"),
         },
       })
       if (res.status == 200) {
@@ -167,6 +174,23 @@ export default function UpdateApiKeyDialog({
               placeholder="My API Key"
               className="border p-2 rounded"
             />{" "}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="api-key-enabled">Enabled</Label>
+
+            <Switch
+              id="api-key-enabled"
+              {...register("enabled")}
+              defaultChecked={keyEnabled}
+              onCheckedChange={(checked) => {
+                setValue("enabled", checked, { shouldValidate: true })
+              }}
+            />
+            <p className="text-sm text-muted-foreground">
+              {keyEnabled
+                ? "This API key is enabled and can be used."
+                : "This API key is disabled and cannot be used."}
+            </p>
           </div>
           <div className="space-y-3">
             <Label htmlFor="api-key-permissions">Permissions</Label>

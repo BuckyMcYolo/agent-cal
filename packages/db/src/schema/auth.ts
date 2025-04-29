@@ -22,6 +22,7 @@ import { booking } from "./booking"
 import { eventHost } from "./event-host"
 import { bookingHost } from "./booking-host"
 import { availabilitySchedule } from "./availability"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -138,6 +139,8 @@ export const verification = pgTable("verification", {
 
 export const apikey = pgTable("apikey", {
   id: text("id").primaryKey(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
   name: text("name"),
   start: text("start"),
   prefix: text("prefix"),
@@ -156,8 +159,6 @@ export const apikey = pgTable("apikey", {
   remaining: integer("remaining"),
   lastRequest: timestamp("last_request"),
   expiresAt: timestamp("expires_at"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
   permissions: text("permissions"),
   metadata: text("metadata"),
 })
@@ -170,6 +171,20 @@ export const apikeyRelations = relations(apikey, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export const selectApiKeySchema = createSelectSchema(apikey).omit({
+  key: true,
+})
+
+export const insertApiKeySchema = createInsertSchema(apikey, {
+  name: (schema) => schema.min(1).max(255),
+}).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateApiKeySchema = insertApiKeySchema.partial()
 
 export const member = pgTable("member", {
   id: text("id").primaryKey(),

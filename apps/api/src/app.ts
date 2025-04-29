@@ -1,6 +1,6 @@
 import { auth } from "@workspace/auth"
 import createApp from "@/lib/helpers/app/create-app"
-import configureOpenAPI from "@/lib/openapi/configure-openapi"
+import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import tasksRouter from "./routes/tasks"
 import { cors } from "hono/cors"

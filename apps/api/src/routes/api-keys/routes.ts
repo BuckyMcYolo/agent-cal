@@ -5,6 +5,10 @@ import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
 import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
 import IdStringParamsSchema from "@/lib/helpers/openapi/schemas/params/id-string-params"
+import { selectApiKeySchema } from "@workspace/db/schema/auth"
+import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
+import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
+import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
 
 export const createKey = createRoute({
   path: "/api-keys",
@@ -39,12 +43,7 @@ export const createKey = createRoute({
       description: "The created API key",
     }),
     [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
-    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent({
-      schema: z.object({
-        error: z.string(),
-      }),
-      description: "Internal server error",
-    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
   },
 })
 
@@ -60,6 +59,7 @@ export const updateKey = createRoute({
       schema: z.object({
         name: z.string().min(1).max(255),
         permissions: z.array(z.enum(["read", "write"])).optional(),
+        enabled: z.boolean().optional(),
       }),
       description: "The key to update",
     }),
@@ -76,26 +76,45 @@ export const updateKey = createRoute({
       description: "The updated API key",
     }),
     [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
-    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent({
-      schema: z.object({
-        error: z.string(),
-      }),
-      description: "Internal server error",
-    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
     [HttpStatusCodes.NOT_FOUND]: jsonContent({
-      schema: z.object({
-        error: z.string(),
-      }),
+      schema: notFoundSchema,
       description: "API key not found",
     }),
     [HttpStatusCodes.FORBIDDEN]: jsonContent({
-      schema: z.object({
-        error: z.string(),
-      }),
+      schema: forbiddenSchema,
       description: "You do not have permission to update this API key",
     }),
   },
 })
 
+export const listOrgKeys = createRoute({
+  path: "/api-keys/org",
+  method: "get",
+  summary:
+    "List API Keys for the organization. Must be an admin to make this call.",
+  middleware: [authMiddleware] as const,
+  hide: true,
+  request: {
+    query: z.object({
+      page: z.number().optional(),
+      perPage: z.number().optional(),
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: z.array(selectApiKeySchema),
+      description: "List of tasks",
+    }),
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description: "You do not have permission to make this request",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
 export type CreateKeyRoute = typeof createKey
 export type UpdateKeyRoute = typeof updateKey
+export type ListOrgKeysRoute = typeof listOrgKeys
