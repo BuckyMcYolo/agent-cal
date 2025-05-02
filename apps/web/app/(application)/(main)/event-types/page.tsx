@@ -18,7 +18,6 @@ import {
 } from "@workspace/ui/components/select"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import { honoClient } from "@workspace/api-client"
 
 const Page = () => {
   return (

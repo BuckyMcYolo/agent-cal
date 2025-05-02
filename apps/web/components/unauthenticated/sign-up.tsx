@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import LogoImage from "../../public/logo.png"
 import Image from "next/image"
+import { sluggify } from "@/lib/utils/sluggify"
 
 export default function SignUp() {
   const [passwordType, setPasswordType] = useState<"password" | "text">(
@@ -31,6 +32,7 @@ export default function SignUp() {
   })
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+    const defaultOrgName = `${data.firstName} ${data.lastName}'s Workspace`
     setLoading(true)
     await authClient.signUp.email(
       {
@@ -46,6 +48,18 @@ export default function SignUp() {
         },
       }
     )
+    const { data: org } = await authClient.organization.create({
+      name: defaultOrgName,
+      slug: sluggify(defaultOrgName),
+      fetchOptions: {
+        onError(context) {
+          toast.error("Error: " + context.error.message)
+        },
+        onSuccess() {
+          toast.success("Organization created successfully")
+        },
+      },
+    })
   }
 
   return (

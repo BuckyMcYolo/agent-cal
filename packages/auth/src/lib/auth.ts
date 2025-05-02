@@ -8,11 +8,12 @@ import {
   emailOTP,
   bearer,
   phoneNumber,
+  customSession,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
 import { serverEnv } from "@workspace/env-config"
 
-export const auth = betterAuth({
+const options = {
   appName: "AgentCal",
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -22,12 +23,12 @@ export const auth = betterAuth({
   },
   // Cookie cache
   // This is used to cache the session in a cookie for faster access
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60, // 5 minutes
-    },
-  },
+  // session: {
+  //   cookieCache: {
+  //     enabled: true,
+  //     maxAge: 5 * 60, // 5 minutes
+  //   },
+  // },
   user: {
     additionalFields: {
       timezone: {
@@ -71,7 +72,9 @@ export const auth = betterAuth({
         // Implement sending OTP code via SMS
       },
     }),
-    admin(),
+    admin({
+      defaultRole: "admin",
+    }),
     apiKey({
       defaultPrefix: "agentcal_",
       apiKeyHeaders: ["x-api-key"],
@@ -87,15 +90,59 @@ export const auth = betterAuth({
       },
     }),
     openAPI(),
-    organization({}), //not currently working with typescript declaration files
+    organization(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address
       },
     }),
   ],
+} satisfies BetterAuthOptions
+
+export const auth = betterAuth({
+  ...options,
+  plugins: [
+    ...(options.plugins ?? []),
+    // customSession(async ({ user, session }) => {
+    //   const member = await db.query.member.findFirst({
+    //     where: (member, { eq }) => eq(member.userId, user.id),
+    //     with: {
+    //       organization: true,
+    //     },
+    //   })
+
+    //   // now both user and session will infer the fields added by plugins and your custom fields
+    //   return {
+    //     user: {
+    //       ...user,
+    //       organization: member?.organization,
+    //       member: {
+    //         id: member?.id,
+    //         role: member?.role,
+    //         userId: member?.userId,
+    //       },
+    //     },
+    //     session,
+    //   }
+    // }, options), // pass options here
+  ],
 })
 
 export type UserSession = typeof auth.$Infer.Session
 export type Session = typeof auth.$Infer.Session.session
 export type User = typeof auth.$Infer.Session.user
+// export interface UserWithOrganization extends User {
+//   organization?: {
+//     id: string
+//     name: string
+//     createdAt: Date
+//     metadata: string | null
+//     slug: string | null
+//     logo: string | null
+//   }
+//   member: {
+//     id?: string
+//     role?: string
+//     userId?: string
+//   }
+// }

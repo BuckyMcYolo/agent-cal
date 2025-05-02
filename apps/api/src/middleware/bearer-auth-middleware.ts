@@ -16,7 +16,6 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
     // we will get the auth type tho so we can do other things later (like rate limiting/ subtract credits based on if its an api key or user token etc...)
 
     const session = await auth.api.getSession({ headers })
-
     if (!session) {
       return c.json(
         {

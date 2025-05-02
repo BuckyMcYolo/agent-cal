@@ -99,13 +99,13 @@ export const listOrgKeys = createRoute({
   request: {
     query: z.object({
       page: z
-        .string()
+        .number()
         .optional()
-        .transform((val) => (val ? parseInt(val, 10) : undefined)),
+        .transform((val) => (val ? 10 : undefined)),
       perPage: z
-        .string()
+        .number()
         .optional()
-        .transform((val) => (val ? parseInt(val, 10) : undefined)),
+        .transform((val) => (val ? 10 : undefined)),
     }),
   },
   responses: {

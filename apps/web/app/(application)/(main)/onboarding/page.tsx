@@ -1,11 +1,22 @@
+import OnboardingDialog from "@/components/onboarding/onboarding-dialog"
+import { authClient } from "@workspace/auth/client"
+import { redirect } from "next/navigation"
 import React from "react"
 
-const Page = () => {
+const Page = async () => {
+  const { data } = await authClient.getSession()
+  const { data: activeMember } = await authClient.organization.getActiveMember()
+
+  console.log("activeMember", activeMember)
+  console.log("data", data)
+
+  if (activeMember?.role !== "owner") {
+    redirect("/event-types")
+  }
+
   return (
     <div>
-      <h1 className="text-3xl font-bold">Onboarding</h1>
-      <p className="text-lg">Welcome to the onboarding page!</p>
-      <p className="text-lg">This is where you can set up your account.</p>
+      <OnboardingDialog />
     </div>
   )
 }

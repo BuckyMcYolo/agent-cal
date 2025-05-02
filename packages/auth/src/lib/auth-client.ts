@@ -6,6 +6,7 @@ import {
   emailOTPClient,
   inferAdditionalFields,
   phoneNumberClient,
+  customSessionClient,
 } from "better-auth/client/plugins"
 import { clientEnv } from "@workspace/env-config"
 import { auth } from "./auth"
@@ -18,6 +19,7 @@ export const authClient = createAuthClient({
     emailOTPClient(),
     inferAdditionalFields<typeof auth>(),
     phoneNumberClient(),
+    // customSessionClient<typeof auth>(),
   ],
   baseURL: clientEnv.NEXT_PUBLIC_API_URL,
   fetchOptions: {
