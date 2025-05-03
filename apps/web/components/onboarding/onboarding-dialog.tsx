@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@workspace/ui/components/dialog"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -55,6 +55,9 @@ import Image from "next/image"
 import logoImage from "../../public/favicon.svg"
 import { useUser } from "@/hooks/use-user"
 import Confetti from "react-confetti"
+import { apiClient } from "@/lib/utils/api-client"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 // Zod schemas for each step
 const accountTypeSchema = z.object({
@@ -109,6 +112,8 @@ const OnboardingDialog = () => {
   // Get the current user's role from auth client
   const { user, error, isLoading } = useUser()
 
+  const router = useRouter()
+
   const isAdmin = user?.role === "admin"
 
   // Client-side component since we're using hooks
@@ -144,6 +149,8 @@ const OnboardingDialog = () => {
   const accountType = watch("accountType")
   const calendarService = watch("calendarService")
 
+  console.log("Form values:", getValues())
+
   const validateCurrentStep = async () => {
     let fieldsToValidate: string[] = []
 
@@ -152,6 +159,18 @@ const OnboardingDialog = () => {
         // If admin user, validate account type
         if (isAdmin) {
           fieldsToValidate = ["accountType"]
+
+          // Check if accountType is defined
+          const accountType = watch("accountType")
+          if (!accountType) {
+            form.setError("accountType", {
+              type: "manual",
+              message: "Please select how you will use AgentCal",
+            })
+            return false
+          }
+
+          // Additional validation for business option
           if (accountType === "business") {
             fieldsToValidate.push("businessName", "teamSize")
 
@@ -175,6 +194,7 @@ const OnboardingDialog = () => {
               return false
             }
           }
+          return true
         }
         // For non-admin users, just proceed (no validation needed for welcome screen)
         return true
@@ -232,23 +252,64 @@ const OnboardingDialog = () => {
 
     return await trigger(fieldsToValidate as any)
   }
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: OnboardingFormValues) => {
+      console.log("Submitting onboarding data:", data)
+      const res = await apiClient.onboarding.$post({
+        json: {
+          onboarding: {
+            timezone: data.timezone,
+            calendarService: data.calendarService,
+            shouldShowFullTour:
+              data.familiarWithTools === "notAtAll" ||
+              data.familiarWithTools === "somewhat"
+                ? true
+                : false,
+            schedulingPreference: data.schedulingType,
+            referralSource:
+              data.referralSource === "other"
+                ? data.referralDetails
+                : data.referralSource,
+          },
+          businessName: data.businessName,
+          isBusinessOrPersonal: data.accountType,
+        },
+      })
+
+      const d = await res.json()
+      if (!res.ok) {
+        throw new Error(d.message)
+      }
+      return d
+    },
+    onSuccess: () => {
+      setStep(5)
+      setTimeout(() => {
+        router.replace("/event-types")
+      }, 4500)
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred"
+      toast.error(errorMessage)
+    },
+  })
+
   const handleNext = async () => {
     const isValid = await validateCurrentStep()
 
     if (isValid) {
-      if (step < totalSteps) {
+      if (step < 4) {
         setStep(step + 1)
       } else {
         const values = getValues()
         console.log("Form submitted:", values)
 
-        if (step < totalSteps) {
+        if (step < 4) {
           setStep(step + 1)
         } else {
-          // Final submission after all steps completed
-          setTimeout(() => {
-            window.location.href = "/event-types"
-          }, 3000)
+          mutate(values)
         }
       }
     }
@@ -960,6 +1021,7 @@ const OnboardingDialog = () => {
                       type="button"
                       onClick={handleNext}
                       className="flex items-center"
+                      loading={isPending}
                     >
                       {step === totalSteps - 1 ? "Finish" : "Next"}{" "}
                       {step !== totalSteps - 1 && (
@@ -968,7 +1030,7 @@ const OnboardingDialog = () => {
                     </Button>
                   ) : (
                     <div className="h-10"></div>
-                    // {/* Empty spacer for the final step */}
+                    // Empty spacer for the final step
                   )}
                 </div>
               </DialogFooter>

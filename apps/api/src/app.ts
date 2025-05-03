@@ -7,6 +7,8 @@ import { cors } from "hono/cors"
 import serverEnv from "@workspace/env-config/server-env"
 import apiKeysRouter from "./routes/api-keys"
 import eventTypesRouter from "./routes/event-types"
+import onboardingRouter from "./routes/onboarding"
+import userPreferencesRouter from "./routes/user"
 
 const app = createApp()
 
@@ -34,7 +36,14 @@ app.use(
 
 configureOpenAPI(app)
 
-const routes = [index, tasksRouter, apiKeysRouter, eventTypesRouter] as const
+const routes = [
+  index,
+  tasksRouter,
+  apiKeysRouter,
+  eventTypesRouter,
+  onboardingRouter,
+  userPreferencesRouter,
+] as const
 
 routes.forEach((route) => app.route("/", route))
 

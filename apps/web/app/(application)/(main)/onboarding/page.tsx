@@ -1,11 +1,14 @@
 import OnboardingDialog from "@/components/onboarding/onboarding-dialog"
-import { authClient } from "@workspace/auth/client"
+import { getUserPreferences } from "@/lib/queries/get-user-preferences"
 import { redirect } from "next/navigation"
 import React from "react"
 
 const Page = async () => {
-  const { data } = await authClient.getSession()
-  const { data: activeMember } = await authClient.organization.getActiveMember()
+  const userPreferences = await getUserPreferences()
+
+  if (userPreferences.onboardingCompleted) {
+    redirect("/event-types")
+  }
 
   // console.log("activeMember", activeMember)
   // console.log("data", data)

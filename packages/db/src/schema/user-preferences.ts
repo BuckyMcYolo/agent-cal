@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core"
 import { user } from "./auth"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { relations } from "drizzle-orm"
 
 export const userPreferences = pgTable("user_preferences", {
   id: uuid().primaryKey().defaultRandom(),
@@ -27,6 +28,16 @@ export const userPreferences = pgTable("user_preferences", {
   referralSource: text(), // "google", "social media", etc.
   onboardingCompleted: boolean().default(false).notNull(),
 })
+
+export const userPreferencesRelations = relations(
+  userPreferences,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [userPreferences.userId],
+      references: [user.id],
+    }),
+  })
+)
 
 export const selectUserPreferences = createSelectSchema(userPreferences)
 

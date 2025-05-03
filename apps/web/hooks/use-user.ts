@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
-
-export const useUser = (disableCache?: boolean) => {
+export const useUser = ({
+  disableCache = false,
+}: {
+  disableCache?: boolean
+} = {}) => {
   const {
     data: user,
     isLoading,

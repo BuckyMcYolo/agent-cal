@@ -16,6 +16,7 @@ import {
   timestamp,
   boolean,
   pgEnum,
+  unique,
 } from "drizzle-orm/pg-core"
 import { eventType } from "./event-types"
 import { booking } from "./booking"
@@ -23,6 +24,7 @@ import { eventHost } from "./event-host"
 import { bookingHost } from "./booking-host"
 import { availabilitySchedule } from "./availability"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { userPreferences } from "./user-preferences"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -53,16 +55,25 @@ export const userRelations = relations(user, ({ one, many }) => ({
   eventHosts: many(eventHost),
   bookingHosts: many(bookingHost),
   availabilitySchedules: many(availabilitySchedule),
+  // user settings
+  preferences: one(userPreferences, {
+    fields: [user.id],
+    references: [userPreferences.userId],
+  }),
 }))
 
-export const organization = pgTable("organization", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").unique(),
-  logo: text("logo"),
-  createdAt: timestamp("created_at").notNull(),
-  metadata: text("metadata"),
-})
+export const organization = pgTable(
+  "organization",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    slug: text("slug").unique(),
+    logo: text("logo"),
+    createdAt: timestamp("created_at").notNull(),
+    metadata: text("metadata"),
+  },
+  (t) => [unique("unique_organization_slug").on(t.slug)]
+)
 
 export const organizationRelations = relations(organization, ({ many }) => ({
   members: many(member),
