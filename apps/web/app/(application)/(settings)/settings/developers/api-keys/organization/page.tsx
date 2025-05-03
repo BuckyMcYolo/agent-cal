@@ -1,5 +1,10 @@
+import OrgAPIKeysTable from "@/components/settings/developers/api-keys/organization/org-api-keys-table"
 import { apiClient } from "@/lib/utils/api-client"
-import { QueryClient } from "@tanstack/react-query"
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
 import { redirect } from "next/navigation"
 import React from "react"
@@ -16,16 +21,30 @@ const Page = async () => {
   queryClient.prefetchQuery({
     queryKey: ["api-keys-org"],
     queryFn: async () => {
-      const res = await apiClient["api-keys"].org.$get({
-        query: { page: 1, perPage: 10 },
-      })
-      const data = await res.json()
-      console.log("data", data)
-      return data
+      try {
+        const res = await apiClient["api-keys"].org.$get({
+          query: { page: "1", perPage: "10" },
+        })
+        if (res.status === 200) {
+          const data = await res.json()
+          return data
+        } else {
+          const data = await res.json()
+          throw new Error(data.message)
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error"
+        throw new Error(errorMessage)
+      }
     },
   })
 
-  return <div>Page</div>
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <OrgAPIKeysTable />
+    </HydrationBoundary>
+  )
 }
 
 export default Page

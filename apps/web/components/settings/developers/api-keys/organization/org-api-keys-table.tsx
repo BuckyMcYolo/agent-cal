@@ -11,11 +11,19 @@ import {
   TableRow,
 } from "@workspace/ui/components/table"
 import { DateTime } from "luxon"
-import { CreateApiKeyDialog } from "./create-api-key-dialog"
-import DeleteApiKeyDialog from "./delete-api-key-dialog"
-import UpdateApiKeyDialog from "./update-api-key-dialog"
+import { CreateApiKeyDialog } from "../create-api-key-dialog"
+import DeleteApiKeyDialog from "../delete-api-key-dialog"
+import UpdateApiKeyDialog from "../update-api-key-dialog"
+import { apiClient } from "@/lib/utils/api-client"
+import { useUser } from "@/hooks/use-user"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
+import { Switch } from "@workspace/ui/components/switch"
 
-export default function APIKeysTable() {
+export default function OrgAPIKeysTable() {
   const {
     data: apiKeys,
     isLoading,
@@ -23,25 +31,48 @@ export default function APIKeysTable() {
   } = useSuspenseQuery({
     queryKey: ["api-keys-org"],
     queryFn: async () => {
-      const res = await authClient.apiKey.list({
-        fetchOptions: {
-          onError(context) {
-            throw new Error(context.error.message)
-          },
-        },
-      })
-      return res.data
+      try {
+        const res = await apiClient["api-keys"].org.$get({
+          query: { page: "1", perPage: "10" },
+        })
+        if (res.status === 200) {
+          const data = await res.json()
+          // Transform the data to convert date strings back to Date objects
+          return {
+            ...data,
+            data: data.data?.map((key) => ({
+              ...key,
+              createdAt: new Date(key.createdAt),
+              updatedAt: new Date(key.updatedAt),
+              lastRequest: key.lastRequest ? new Date(key.lastRequest) : null,
+              expiresAt: key.expiresAt ? new Date(key.expiresAt) : null,
+            })),
+          }
+        } else {
+          const data = await res.json()
+          throw new Error(data.message)
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error"
+        throw new Error(errorMessage)
+      }
     },
   })
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">API Keys</h1>
-      <p className="text-sm text-muted-foreground">
-        Manage your API keys and permissions.
-      </p>
+      <header className="pb-5">
+        <h1 className="text-2xl font-bold">
+          API Keys
+          <span className="text-sm text-muted-foreground"> (Organization)</span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Manage API keys for your organization. You can revoke keys from any
+          user in your organization.
+        </p>
+      </header>
 
-      <CreateApiKeyDialog />
       <Table>
         <TableHeader className="bg-muted/50 rounded-xl">
           <TableRow>
@@ -49,6 +80,7 @@ export default function APIKeysTable() {
             <TableHead>Created</TableHead>
             <TableHead>Last Used</TableHead>
             <TableHead>Expires</TableHead>
+            <TableHead>User</TableHead>
             <TableHead className="w-[100px]">Permissions</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -66,14 +98,14 @@ export default function APIKeysTable() {
                 {error.message}
               </TableCell>
             </TableRow>
-          ) : apiKeys?.length === 0 ? (
+          ) : apiKeys?.meta.totalItems === 0 ? (
             <TableRow>
               <TableCell colSpan={5} className="text-center p-4">
                 No API keys found.
               </TableCell>
             </TableRow>
           ) : (
-            apiKeys
+            apiKeys.data
               ?.sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
               .map((key) => (
                 <TableRow key={key.id} className="hover:bg-transparent">
@@ -91,6 +123,9 @@ export default function APIKeysTable() {
                       ? "Never"
                       : DateTime.fromJSDate(key.expiresAt).toFormat("ff")}
                   </TableCell>
+                  <TableCell>
+                    <span>{key.user.name}</span>
+                  </TableCell>
                   <TableCell className="w-[100px] capitalize">
                     {key.permissions
                       ? JSON.parse(key.permissions)?.all?.join(", ")
@@ -99,12 +134,24 @@ export default function APIKeysTable() {
 
                   <TableCell className="text-right">
                     <div className="space-x-2">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Switch checked={key.enabled ?? true} disabled />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">
+                            {key.enabled ? "Enabled" : "Disabled"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
                       {/* Update API Key */}
                       <UpdateApiKeyDialog
                         keyId={key.id}
                         keyName={key.name ?? "Untitled"}
-                        keyPermissions={key.permissions}
-                        keyEnabled={key.enabled}
+                        keyPermissions={key.permissions ?? undefined}
+                        keyEnabled={key.enabled ?? true}
                       />
                       {/* Delete API Key */}
                       <DeleteApiKeyDialog keyId={key.id} />

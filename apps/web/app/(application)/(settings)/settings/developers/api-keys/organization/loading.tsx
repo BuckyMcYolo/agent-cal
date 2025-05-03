@@ -13,6 +13,7 @@ export default function Loading() {
         { header: "Permissions" },
         { header: "", rightAligned: true },
       ]}
+      showActionButton={false}
     />
   )
 }

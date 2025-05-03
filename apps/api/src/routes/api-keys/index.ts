@@ -7,5 +7,7 @@ const apiKeysRouter = createRouter()
   .openapi(routes.createKey, handlers.createTask)
   .openapi(routes.updateKey, handlers.updateTask)
   .openapi(routes.listOrgKeys, handlers.listOrgKeys)
+  .openapi(routes.deleteOrgKey, handlers.deleteOrgKey)
+  .openapi(routes.updateOrgKey, handlers.updateOrgApiKey)
 
 export default apiKeysRouter

@@ -47,12 +47,13 @@ const routes = [
 
 routes.forEach((route) => app.route("/", route))
 
-//handle all better-auth routes
-app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw))
-
 app.get("/docs/auth", async (c) => {
   const openAPIAuth = await auth.api.generateOpenAPISchema()
   return c.json(openAPIAuth)
+})
+
+app.on(["POST", "GET"], "/api/auth/*", (c) => {
+  return auth.handler(c.req.raw)
 })
 
 export type AppType = (typeof routes)[number]

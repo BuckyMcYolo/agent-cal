@@ -1,3 +1,4 @@
+import { useUser } from "@/hooks/use-user"
 import { apiClient } from "@/lib/utils/api-client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -35,6 +36,8 @@ export default function UpdateApiKeyDialog({
   keyPermissions?: string
   keyEnabled: boolean
 }) {
+  const { user, isLoading } = useUser()
+
   const [keyToEdit, setKeyToEdit] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
@@ -96,8 +99,7 @@ export default function UpdateApiKeyDialog({
     mutationFn: async ({ name }: { name: string }) => {
       const permissions: ("read" | "write")[] =
         getValues("permissions") === "all" ? ["read", "write"] : ["read"]
-
-      const res = await apiClient["api-keys"][":id"].$patch({
+      const body = {
         param: {
           id: keyId,
         },
@@ -106,7 +108,14 @@ export default function UpdateApiKeyDialog({
           permissions: permissions,
           enabled: getValues("enabled"),
         },
-      })
+      }
+
+      const updateFn =
+        user?.role === "admin"
+          ? await apiClient["api-keys"].org[":id"].$patch(body)
+          : await apiClient["api-keys"][":id"].$patch(body)
+
+      const res = updateFn
       if (res.status == 200) {
         const data = await res.json()
         return data
@@ -120,6 +129,9 @@ export default function UpdateApiKeyDialog({
       toast.success("API key updated successfully")
       queryClient.invalidateQueries({
         queryKey: ["api-keys-user"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["api-keys-org"],
       })
       setKeyToEdit(null)
       reset()

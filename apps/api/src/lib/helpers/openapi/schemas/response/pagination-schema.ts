@@ -1,8 +1,7 @@
-import jsonContentRequired from "../json-content-required"
 import { z } from "@hono/zod-openapi"
 import type { ZodSchema } from "../types"
 
-export const paginationSchema = (schema: ZodSchema) => {
+export const paginationSchema = <T extends ZodSchema>(schema: T) => {
   return z.object({
     data: z.array(schema),
     meta: z.object({

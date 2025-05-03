@@ -127,6 +127,9 @@ export function CreateApiKeyDialog() {
       queryClient.invalidateQueries({
         queryKey: ["api-keys-user"],
       })
+      queryClient.invalidateQueries({
+        queryKey: ["api-keys-org"],
+      })
       setCreateKeyDialogOpen(false)
       reset()
       setCopyKeyDialogOpen(true)
