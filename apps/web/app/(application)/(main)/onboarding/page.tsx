@@ -7,12 +7,12 @@ const Page = async () => {
   const { data } = await authClient.getSession()
   const { data: activeMember } = await authClient.organization.getActiveMember()
 
-  console.log("activeMember", activeMember)
-  console.log("data", data)
+  // console.log("activeMember", activeMember)
+  // console.log("data", data)
 
-  if (activeMember?.role !== "owner") {
-    redirect("/event-types")
-  }
+  // if (activeMember?.role !== "owner") {
+  //   redirect("/event-types")
+  // }
 
   return (
     <div>

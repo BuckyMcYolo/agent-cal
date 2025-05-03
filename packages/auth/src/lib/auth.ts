@@ -29,15 +29,6 @@ const options = {
   //     maxAge: 5 * 60, // 5 minutes
   //   },
   // },
-  user: {
-    additionalFields: {
-      timezone: {
-        type: "string",
-        required: true,
-        defaultValue: "America/New_York",
-      },
-    },
-  },
   //rate limiting
   rateLimit: {
     enabled: true,

@@ -40,7 +40,6 @@ export const user = pgTable("user", {
   phoneNumberVerified: boolean("phone_number_verified")
     .default(false)
     .notNull(),
-  timezone: text("timezone").default("America/New_York").notNull(),
 })
 
 export const userRelations = relations(user, ({ one, many }) => ({

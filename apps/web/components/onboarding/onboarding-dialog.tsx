@@ -53,6 +53,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import logoImage from "../../public/favicon.svg"
+import { useUser } from "@/hooks/use-user"
 import Confetti from "react-confetti"
 
 // Zod schemas for each step
@@ -105,6 +106,11 @@ const onboardingSchema = z.object({
 type OnboardingFormValues = z.infer<typeof onboardingSchema>
 
 const OnboardingDialog = () => {
+  // Get the current user's role from auth client
+  const { user, error, isLoading } = useUser()
+
+  const isAdmin = user?.role === "admin"
+
   // Client-side component since we're using hooks
   const [step, setStep] = useState(1)
   const totalSteps = 5
@@ -143,30 +149,35 @@ const OnboardingDialog = () => {
 
     switch (step) {
       case 1:
-        fieldsToValidate = ["accountType"]
-        if (accountType === "business") {
-          fieldsToValidate.push("businessName", "teamSize")
+        // If admin user, validate account type
+        if (isAdmin) {
+          fieldsToValidate = ["accountType"]
+          if (accountType === "business") {
+            fieldsToValidate.push("businessName", "teamSize")
 
-          // Additional validation for business fields
-          const businessName = watch("businessName")
-          const teamSize = watch("teamSize")
+            // Additional validation for business fields
+            const businessName = watch("businessName")
+            const teamSize = watch("teamSize")
 
-          if (!businessName || businessName.trim() === "") {
-            form.setError("businessName", {
-              type: "manual",
-              message: "Business name is required",
-            })
-            return false
-          }
+            if (!businessName || businessName.trim() === "") {
+              form.setError("businessName", {
+                type: "manual",
+                message: "Business name is required",
+              })
+              return false
+            }
 
-          if (!teamSize || teamSize === "") {
-            form.setError("teamSize", {
-              type: "manual",
-              message: "Team size is required",
-            })
-            return false
+            if (!teamSize || teamSize === "") {
+              form.setError("teamSize", {
+                type: "manual",
+                message: "Team size is required",
+              })
+              return false
+            }
           }
         }
+        // For non-admin users, just proceed (no validation needed for welcome screen)
+        return true
         break
       case 2:
         fieldsToValidate = ["usedCalendarTools", "familiarWithTools"]
@@ -285,6 +296,33 @@ const OnboardingDialog = () => {
     )
   }
 
+  if (error) {
+    console.error("Error fetching user:", error)
+    return null
+  }
+  if (isLoading) {
+    return (
+      <div>
+        <Dialog open={true}>
+          <DialogContent
+            className="sm:max-w-[650px]"
+            showCloseBtn={false}
+            autoFocus={false}
+          >
+            <DialogHeader className="px-6 pt-4">
+              <DialogTitle className="text-xl font-semibold">
+                Loading...
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex items-center justify-center h-full pb-8">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    )
+  }
+
   return (
     <Dialog open={true}>
       <DialogContent
@@ -326,7 +364,7 @@ const OnboardingDialog = () => {
               </DialogHeader>
 
               <div className="px-6">
-                {/* Step 1: Account Type */}
+                {/* Step 1: Welcome to AgentCal */}
                 {step === 1 && (
                   <div className="space-y-6">
                     <div className="flex justify-center gap-3 py-10">
@@ -340,41 +378,64 @@ const OnboardingDialog = () => {
                       <div className="text-6xl font-semibold">AgentCal</div>
                     </div>
 
-                    <FormField
-                      control={form.control}
-                      name="accountType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-4">
-                          <FormLabel>How will you use AgentCal?</FormLabel>
-                          <div className="space-y-3">
-                            <RadioCard
-                              value="personal"
-                              checked={field.value === "personal"}
-                              onChange={(value) => field.onChange(value)}
-                              icon={
-                                <User className="h-5 w-5 text-violet-500" />
-                              }
-                            >
-                              <span className="font-normal">Personal use</span>
-                            </RadioCard>
+                    {isAdmin ? (
+                      // Admin-specific content with account type selection
+                      <FormField
+                        control={form.control}
+                        name="accountType"
+                        render={({ field }) => (
+                          <FormItem className="space-y-4">
+                            <FormLabel>How will you use AgentCal?</FormLabel>
+                            <div className="space-y-3">
+                              <RadioCard
+                                value="personal"
+                                checked={field.value === "personal"}
+                                onChange={(value) => field.onChange(value)}
+                                icon={
+                                  <User className="h-5 w-5 text-violet-500" />
+                                }
+                              >
+                                <span className="font-normal">
+                                  Personal use
+                                </span>
+                              </RadioCard>
 
-                            <RadioCard
-                              value="business"
-                              checked={field.value === "business"}
-                              onChange={(value) => field.onChange(value)}
-                              icon={
-                                <Briefcase className="h-5 w-5 text-violet-500" />
-                              }
-                            >
-                              <span className="font-normal">Business use</span>
-                            </RadioCard>
+                              <RadioCard
+                                value="business"
+                                checked={field.value === "business"}
+                                onChange={(value) => field.onChange(value)}
+                                icon={
+                                  <Briefcase className="h-5 w-5 text-violet-500" />
+                                }
+                              >
+                                <span className="font-normal">
+                                  Business use
+                                </span>
+                              </RadioCard>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ) : (
+                      // Non-admin welcome content
+                      <div className="text-center space-y-4">
+                        <h3 className="text-2xl font-medium">
+                          Welcome to AgentCal!
+                        </h3>
+                        <p className="text-muted-foreground">
+                          Let's set up your calendar preferences to help you
+                          schedule meetings more efficiently.
+                        </p>
+                        <div className="flex justify-center mt-6">
+                          <div className="w-32 h-32 bg-contain bg-center bg-no-repeat">
+                            <Calendar className="w-full h-full text-violet-500" />
                           </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        </div>
+                      </div>
+                    )}
 
-                    {accountType === "business" && (
+                    {accountType === "business" && isAdmin && (
                       <>
                         <FormField
                           control={form.control}
@@ -439,44 +500,6 @@ const OnboardingDialog = () => {
                         }}
                       ></div>
                     </div>
-
-                    {/* Moved this field up from Step 3 */}
-                    <FormField
-                      control={form.control}
-                      name="familiarWithTools"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            How familiar are you with scheduling tools such as
-                            Calendly?
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || undefined}
-                            required
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select your familiarity level" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="notAtAll">
-                                Not at all familiar
-                              </SelectItem>
-                              <SelectItem value="somewhat">
-                                Somewhat familiar
-                              </SelectItem>
-                              <SelectItem value="veryFamiliar">
-                                Very familiar
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <FormField
                       control={form.control}
                       name="usedCalendarTools"
@@ -520,7 +543,6 @@ const OnboardingDialog = () => {
                         </FormItem>
                       )}
                     />
-
                     {/* New Calendar Service Field - Only shown when user has used calendar tools before */}
                     {watch("usedCalendarTools") === "yes" && (
                       <>
@@ -530,8 +552,7 @@ const OnboardingDialog = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>
-                                Which calendar service would you like to sync
-                                with AgentCal? *
+                                Which calendar service do you use? *
                               </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
@@ -587,6 +608,42 @@ const OnboardingDialog = () => {
                         )}
                       </>
                     )}
+                    {/* Moved this field up from Step 3 */}
+                    <FormField
+                      control={form.control}
+                      name="familiarWithTools"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            How familiar are you with scheduling tools such as
+                            Calendly? *
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value || undefined}
+                            required
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select your familiarity level" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="notAtAll">
+                                Not at all familiar
+                              </SelectItem>
+                              <SelectItem value="somewhat">
+                                Somewhat familiar
+                              </SelectItem>
+                              <SelectItem value="veryFamiliar">
+                                Very familiar
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 )}
 
@@ -671,7 +728,7 @@ const OnboardingDialog = () => {
                                 <SelectValue placeholder="Select your timezone" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="max-h-96">
                               <SelectItem value="America/New_York">
                                 America/New_York (Eastern Time)
                               </SelectItem>
@@ -802,7 +859,7 @@ const OnboardingDialog = () => {
                       name="referralSource"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Where did you hear about us?</FormLabel>
+                          <FormLabel>Where did you hear about us? *</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             value={field.value || undefined}
@@ -860,6 +917,9 @@ const OnboardingDialog = () => {
                     <Confetti
                       width={window.innerWidth}
                       height={window.innerHeight}
+                      recycle={false}
+                      numberOfPieces={500}
+                      // gravity={1}
                     />
 
                     <div className="flex justify-center">

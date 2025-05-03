@@ -8,6 +8,7 @@ import * as eventHostSchema from "./schema/event-host"
 import * as bookingHostSchema from "./schema/booking-host"
 import * as availabilitySchema from "./schema/availability"
 import * as attendeeSchema from "./schema/attendee"
+import * as userPreferencesSchema from "./schema/user-preferences"
 import { serverEnv } from "@workspace/env-config"
 import {
   eq,
@@ -50,6 +51,7 @@ export const db = drizzle({
     ...eventHostSchema,
     ...availabilitySchema,
     ...attendeeSchema,
+    ...userPreferencesSchema,
   },
 })
 
