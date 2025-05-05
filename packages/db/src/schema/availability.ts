@@ -32,7 +32,6 @@ export const availabilitySchedule = pgTable(
 
     name: text().notNull(), // e.g., "Standard Work Hours", "Summer Hours"
     timeZone: text().notNull(),
-
     ownerId: text()
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -50,6 +49,13 @@ export const availabilitySchedule = pgTable(
 )
 
 // 2. Weekly schedule slots table - for type safety
+// ex. Sunday null
+// ex. Monday 9am-5pm
+// ex. Tuesday 8am-12pm & 1pm-5pm
+// ex. Wednesday 9am-5pm
+// ex. Thursday 9am-5pm
+// ex. Friday 9am-12pm
+// ex. Saturday null
 export const weeklyScheduleSlot = pgTable(
   "weekly_schedule_slot",
   {
@@ -78,7 +84,7 @@ export const weeklyScheduleSlot = pgTable(
   ]
 )
 
-// 3. Exceptions table (timestampe ranges when regular schedule is modified)
+// 3. Exceptions table (timestamp ranges when regular schedule is modified)
 export const availabilityException = pgTable(
   "availability_exception",
   {

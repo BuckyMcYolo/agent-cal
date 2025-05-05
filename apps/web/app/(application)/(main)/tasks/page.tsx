@@ -24,9 +24,7 @@ const Page = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>
-        <TasksList />
-      </div>
+      <TasksList />
     </HydrationBoundary>
   )
 }

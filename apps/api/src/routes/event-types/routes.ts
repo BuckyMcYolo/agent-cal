@@ -20,6 +20,7 @@ import slugQuery from "@/lib/helpers/openapi/schemas/query/slug-query"
 
 const tags = ["Event Types"]
 
+// not a protected route since public booking pages will need to access this
 export const listEventTypes = createRoute({
   path: "/event-types",
   method: "get",
