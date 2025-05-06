@@ -15,6 +15,12 @@ import { db, eq } from "@workspace/db"
 import { organization } from "@workspace/db/schema/auth"
 import { getUserOrgbyUserId } from "@/lib/queries/users"
 import { sluggify } from "@/lib/misc/sluggify"
+import {
+  availabilitySchedule,
+  insertAvailabilitySchema,
+  insertWeeklyScheduleSchema,
+  weeklyScheduleSlot,
+} from "@workspace/db/schema/availability"
 
 export const completeOnboardingRoute = createRoute({
   path: "/onboarding",
@@ -31,6 +37,83 @@ export const completeOnboardingRoute = createRoute({
             onboardingCompleted: true,
           })
         ),
+        availabilitySchedule: z
+          .object({
+            schedule: zodSchemaToOpenAPI(
+              insertAvailabilitySchema.omit({
+                timeZone: true,
+                ownerId: true,
+                organizationId: true,
+                isDefault: true,
+              })
+            ),
+            weeklySlots: z.object({
+              sunday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              monday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              tuesday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              wednesday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              thursday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              friday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+              saturday: z.object({
+                enabled: z.boolean(),
+                slots: z.array(
+                  z.object({
+                    startTime: z.string(),
+                    endTime: z.string(),
+                  })
+                ),
+              }),
+            }),
+          })
+          .optional(),
         businessName: z.string().optional(),
         isBusinessOrPersonal: z.enum(["business", "personal"]),
       }),
@@ -70,7 +153,12 @@ export const completeOnboardingHandler: AppRouteHandler<
 > = async (c) => {
   try {
     const onboardingInfo = c.req.valid("json")
-    const { onboarding, businessName, isBusinessOrPersonal } = onboardingInfo
+    const {
+      onboarding,
+      businessName,
+      isBusinessOrPersonal,
+      availabilitySchedule: availabilityScheduleData,
+    } = onboardingInfo
 
     const user = c.var.user
 
@@ -128,6 +216,74 @@ export const completeOnboardingHandler: AppRouteHandler<
           slug: sluggify(businessName),
         })
         .where(eq(organization.id, org.id))
+    }
+
+    // Create availability schedule if provided
+    if (availabilityScheduleData) {
+      try {
+        // 1. Insert the main availability schedule
+        const [schedule] = await db
+          .insert(availabilitySchedule)
+          .values({
+            name: availabilityScheduleData.schedule.name || "Default Schedule",
+            timeZone: onboarding.timezone || "America/New_York",
+            ownerId: user.id,
+            organizationId: org.id,
+            isDefault: true, // Set as default schedule
+          })
+          .returning()
+
+        if (!schedule) {
+          throw new Error("Failed to create availability schedule")
+        }
+
+        // 2. Map days to their numerical values (0-6, Sunday-Saturday)
+        const dayMapping = {
+          sunday: 0,
+          monday: 1,
+          tuesday: 2,
+          wednesday: 3,
+          thursday: 4,
+          friday: 5,
+          saturday: 6,
+        }
+
+        // 3. Prepare slots to insert
+        const weeklySlots = []
+
+        for (const [day, index] of Object.entries(dayMapping) as [
+          keyof typeof dayMapping,
+          number,
+        ][]) {
+          const dayData =
+            availabilityScheduleData.weeklySlots[
+              day as keyof typeof availabilityScheduleData.weeklySlots
+            ]
+
+          // Only process enabled days
+          if (dayData?.enabled) {
+            for (const slot of dayData.slots) {
+              if (slot.startTime && slot.endTime) {
+                weeklySlots.push({
+                  scheduleId: schedule.id,
+                  dayOfWeek: index,
+                  startTime: slot.startTime,
+                  endTime: slot.endTime,
+                })
+              }
+            }
+          }
+        }
+
+        // 4. Insert all weekly slots in a batch if any exist
+        if (weeklySlots.length > 0) {
+          await db.insert(weeklyScheduleSlot).values(weeklySlots)
+        }
+      } catch (error) {
+        console.error("Error creating availability schedule:", error)
+        // We won't fail the entire onboarding if availability creation fails
+        // Just log the error and continue
+      }
     }
 
     return c.json(

@@ -50,6 +50,9 @@ import {
   House,
   Globe,
   CalendarDays,
+  Plus,
+  Trash2,
+  Clock,
 } from "lucide-react"
 import Image from "next/image"
 import logoImage from "../../public/favicon.svg"
@@ -58,6 +61,11 @@ import Confetti from "react-confetti"
 import { apiClient } from "@/lib/utils/api-client"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { Card } from "@workspace/ui/components/card"
+import { Switch } from "@workspace/ui/components/switch"
+import { Label } from "@workspace/ui/components/label"
+import { ScrollArea } from "@workspace/ui/components/scroll-area"
+import { cn } from "@workspace/ui/lib/utils"
 
 // Zod schemas for each step
 const accountTypeSchema = z.object({
@@ -97,12 +105,41 @@ const referralSourceSchema = z.object({
   referralDetails: z.string().optional(),
 })
 
+// Define the day slot type and schema
+type DaySlot = {
+  enabled: boolean
+  slots: { startTime: string; endTime: string }[]
+}
+
+const daySlotSchema = z.object({
+  enabled: z.boolean(),
+  slots: z.array(
+    z.object({
+      startTime: z.string(),
+      endTime: z.string(),
+    })
+  ),
+})
+
+// Schema for availability schedule
+const availabilityScheduleSchema = z.object({
+  scheduleName: z.string().min(1, "Schedule name is required"),
+  sunday: daySlotSchema,
+  monday: daySlotSchema,
+  tuesday: daySlotSchema,
+  wednesday: daySlotSchema,
+  thursday: daySlotSchema,
+  friday: daySlotSchema,
+  saturday: daySlotSchema,
+})
+
 // Combined schema
 const onboardingSchema = z.object({
   ...accountTypeSchema.shape,
   ...calendarExperienceSchema.shape,
   ...schedulingPreferencesSchema.shape,
   ...referralSourceSchema.shape,
+  ...availabilityScheduleSchema.shape,
 })
 
 // Type for the form data
@@ -118,8 +155,13 @@ const OnboardingDialog = () => {
 
   // Client-side component since we're using hooks
   const [step, setStep] = useState(1)
-  const totalSteps = 5
+  const [skipAvailability, setSkipAvailability] = useState(false)
+  const totalSteps = 6
   const progress = (step / totalSteps) * 100
+
+  // Default availability slots for each day
+  const defaultWorkingHours = [{ startTime: "09:00", endTime: "17:00" }]
+  const emptySlots = [{ startTime: "", endTime: "" }]
 
   // Form setup with React Hook Form and Zod
   const form = useForm<OnboardingFormValues>({
@@ -136,6 +178,15 @@ const OnboardingDialog = () => {
       timezone: "",
       referralSource: undefined,
       referralDetails: "",
+      // Default availability schedule
+      scheduleName: "My Default Schedule",
+      sunday: { enabled: false, slots: emptySlots },
+      monday: { enabled: true, slots: defaultWorkingHours },
+      tuesday: { enabled: true, slots: defaultWorkingHours },
+      wednesday: { enabled: true, slots: defaultWorkingHours },
+      thursday: { enabled: true, slots: defaultWorkingHours },
+      friday: { enabled: true, slots: defaultWorkingHours },
+      saturday: { enabled: false, slots: emptySlots },
     },
     mode: "onChange",
   })
@@ -144,6 +195,7 @@ const OnboardingDialog = () => {
     watch,
     trigger,
     getValues,
+    setValue,
     formState: { errors },
   } = form
   const accountType = watch("accountType")
@@ -248,9 +300,77 @@ const OnboardingDialog = () => {
           fieldsToValidate.push("referralDetails")
         }
         break
+      case 5:
+        // Validate availability schedule
+        fieldsToValidate = ["scheduleName"]
+
+        // Validate that at least one day is enabled
+        const days = [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+        ]
+        const hasEnabledDay = days.some((day) => watch(day as any).enabled)
+
+        if (!hasEnabledDay) {
+          form.setError("monday.enabled", {
+            type: "manual",
+            message: "Please enable at least one day in your schedule",
+          })
+          return false
+        }
+
+        // For each enabled day, validate that all slots have valid times
+        for (const day of days) {
+          const dayData = watch(day as any) as DaySlot
+          if (dayData.enabled) {
+            for (let i = 0; i < dayData.slots.length; i++) {
+              const slot = dayData.slots[i]
+              if (!slot?.startTime || !slot?.endTime) {
+                form.setError(`${day}.slots.${i}.startTime` as any, {
+                  type: "manual",
+                  message: "Start time is required",
+                })
+                form.setError(`${day}.slots.${i}.endTime` as any, {
+                  type: "manual",
+                  message: "End time is required",
+                })
+                return false
+              }
+
+              // Ensure end time is after start time
+              if (slot.startTime >= slot.endTime) {
+                form.setError(`${day}.slots.${i}.endTime` as any, {
+                  type: "manual",
+                  message: "End time must be after start time",
+                })
+                return false
+              }
+            }
+          }
+        }
+        break
     }
 
     return await trigger(fieldsToValidate as any)
+  }
+
+  // Helper function to add a time slot for a specific day
+  const addTimeSlot = (day: string) => {
+    const currentDay = watch(day as any) as DaySlot
+    const updatedSlots = [...currentDay.slots, { startTime: "", endTime: "" }]
+    setValue(`${day}.slots` as any, updatedSlots)
+  }
+
+  // Helper function to remove a time slot for a specific day
+  const removeTimeSlot = (day: string, index: number) => {
+    const currentDay = watch(day as any) as DaySlot
+    const updatedSlots = currentDay.slots.filter((_, i) => i !== index)
+    setValue(`${day}.slots` as any, updatedSlots)
   }
 
   const { mutate, isPending } = useMutation({
@@ -274,6 +394,22 @@ const OnboardingDialog = () => {
           },
           businessName: data.businessName,
           isBusinessOrPersonal: data.accountType,
+          availabilitySchedule: skipAvailability
+            ? undefined
+            : {
+                schedule: {
+                  name: data.scheduleName,
+                },
+                weeklySlots: {
+                  sunday: data.sunday,
+                  monday: data.monday,
+                  tuesday: data.tuesday,
+                  wednesday: data.wednesday,
+                  thursday: data.thursday,
+                  friday: data.friday,
+                  saturday: data.saturday,
+                },
+              },
         },
       })
 
@@ -284,7 +420,7 @@ const OnboardingDialog = () => {
       return d
     },
     onSuccess: () => {
-      setStep(5)
+      setStep(6)
       setTimeout(() => {
         router.replace("/event-types")
       }, 4500)
@@ -300,13 +436,13 @@ const OnboardingDialog = () => {
     const isValid = await validateCurrentStep()
 
     if (isValid) {
-      if (step < 4) {
+      if (step < 5) {
         setStep(step + 1)
       } else {
         const values = getValues()
         console.log("Form submitted:", values)
 
-        if (step < 4) {
+        if (step < 5) {
           setStep(step + 1)
         } else {
           mutate(values)
@@ -387,7 +523,10 @@ const OnboardingDialog = () => {
   return (
     <Dialog open={true}>
       <DialogContent
-        className="sm:max-w-[650px] p-0 overflow-hidden bg-card"
+        className={cn(
+          "sm:max-w-[650px] p-0 overflow-hidden bg-card",
+          step === 5 && "max-h-[90vh] h-auto"
+        )}
         showCloseBtn={false}
       >
         <div className="flex flex-col h-full">
@@ -409,7 +548,13 @@ const OnboardingDialog = () => {
                   {step === 2 && "Calendar & Scheduling Experience"}
                   {step === 3 && "Scheduling Preferences"}
                   {step === 4 && "Almost Done!"}
-                  {step === 5 && "Setup Complete!"}
+                  {step === 5 && (
+                    <div className="flex items-center gap-2">
+                      <Clock className="size-5 text-violet-500" />
+                      Set Your Availability
+                    </div>
+                  )}
+                  {step === 6 && "Setup Complete!"}
                 </DialogTitle>
                 <DialogDescription>
                   {step === 1 &&
@@ -419,7 +564,8 @@ const OnboardingDialog = () => {
                   {step === 3 && "Help us understand your scheduling needs."}
                   {step === 4 &&
                     "Just a few final details before you're all set."}
-                  {step === 5 &&
+                  {step === 5 && "Define when you're available for meetings."}
+                  {step === 6 &&
                     "Congratulations! Your AgentCal account is ready."}
                 </DialogDescription>
               </DialogHeader>
@@ -972,8 +1118,178 @@ const OnboardingDialog = () => {
                   </div>
                 )}
 
-                {/* Step 5: Completion with Confetti */}
+                {/* NEW Step 5: Availability Schedule */}
                 {step === 5 && (
+                  <div className="space-y-6 h-full">
+                    <FormField
+                      control={form.control}
+                      name="scheduleName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Schedule Name *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Standard Work Hours"
+                              {...field}
+                              required
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Give your availability schedule a name
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <ScrollArea
+                      className="flex-1 px-6 pb-4 h-[400px]"
+                      type="always"
+                    >
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">
+                          Weekly Availability
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Select which days you're available and set your hours
+                          for each day.
+                        </p>
+                        {/* Days of the week */}
+                        {[
+                          { key: "monday", label: "Monday" },
+                          { key: "tuesday", label: "Tuesday" },
+                          { key: "wednesday", label: "Wednesday" },
+                          { key: "thursday", label: "Thursday" },
+                          { key: "friday", label: "Friday" },
+                          { key: "saturday", label: "Saturday" },
+                          { key: "sunday", label: "Sunday" },
+                        ].map(({ key, label }) => (
+                          <Card key={key} className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-2">
+                                <FormField
+                                  control={form.control}
+                                  name={`${key}.enabled` as any}
+                                  render={({ field }) => (
+                                    <FormItem className="flex items-center space-x-2">
+                                      <FormControl>
+                                        <Switch
+                                          checked={field.value}
+                                          onCheckedChange={field.onChange}
+                                        />
+                                      </FormControl>
+                                      <Label
+                                        htmlFor={`${key}-switch`}
+                                        className="font-medium"
+                                      >
+                                        {label}
+                                      </Label>
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Time slots for this day - only shown if the day is enabled */}
+                            {watch(`${key}.enabled` as any) && (
+                              <div className="space-y-4 pl-8">
+                                {watch(`${key}.slots` as any)?.map(
+                                  (_: any, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-end gap-2"
+                                    >
+                                      <FormField
+                                        control={form.control}
+                                        name={
+                                          `${key}.slots.${index}.startTime` as any
+                                        }
+                                        render={({ field }) => (
+                                          <FormItem className="flex-1">
+                                            <FormLabel
+                                              className={
+                                                index > 0
+                                                  ? "sr-only"
+                                                  : undefined
+                                              }
+                                            >
+                                              Start Time
+                                            </FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                type="time"
+                                                {...field}
+                                                required
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <div className="mx-2 mb-2">to</div>
+                                      <FormField
+                                        control={form.control}
+                                        name={
+                                          `${key}.slots.${index}.endTime` as any
+                                        }
+                                        render={({ field }) => (
+                                          <FormItem className="flex-1">
+                                            <FormLabel
+                                              className={
+                                                index > 0
+                                                  ? "sr-only"
+                                                  : undefined
+                                              }
+                                            >
+                                              End Time
+                                            </FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                type="time"
+                                                {...field}
+                                                required
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      {index > 0 && (
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon"
+                                          onClick={() =>
+                                            removeTimeSlot(key, index)
+                                          }
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      )}
+                                    </div>
+                                  )
+                                )}
+
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addTimeSlot(key)}
+                                  className="mt-2"
+                                >
+                                  <Plus className="h-4 w-4 mr-2" /> Add Time
+                                  Slot
+                                </Button>
+                              </div>
+                            )}
+                          </Card>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                )}
+
+                {/* Step 5: Completion with Confetti */}
+                {step === 6 && (
                   <div className="space-y-6 py-8">
                     <Confetti
                       width={window.innerWidth}
@@ -1011,12 +1327,12 @@ const OnboardingDialog = () => {
                     type="button"
                     variant="outline"
                     onClick={handleBack}
-                    disabled={step === 1 || step === 5}
+                    disabled={step === 1 || step === 6}
                     className="flex items-center"
                   >
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
                   </Button>
-                  {step !== 5 ? (
+                  {step !== 6 ? (
                     <Button
                       type="button"
                       onClick={handleNext}

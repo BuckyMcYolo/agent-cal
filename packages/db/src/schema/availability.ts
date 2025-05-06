@@ -13,6 +13,7 @@ import {
 import { relations, sql } from "drizzle-orm"
 import { user, organization } from "./auth"
 import { eventType } from "./event-types"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [
   "BLOCK", // Blocks time off (unavailable)
@@ -48,6 +49,26 @@ export const availabilitySchedule = pgTable(
   ]
 )
 
+export const selectAvailabilitySchema = createSelectSchema(availabilitySchedule)
+export const insertAvailabilitySchema = createInsertSchema(
+  availabilitySchedule,
+  {
+    name: (schema) => schema.min(1).max(255),
+  }
+)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .required({
+    name: true,
+    timeZone: true,
+    ownerId: true,
+    organizationId: true,
+  })
+export const updateTasksSchema = insertAvailabilitySchema.partial()
+
 // 2. Weekly schedule slots table - for type safety
 // ex. Sunday null
 // ex. Monday 9am-5pm
@@ -60,7 +81,6 @@ export const weeklyScheduleSlot = pgTable(
   "weekly_schedule_slot",
   {
     id: uuid().primaryKey().defaultRandom(),
-
     // Link to parent schedule
     scheduleId: uuid()
       .notNull()
@@ -69,7 +89,6 @@ export const weeklyScheduleSlot = pgTable(
     // Day of week as integer (0-6, Sunday-Saturday)
     // This matches JavaScript's Date.getDay()
     dayOfWeek: integer().notNull(),
-
     startTime: time().notNull(),
     endTime: time().notNull(),
   },
@@ -83,6 +102,15 @@ export const weeklyScheduleSlot = pgTable(
     ),
   ]
 )
+
+export const selectWeeklyScheduleSchema = createSelectSchema(weeklyScheduleSlot)
+export const insertWeeklyScheduleSchema = createInsertSchema(
+  weeklyScheduleSlot
+).omit({
+  id: true,
+})
+
+export const updateWeeklyScheduleSchema = insertWeeklyScheduleSchema.partial()
 
 // 3. Exceptions table (timestamp ranges when regular schedule is modified)
 export const availabilityException = pgTable(
