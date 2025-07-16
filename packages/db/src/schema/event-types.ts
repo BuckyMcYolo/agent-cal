@@ -57,7 +57,7 @@ export const eventType = pgTable(
     slug: text().notNull(),
     description: text(), // description will be shown to end users (ie. 'This is a 30 minute call to discuss your needs')
     length: integer().notNull(), // Duration in minutes, must be in increments of 15 minutes
-    slotInterval: integer().default(15), // how long each time slot is in minutes (ie. 15, 30, 60), should be in increments of 15 minutes and by defult be the same as the length of the event type
+    // slotInterval: integer().default(15), // how long each time slot is in minutes (ie. 15, 30, 60), should be in increments of 15 minutes and by defult be the same as the length of the event type
     hidden: boolean().default(false), //whether the event type is hidden from the user interface and unable to be booked by end users
     listPosition: integer().default(0), // position of the event type in the list of event types (used for drag and drop ordering)
 

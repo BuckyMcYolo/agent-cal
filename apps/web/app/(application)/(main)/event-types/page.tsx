@@ -1,31 +1,34 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import {
-  dehydrate,
   HydrationBoundary,
   QueryClient,
+  dehydrate,
 } from "@tanstack/react-query"
+import React from "react"
+import { apiClient } from "@/lib/utils/api-client"
+import EventTypesList from "@/components/event-types/event-types-list"
 
-const Page = () => {
+const Page = async () => {
   const queryClient = new QueryClient()
+
+  queryClient.prefetchQuery({
+    queryKey: ["event-types"],
+    queryFn: async () => {
+      const res = await apiClient["event-types"].$get({
+        query: {
+          slug: "default", // Adjust this as needed
+        },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        return data
+      }
+      return []
+    },
+  })
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>Hello World</div>
+      <EventTypesList />
     </HydrationBoundary>
   )
 }

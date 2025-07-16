@@ -21,6 +21,8 @@ export default function SignUp() {
   )
   const [loading, setLoading] = useState(false)
 
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -39,6 +41,7 @@ export default function SignUp() {
         email: data.email,
         password: data.password,
         name: data.firstName + " " + data.lastName,
+        callbackURL: "/onboarding",
       },
       {
         onRequest: () => setLoading(true),
@@ -46,20 +49,22 @@ export default function SignUp() {
         onError(context) {
           toast.error("Error: " + context.error.message)
         },
+        onSuccess: async () => {
+          const { data: org } = await authClient.organization.create({
+            name: defaultOrgName,
+            slug: sluggify(defaultOrgName),
+            fetchOptions: {
+              onError(context) {
+                toast.error("Error: " + context.error.message)
+              },
+              onSuccess() {
+                router.replace("/onboarding")
+              },
+            },
+          })
+        },
       }
     )
-    const { data: org } = await authClient.organization.create({
-      name: defaultOrgName,
-      slug: sluggify(defaultOrgName),
-      fetchOptions: {
-        onError(context) {
-          toast.error("Error: " + context.error.message)
-        },
-        onSuccess() {
-          toast.success("Organization created successfully")
-        },
-      },
-    })
   }
 
   return (

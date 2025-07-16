@@ -1,9 +1,13 @@
-import { db, eq } from "@workspace/db"
+import { and, db, eq } from "@workspace/db"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import { tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
-import type { ListEventsTypesRoute } from "./routes"
+import type { CreateEventTypeRoute, ListEventsTypesRoute } from "./routes"
+import { eventType } from "@workspace/db/schema/event-types"
+import { sluggify } from "@/lib/misc/sluggify"
+import { getUserOrgbyUserId } from "@/lib/queries/users"
+import { userPreferences } from "@workspace/db/schema/user-preferences"
 
 export const listEventTypes: AppRouteHandler<ListEventsTypesRoute> = async (
   c
@@ -29,4 +33,76 @@ export const listEventTypes: AppRouteHandler<ListEventsTypesRoute> = async (
     return c.json([], HttpStatusCodes.OK)
   }
   return c.json(eventTypes, HttpStatusCodes.OK)
+}
+
+export const createEventType: AppRouteHandler<CreateEventTypeRoute> = async (
+  c
+) => {
+  const { length, title, description } = c.req.valid("json")
+
+  const user = c.var.user
+
+  if (!user) {
+    return c.json(
+      { success: false, message: "User not authenticated" },
+      HttpStatusCodes.UNAUTHORIZED
+    )
+  }
+
+  //need to
+  // 1. Validate the input data
+  // 2. Check if the event type slug already exists
+  // 3. Get user preferences for timezone
+  // 4. Insert the new event type into the database
+
+  try {
+    const userOrg = await getUserOrgbyUserId(user.id)
+
+    const checkSlug = await db.query.eventType.findFirst({
+      where: and(
+        eq(eventType.slug, sluggify(title)),
+        eq(eventType.organizationId, sluggify(userOrg?.id || ""))
+      ),
+    })
+
+    if (checkSlug) {
+      return c.json(
+        {
+          success: false,
+          message: "Event type with this title already exists",
+        },
+        HttpStatusCodes.BAD_REQUEST
+      )
+    }
+
+    const getUserPreferences = await db.query.userPreferences.findFirst({
+      where: eq(userPreferences.userId, user.id),
+    })
+
+    const timeZone = getUserPreferences?.timezone || "America/New_York"
+
+    const [inserted] = await db
+      .insert(eventType)
+      .values({
+        title,
+        description,
+        length,
+        ownerId: user.id,
+        organizationId: userOrg?.id || "",
+        slug: sluggify(title),
+        timeZone: timeZone,
+      })
+      .returning()
+
+    return c.json(inserted, HttpStatusCodes.OK)
+  } catch (error) {
+    console.error("Error creating event type:", error)
+    return c.json(
+      {
+        success: false,
+        message: "Failed to create event type",
+      },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
 }
