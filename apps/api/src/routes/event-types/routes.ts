@@ -18,6 +18,7 @@ import userIdQuery from "@/lib/helpers/openapi/schemas/query/user-id-query"
 import orgIdQuery from "@/lib/helpers/openapi/schemas/query/org-id-query"
 import slugQuery from "@/lib/helpers/openapi/schemas/query/slug-query"
 import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
+import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
 
 const tags = ["Event Types"]
 
@@ -104,5 +105,34 @@ export const createEventType = createRoute({
   },
 })
 
+export const deleteEventType = createRoute({
+  path: "/event-types/{id}",
+  method: "delete",
+  summary: "Delete an Event Type",
+  security: apiKeySecuritySchema,
+  tags,
+  request: {
+    params: UUIDParamsSchema,
+  },
+  middleware: [authMiddleware] as const,
+  responses: {
+    [HttpStatusCodes.NO_CONTENT]: {
+      description: "Event type deleted successfully",
+    },
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Event type not found",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description:
+        "Forbidden - insufficient permissions to delete this event type",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
 export type ListEventsTypesRoute = typeof listEventTypes
 export type CreateEventTypeRoute = typeof createEventType
+export type DeleteEventTypeRoute = typeof deleteEventType

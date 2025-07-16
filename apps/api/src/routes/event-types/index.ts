@@ -6,5 +6,6 @@ import * as handlers from "./handlers"
 const eventTypesRouter = createRouter()
   .openapi(routes.listEventTypes, handlers.listEventTypes)
   .openapi(routes.createEventType, handlers.createEventType)
+  .openapi(routes.deleteEventType, handlers.deleteEventType)
 
 export default eventTypesRouter

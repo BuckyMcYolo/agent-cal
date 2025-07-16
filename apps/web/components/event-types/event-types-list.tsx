@@ -1,19 +1,23 @@
 "use client"
 
 import { apiClient } from "@/lib/utils/api-client"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
-import { 
-  Clock, 
-  MapPin, 
-  Settings, 
-  Eye, 
-  Edit3, 
+import {
+  Clock,
+  MapPin,
+  Settings,
+  Eye,
+  Edit3,
   MoreHorizontal,
   Calendar,
-  Globe
+  Globe,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -22,8 +26,28 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import CreateEventTypeDialog from "./create-event-type-dialog"
+import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@workspace/ui/components/alert-dialog"
+import { useState } from "react"
 
 const EventTypesList = () => {
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false)
+  const [selectedEventType, setSelectedEventType] = useState<{
+    id: string
+    title: string
+  } | null>(null)
+
+  const queryClient = useQueryClient()
+
   const { data: eventTypes } = useSuspenseQuery({
     queryKey: ["event-types"],
     queryFn: async () => {
@@ -38,6 +62,45 @@ const EventTypesList = () => {
     },
   })
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiClient["event-types"][":id"].$delete({
+        param: {
+          id,
+        },
+      })
+      if (!res.ok) {
+        const errorData = await res.json()
+        const message =
+          "message" in errorData
+            ? errorData.message
+            : errorData.error?.issues?.[0]?.message ||
+              "Failed to delete event type"
+        throw new Error(message)
+      }
+    },
+    onSuccess: () => {
+      toast.success("Event type deleted successfully!")
+      queryClient.invalidateQueries({ queryKey: ["event-types"] })
+      setAlertDialogOpen(false)
+      setSelectedEventType(null)
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete event type")
+    },
+  })
+
+  const handleDeleteClick = (eventType: { id: string; title: string }) => {
+    setSelectedEventType(eventType)
+    setAlertDialogOpen(true)
+  }
+
+  const handleDelete = () => {
+    if (selectedEventType) {
+      mutate(selectedEventType.id)
+    }
+  }
+
   if (!eventTypes || eventTypes.length === 0) {
     return (
       <div className="space-y-6">
@@ -50,17 +113,16 @@ const EventTypesList = () => {
           </div>
           <CreateEventTypeDialog />
         </div>
-        
+
         <div className="bg-card rounded-lg border">
           <div className="text-center py-16 px-6">
             <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
               <Calendar className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">
-              No event types yet
-            </h3>
+            <h3 className="text-lg font-semibold mb-2">No event types yet</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Create your first event type to start accepting bookings. You can customize duration, location, and availability settings.
+              Create your first event type to start accepting bookings. You can
+              customize duration, location, and availability settings.
             </p>
             <CreateEventTypeDialog />
           </div>
@@ -91,7 +153,9 @@ const EventTypesList = () => {
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-primary" />
-                      <h3 className="font-semibold text-lg">{eventType.title}</h3>
+                      <h3 className="font-semibold text-lg">
+                        {eventType.title}
+                      </h3>
                     </div>
                     {eventType.hidden && (
                       <Badge variant="destructive" className="text-xs">
@@ -116,18 +180,24 @@ const EventTypesList = () => {
                   <div className="flex items-center gap-6 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      <span className="font-medium">{eventType.length} minutes</span>
+                      <span className="font-medium">
+                        {eventType.length} minutes
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
                       <span className="capitalize">
-                        {eventType.locationType?.replace("_", " ").toLowerCase() || "Virtual"}
+                        {eventType.locationType
+                          ?.replace("_", " ")
+                          .toLowerCase() || "Virtual"}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Globe className="h-4 w-4" />
                       <span className="capitalize">
-                        {eventType.schedulingType?.replace("_", " ").toLowerCase() || "Individual"}
+                        {eventType.schedulingType
+                          ?.replace("_", " ")
+                          .toLowerCase() || "Individual"}
                       </span>
                     </div>
                     {eventType.timeZone && (
@@ -161,10 +231,11 @@ const EventTypesList = () => {
                         <Settings className="h-4 w-4 mr-2" />
                         Settings
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Duplicate
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => handleDeleteClick(eventType)}
+                      >
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -176,6 +247,28 @@ const EventTypesList = () => {
           </div>
         ))}
       </div>
+
+      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Event Type</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{selectedEventType?.title}"? This
+              action cannot be undone and will remove all associated bookings.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

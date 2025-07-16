@@ -3,7 +3,11 @@ import type { AppRouteHandler } from "@/lib/types/app-types"
 import { tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
-import type { CreateEventTypeRoute, ListEventsTypesRoute } from "./routes"
+import type {
+  CreateEventTypeRoute,
+  DeleteEventTypeRoute,
+  ListEventsTypesRoute,
+} from "./routes"
 import { eventType } from "@workspace/db/schema/event-types"
 import { sluggify } from "@/lib/misc/sluggify"
 import { getUserOrgbyUserId } from "@/lib/queries/users"
@@ -101,6 +105,57 @@ export const createEventType: AppRouteHandler<CreateEventTypeRoute> = async (
       {
         success: false,
         message: "Failed to create event type",
+      },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+export const deleteEventType: AppRouteHandler<DeleteEventTypeRoute> = async (
+  c
+) => {
+  const { id } = c.req.valid("param")
+  const user = c.var.user
+
+  if (!user) {
+    return c.json(
+      { success: false, message: "User not authenticated" },
+      HttpStatusCodes.UNAUTHORIZED
+    )
+  }
+
+  try {
+    const existingEventType = await db.query.eventType.findFirst({
+      where: eq(eventType.id, id),
+    })
+
+    if (!existingEventType) {
+      return c.json(
+        { success: false, message: "Event type not found" },
+        HttpStatusCodes.NOT_FOUND
+      )
+    }
+
+    if (existingEventType.ownerId !== user.id) {
+      return c.json(
+        {
+          success: false,
+          message:
+            "Forbidden - you don't have permission to delete this event type",
+        },
+        HttpStatusCodes.FORBIDDEN
+      )
+    }
+
+    await db.delete(eventType).where(eq(eventType.id, id))
+
+    return c.body(null, HttpStatusCodes.NO_CONTENT)
+  } catch (error) {
+    console.error("Error deleting event type:", error)
+    return c.json(
+      {
+        success: false,
+        message: "Failed to delete event type",
       },
       HttpStatusCodes.INTERNAL_SERVER_ERROR
     )
