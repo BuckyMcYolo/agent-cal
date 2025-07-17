@@ -128,11 +128,11 @@ const EventTypeLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto">
+      <div className="">
         <div className="flex">
           {/* Desktop Sidebar */}
           <div className="hidden lg:block w-56 shrink-0 bg-background border-r border-border">
-            <div className="p-4 space-y-6">
+            <div className="p-2 space-y-6">
               {/* Header */}
               <div className="flex items-center gap-2">
                 <Button

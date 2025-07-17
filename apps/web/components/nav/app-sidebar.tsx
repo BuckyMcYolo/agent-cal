@@ -26,7 +26,9 @@ import {
   Calendar,
   CalendarClock,
   ChartColumn,
+  Clock,
   Key,
+  LinkIcon,
   ListCheck,
   Plug,
   SendToBack,
@@ -38,14 +40,14 @@ import LogoImage from "../../public/favicon.svg"
 const data = {
   navMain: [
     {
-      title: "Tasks (testing)",
-      url: "/tasks",
-      icon: <ListCheck size={18} />,
-    },
-    {
       title: "Event Types",
       url: "/event-types",
-      icon: <Tags size={18} />,
+      icon: <LinkIcon size={18} />,
+    },
+    {
+      title: "Availability",
+      url: "/availability",
+      icon: <Clock size={18} />,
     },
     {
       title: "Bookings",
