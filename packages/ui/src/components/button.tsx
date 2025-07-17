@@ -57,25 +57,40 @@ function Button({
   }) {
   const Comp = asChild ? Slot : "button"
 
+  const renderContent = () => {
+    if (loading) {
+      return [
+        <Loader2 key="loader" size={16} className="animate-spin mr-2" />,
+        children,
+      ]
+    }
+
+    const content = []
+    if (startIcon)
+      content.push(
+        <span key="start" className="mr-2">
+          {startIcon}
+        </span>
+      )
+    content.push(children)
+    if (endIcon)
+      content.push(
+        <span key="end" className="ml-2">
+          {endIcon}
+        </span>
+      )
+
+    return content
+  }
+
   return (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size }), className)}
       ref={ref}
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? (
-        <>
-          <Loader2 size={16} className="animate-spin mr-2" />
-          {children}
-        </>
-      ) : (
-        <>
-          {startIcon && <span className="mr-2">{startIcon}</span>}
-          {children}
-          {endIcon && <span className="ml-2">{endIcon}</span>}
-        </>
-      )}
+      {renderContent()}
     </Comp>
   )
 }

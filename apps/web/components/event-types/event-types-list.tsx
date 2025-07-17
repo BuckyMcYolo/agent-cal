@@ -27,25 +27,9 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import CreateEventTypeDialog from "./create-event-type-dialog"
 import { toast } from "sonner"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
-import { useState } from "react"
+import { DeleteDialog } from "../misc/dialogs/delete-dialog"
 
 const EventTypesList = () => {
-  const [alertDialogOpen, setAlertDialogOpen] = useState(false)
-  const [selectedEventType, setSelectedEventType] = useState<{
-    id: string
-    title: string
-  } | null>(null)
-
   const queryClient = useQueryClient()
 
   const { data: eventTypes } = useSuspenseQuery({
@@ -82,24 +66,11 @@ const EventTypesList = () => {
     onSuccess: () => {
       toast.success("Event type deleted successfully!")
       queryClient.invalidateQueries({ queryKey: ["event-types"] })
-      setAlertDialogOpen(false)
-      setSelectedEventType(null)
     },
     onError: (error) => {
       toast.error(error.message || "Failed to delete event type")
     },
   })
-
-  const handleDeleteClick = (eventType: { id: string; title: string }) => {
-    setSelectedEventType(eventType)
-    setAlertDialogOpen(true)
-  }
-
-  const handleDelete = () => {
-    if (selectedEventType) {
-      mutate(selectedEventType.id)
-    }
-  }
 
   if (!eventTypes || eventTypes.length === 0) {
     return (
@@ -232,12 +203,21 @@ const EventTypesList = () => {
                         Settings
                       </DropdownMenuItem>
                       <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={() => handleDeleteClick(eventType)}
-                      >
-                        Delete
-                      </DropdownMenuItem>
+                      <DeleteDialog
+                        trigger={
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        }
+                        title="Delete Event Type"
+                        description={`Are you sure you want to delete "${eventType.title}"? This action cannot be undone.`}
+                        confirmText="Delete"
+                        onDelete={() => mutate(eventType.id)}
+                        loading={isPending}
+                      />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -247,28 +227,6 @@ const EventTypesList = () => {
           </div>
         ))}
       </div>
-
-      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Event Type</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{selectedEventType?.title}"? This
-              action cannot be undone and will remove all associated bookings.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isPending}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isPending ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   )
 }
