@@ -30,7 +30,6 @@ export const availabilitySchedule = pgTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
-
     name: text().notNull(), // e.g., "Standard Work Hours", "Summer Hours"
     timeZone: text().notNull(),
     ownerId: text()
@@ -39,7 +38,6 @@ export const availabilitySchedule = pgTable(
     organizationId: text().references(() => organization.id, {
       onDelete: "cascade",
     }),
-
     // Is this the default schedule for the owner?
     isDefault: boolean().default(false),
   },
@@ -60,12 +58,13 @@ export const insertAvailabilitySchema = createInsertSchema(
     id: true,
     createdAt: true,
     updatedAt: true,
+    isDefault: true,
+    ownerId: true,
+    organizationId: true,
+    timeZone: true,
   })
   .required({
     name: true,
-    timeZone: true,
-    ownerId: true,
-    organizationId: true,
   })
 export const updateTasksSchema = insertAvailabilitySchema.partial()
 
@@ -108,6 +107,7 @@ export const insertWeeklyScheduleSchema = createInsertSchema(
   weeklyScheduleSlot
 ).omit({
   id: true,
+  scheduleId: true,
 })
 
 export const updateWeeklyScheduleSchema = insertWeeklyScheduleSchema.partial()

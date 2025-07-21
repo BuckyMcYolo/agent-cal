@@ -39,14 +39,7 @@ export const completeOnboardingRoute = createRoute({
         ),
         availabilitySchedule: z
           .object({
-            schedule: zodSchemaToOpenAPI(
-              insertAvailabilitySchema.omit({
-                timeZone: true,
-                ownerId: true,
-                organizationId: true,
-                isDefault: true,
-              })
-            ),
+            schedule: zodSchemaToOpenAPI(insertAvailabilitySchema),
             weeklySlots: z.object({
               sunday: z.object({
                 enabled: z.boolean(),

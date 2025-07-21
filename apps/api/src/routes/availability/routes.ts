@@ -12,7 +12,10 @@ import orgIdQuery from "@/lib/helpers/openapi/schemas/query/org-id-query"
 import slugQuery from "@/lib/helpers/openapi/schemas/query/slug-query"
 import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
 import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
-import { selectAvailabilitySchema } from "@workspace/db/schema/availability"
+import {
+  insertWeeklyScheduleSchema,
+  selectAvailabilitySchema,
+} from "@workspace/db/schema/availability"
 
 const tags = ["Event Types"]
 
@@ -38,4 +41,50 @@ export const listAvailability = createRoute({
   },
 })
 
+export const postAvailability = createRoute({
+  path: "/availability",
+  method: "post",
+  summary: "Create a new Availability Schedule",
+  tags,
+  security: apiKeySecuritySchema,
+  middleware: [authMiddleware] as const,
+  request: {
+    body: jsonContentRequired({
+      schema: z.object({
+        name: z.string().min(1).max(255),
+        weeklySchedule: z
+          .array(insertWeeklyScheduleSchema)
+          .refine((val) => val.length === 7, {
+            message: "Weekly schedule must have exactly 7 days",
+          }),
+      }),
+      description: "Availability Schedule to create",
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.CREATED]: jsonContent({
+      schema: selectAvailabilitySchema,
+      description: "Availability Schedule created successfully",
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+      }),
+      description: "Bad request, invalid input data",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description: "Forbidden, user does not have valid permissions",
+    }),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Not found, organization or user does not exist",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
 export type ListAvailabilityRoute = typeof listAvailability
+export type PostAvailabilityRoute = typeof postAvailability

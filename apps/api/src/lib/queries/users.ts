@@ -16,3 +16,17 @@ export const getUserOrgbyUserId = async (userId: User["id"]) => {
   })
   return member?.organization
 }
+
+/**
+ * Retrieves user preferences by user ID.
+ *
+ * @param userId - The unique identifier of the user
+ * @returns A Promise that resolves to the user's preferences, or undefined if not found
+ */
+
+export const getUserPreferencesByUserId = async (userId: User["id"]) => {
+  const userPreferences = await db.query.userPreferences.findFirst({
+    where: (userPreferences, { eq }) => eq(userPreferences.userId, userId),
+  })
+  return userPreferences
+}
