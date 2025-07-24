@@ -1,6 +1,5 @@
 import { and, db, eq } from "@workspace/db"
 import type { AppRouteHandler } from "@/lib/types/app-types"
-import { tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 import {
@@ -12,34 +11,14 @@ import {
   getUserPreferencesByUserId,
 } from "@/lib/queries/users"
 import type { ListAvailabilityRoute, PostAvailabilityRoute } from "./routes"
+import { dayToInteger } from "@/lib/time/conversions"
+import { validateTimeSlots } from "@/lib/time/timeslot-overlap"
 
 export const listAvailability: AppRouteHandler<ListAvailabilityRoute> = async (
   c
 ) => {
-  const { orgId, userId } = c.req.valid("query")
-  const availabilitySchedules = await db.query.eventType.findMany({
-    where: (eventType, operators) => {
-      const filters = []
-      if (orgId) {
-        filters.push(operators.eq(eventType.organizationId, orgId))
-      }
-      if (userId) {
-        filters.push(operators.eq(eventType.ownerId, userId))
-      }
-      return operators.and(...filters)
-    },
-  })
-  // If no event types found, return an empty array instead of error
-  if (!availabilitySchedules || availabilitySchedules.length === 0) {
-    return c.json([], HttpStatusCodes.OK)
-  }
-  return c.json(availabilitySchedules, HttpStatusCodes.OK)
-}
+  const { returnOrg } = c.req.valid("query")
 
-export const postAvailability: AppRouteHandler<PostAvailabilityRoute> = async (
-  c
-) => {
-  const { name, weeklySchedule } = c.req.valid("json")
   try {
     const user = c.var.user
 
@@ -47,6 +26,74 @@ export const postAvailability: AppRouteHandler<PostAvailabilityRoute> = async (
       return c.json(
         { success: false, message: "User not authenticated" },
         HttpStatusCodes.UNAUTHORIZED
+      )
+    }
+    const userOrg = await getUserOrgbyUserId(user.id)
+
+    if (!userOrg) {
+      return c.json(
+        { success: false, message: "Organization not found" },
+        HttpStatusCodes.BAD_REQUEST
+      )
+    }
+
+    const availabilitySchedules = await db.query.availabilitySchedule.findMany({
+      where: (eventType, operators) => {
+        const filters = []
+        if (returnOrg && user.role === "admin") {
+          filters.push(operators.eq(eventType.organizationId, userOrg?.id))
+        } else {
+          filters.push(operators.eq(eventType.ownerId, user.id))
+        }
+        return operators.and(...filters)
+      },
+      with: {
+        weeklySlots: true,
+      },
+    })
+    // If no event types found, return an empty array instead of error
+    if (!availabilitySchedules || availabilitySchedules.length === 0) {
+      return c.json([], HttpStatusCodes.OK)
+    }
+
+    console.log("Returning availability schedules:", availabilitySchedules)
+
+    return c.json(availabilitySchedules, HttpStatusCodes.OK)
+  } catch (error) {
+    console.error("Error fetching availability schedules:", error)
+    return c.json(
+      {
+        success: false,
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+export const postAvailability: AppRouteHandler<PostAvailabilityRoute> = async (
+  c
+) => {
+  const { name, timeSlots } = c.req.valid("json")
+  try {
+    const user = c.var.user
+
+    if (!user) {
+      return c.json(
+        { success: false, message: "User not authenticated" },
+        HttpStatusCodes.UNAUTHORIZED
+      )
+    }
+
+    // Validate time slots for overlaps
+    const validation = validateTimeSlots(timeSlots)
+    if (!validation.isValid) {
+      return c.json(
+        {
+          success: false,
+          message: validation.error || "Invalid time slots",
+        },
+        HttpStatusCodes.BAD_REQUEST
       )
     }
 
@@ -69,24 +116,18 @@ export const postAvailability: AppRouteHandler<PostAvailabilityRoute> = async (
       throw new Error("Failed to create availability schedule")
     }
 
-    if (weeklySchedule.length !== 7) {
-      return c.json(
-        {
-          success: false,
-          message: "Weekly schedule must have exactly 7 days",
-        },
-        HttpStatusCodes.BAD_REQUEST
-      )
-    }
-
-    weeklySchedule.forEach((slot) => {
-      return db.insert(weeklyScheduleSlot).values({
+    for (const slot of timeSlots) {
+      const dayInt = dayToInteger(slot.dayOfWeek)
+      if (dayInt === undefined) {
+        throw new Error(`Invalid day of week: ${slot.dayOfWeek}`)
+      }
+      await db.insert(weeklyScheduleSlot).values({
         scheduleId: newSchedule.id,
-        dayOfWeek: slot.dayOfWeek,
+        dayOfWeek: dayInt,
         startTime: slot.startTime,
         endTime: slot.endTime,
       })
-    })
+    }
 
     return c.json(newSchedule, HttpStatusCodes.CREATED)
   } catch (error) {

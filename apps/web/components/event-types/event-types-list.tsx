@@ -55,11 +55,7 @@ const EventTypesList = () => {
       })
       if (!res.ok) {
         const errorData = await res.json()
-        const message =
-          "message" in errorData
-            ? errorData.message
-            : errorData.error?.issues?.[0]?.message ||
-              "Failed to delete event type"
+        const message = errorData.message || "Failed to delete event type"
         throw new Error(message)
       }
     },

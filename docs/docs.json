@@ -54,7 +54,18 @@
           },
           {
             "group": "Event Types",
-            "pages": ["api-reference/event-types/get-all"]
+            "pages": [
+              "api-reference/event-types/get-all",
+              "api-reference/event-types/delete",
+              "api-reference/event-types/post"
+            ]
+          },
+          {
+            "group": "Availability Schedules",
+            "pages": [
+              "api-reference/availability/get-all",
+              "api-reference/availability/post"
+            ]
           }
         ]
       }

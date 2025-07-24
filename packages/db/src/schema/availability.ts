@@ -14,6 +14,7 @@ import { relations, sql } from "drizzle-orm"
 import { user, organization } from "./auth"
 import { eventType } from "./event-types"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { z } from "zod"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [
   "BLOCK", // Blocks time off (unavailable)
@@ -48,6 +49,7 @@ export const availabilitySchedule = pgTable(
 )
 
 export const selectAvailabilitySchema = createSelectSchema(availabilitySchedule)
+
 export const insertAvailabilitySchema = createInsertSchema(
   availabilitySchedule,
   {
@@ -209,3 +211,9 @@ export const exceptionTimeSlotRelations = relations(
     }),
   })
 )
+
+export const selectAvailabilitySchemaWithWeeklySlots = createSelectSchema(
+  availabilitySchedule
+).extend({
+  weeklySlots: z.array(selectWeeklyScheduleSchema),
+})

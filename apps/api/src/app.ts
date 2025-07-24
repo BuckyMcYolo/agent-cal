@@ -9,6 +9,7 @@ import apiKeysRouter from "./routes/api-keys"
 import eventTypesRouter from "./routes/event-types"
 import onboardingRouter from "./routes/onboarding"
 import userPreferencesRouter from "./routes/user"
+import availabilityRouter from "./routes/availability"
 
 const app = createApp()
 
@@ -43,6 +44,7 @@ const routes = [
   eventTypesRouter,
   onboardingRouter,
   userPreferencesRouter,
+  availabilityRouter,
 ] as const
 
 routes.forEach((route) => app.route("/", route))

@@ -67,6 +67,16 @@ import { Label } from "@workspace/ui/components/label"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { cn } from "@workspace/ui/lib/utils"
 
+const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, i) => {
+  const hour = Math.floor(i / 4)
+  const minute = (i % 4) * 15
+  const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour
+  const ampm = hour >= 12 ? "PM" : "AM"
+  const displayTime = `${displayHour}${minute !== 0 ? `:${minute.toString().padStart(2, "0")}` : ""} ${ampm}`
+  return { value: timeString, label: displayTime }
+})
+
 // Zod schemas for each step
 const accountTypeSchema = z.object({
   accountType: z.enum(["personal", "business"]),
@@ -1215,11 +1225,18 @@ const OnboardingDialog = () => {
                                               Start Time
                                             </FormLabel>
                                             <FormControl>
-                                              <Input
-                                                type="time"
-                                                {...field}
-                                                required
-                                              />
+                                              <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger>
+                                                  <SelectValue placeholder="Select time" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  {TIME_OPTIONS.map((time) => (
+                                                    <SelectItem key={time.value} value={time.value}>
+                                                      {time.label}
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectContent>
+                                              </Select>
                                             </FormControl>
                                             <FormMessage />
                                           </FormItem>
@@ -1243,11 +1260,18 @@ const OnboardingDialog = () => {
                                               End Time
                                             </FormLabel>
                                             <FormControl>
-                                              <Input
-                                                type="time"
-                                                {...field}
-                                                required
-                                              />
+                                              <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger>
+                                                  <SelectValue placeholder="Select time" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  {TIME_OPTIONS.map((time) => (
+                                                    <SelectItem key={time.value} value={time.value}>
+                                                      {time.label}
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectContent>
+                                              </Select>
                                             </FormControl>
                                             <FormMessage />
                                           </FormItem>

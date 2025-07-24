@@ -15,36 +15,47 @@ import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-s
 import {
   insertWeeklyScheduleSchema,
   selectAvailabilitySchema,
+  selectAvailabilitySchemaWithWeeklySlots,
 } from "@workspace/db/schema/availability"
+import { timeSlotSchema } from "@/lib/helpers/openapi/schemas/time/timeslot-schema"
 
 const tags = ["Event Types"]
 
-// not a protected route since public booking pages will need to access this
 export const listAvailability = createRoute({
   path: "/availability",
   method: "get",
-  summary: "Get all Availability Schedules for a user or organization",
+  summary: "Get all Availability Schedules",
   description:
-    "Get all Availability Schedules for a user or organization. If no query parameters are provided, all event types for the organization will be returned.",
+    "Get all Availability Schedules for a user or organization. To get all organization availability schedules, the user's role must be 'admin'. If no query parameters are provided, all availability schedules for the user will be returned.",
   tags,
   request: {
     query: z.object({
-      orgId: orgIdQuery.optional(),
-      userId: userIdQuery.optional(),
+      returnOrg: z.boolean().optional(),
     }),
   },
+  middleware: [authMiddleware] as const,
+  security: apiKeySecuritySchema,
   responses: {
     [HttpStatusCodes.OK]: jsonContent({
-      schema: z.array(selectAvailabilitySchema),
+      schema: z.array(selectAvailabilitySchemaWithWeeklySlots),
       description: "List of tasks",
     }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+      }),
+      description: "Bad request, invalid input data",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
   },
 })
 
 export const postAvailability = createRoute({
   path: "/availability",
   method: "post",
-  summary: "Create a new Availability Schedule",
+  summary: "Create an Availability Schedule",
   tags,
   security: apiKeySecuritySchema,
   middleware: [authMiddleware] as const,
@@ -52,11 +63,21 @@ export const postAvailability = createRoute({
     body: jsonContentRequired({
       schema: z.object({
         name: z.string().min(1).max(255),
-        weeklySchedule: z
-          .array(insertWeeklyScheduleSchema)
-          .refine((val) => val.length === 7, {
-            message: "Weekly schedule must have exactly 7 days",
-          }),
+        timeSlots: z.array(
+          z.object({
+            dayOfWeek: z.enum([
+              "sunday",
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday",
+            ]),
+            startTime: timeSlotSchema,
+            endTime: timeSlotSchema,
+          })
+        ),
       }),
       description: "Availability Schedule to create",
     }),

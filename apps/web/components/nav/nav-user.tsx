@@ -72,11 +72,11 @@ export function NavUser() {
                 <>
                   <Avatar className="h-8 w-8 rounded-lg grayscale">
                     <AvatarImage
-                      src={data?.user.image || undefined}
-                      alt={data?.user.name || undefined}
+                      src={data?.user?.image || undefined}
+                      alt={data?.user?.name || undefined}
                     />
                     <AvatarFallback className="rounded-lg">
-                      {data?.user.name
+                      {data?.user?.name
                         ?.split(" ")
                         .map((n) => n[0])
                         .join("")}
