@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "API Route Documentation Updater",
+  "description": "Monitors changes to API route files and automatically updates the documentation in the /docs directory when new routes are added, unless the route has \"hide: true\" in its definition",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "apps/api/src/routes/**/*.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A route file has been modified in apps/api/src/routes/. Please analyze the changes and update the corresponding documentation in the /docs directory. Create or update the appropriate .mdx files for any new API routes that have been added. Skip any routes that have \"hide: true\" in their route definition. Make sure to follow the existing documentation structure and format used in the /docs/api-reference/ directory."
+  }
+}

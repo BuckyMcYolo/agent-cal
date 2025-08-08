@@ -1677,7 +1677,7 @@
         "summary": "Get all Availability Schedules",
         "description": "Get all Availability Schedules for a user or organization. To get all organization availability schedules, the user's role must be 'admin'. If no query parameters are provided, all availability schedules for the user will be returned.",
         "tags": [
-          "Event Types"
+          "Availability"
         ],
         "security": [
           {
@@ -1861,7 +1861,7 @@
       "post": {
         "summary": "Create an Availability Schedule",
         "tags": [
-          "Event Types"
+          "Availability"
         ],
         "security": [
           {
@@ -1881,21 +1881,30 @@
                     "minLength": 1,
                     "maxLength": 255
                   },
-                  "weeklySchedule": {
+                  "timeSlots": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
                         "dayOfWeek": {
-                          "type": "integer",
-                          "minimum": -2147483648,
-                          "maximum": 2147483647
+                          "type": "string",
+                          "enum": [
+                            "sunday",
+                            "monday",
+                            "tuesday",
+                            "wednesday",
+                            "thursday",
+                            "friday",
+                            "saturday"
+                          ]
                         },
                         "startTime": {
-                          "type": "string"
+                          "type": "string",
+                          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
                         },
                         "endTime": {
-                          "type": "string"
+                          "type": "string",
+                          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
                         }
                       },
                       "required": [
@@ -1908,7 +1917,7 @@
                 },
                 "required": [
                   "name",
-                  "weeklySchedule"
+                  "timeSlots"
                 ]
               }
             }
@@ -2040,6 +2049,515 @@
           },
           "404": {
             "description": "Not found, organization or user does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availability/{id}": {
+      "get": {
+        "summary": "Get Availability Schedule by ID",
+        "description": "Get a specific availability schedule by its ID. User must own the schedule or be an admin in the organization.",
+        "tags": [
+          "Availability"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability schedule with weekly slots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "timeZone": {
+                      "type": "string"
+                    },
+                    "ownerId": {
+                      "type": "string"
+                    },
+                    "organizationId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "isDefault": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "weeklySlots": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "scheduleId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "dayOfWeek": {
+                            "type": "integer",
+                            "minimum": -2147483648,
+                            "maximum": 2147483647
+                          },
+                          "startTime": {
+                            "type": "string"
+                          },
+                          "endTime": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "scheduleId",
+                          "dayOfWeek",
+                          "startTime",
+                          "endTime"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt",
+                    "updatedAt",
+                    "name",
+                    "timeZone",
+                    "ownerId",
+                    "organizationId",
+                    "isDefault",
+                    "weeklySlots"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Availability schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Availability Schedule",
+        "description": "Update a specific availability schedule by its ID. User must own the schedule or be an admin in the organization.",
+        "tags": [
+          "Availability"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Availability Schedule update data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "timeSlots": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "dayOfWeek": {
+                          "type": "string",
+                          "enum": [
+                            "sunday",
+                            "monday",
+                            "tuesday",
+                            "wednesday",
+                            "thursday",
+                            "friday",
+                            "saturday"
+                          ]
+                        },
+                        "startTime": {
+                          "type": "string",
+                          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+                        },
+                        "endTime": {
+                          "type": "string",
+                          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+                        }
+                      },
+                      "required": [
+                        "dayOfWeek",
+                        "startTime",
+                        "endTime"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated availability schedule",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "timeZone": {
+                      "type": "string"
+                    },
+                    "ownerId": {
+                      "type": "string"
+                    },
+                    "organizationId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "isDefault": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "weeklySlots": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "scheduleId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "dayOfWeek": {
+                            "type": "integer",
+                            "minimum": -2147483648,
+                            "maximum": 2147483647
+                          },
+                          "startTime": {
+                            "type": "string"
+                          },
+                          "endTime": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "scheduleId",
+                          "dayOfWeek",
+                          "startTime",
+                          "endTime"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt",
+                    "updatedAt",
+                    "name",
+                    "timeZone",
+                    "ownerId",
+                    "organizationId",
+                    "isDefault",
+                    "weeklySlots"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Availability schedule not found",
             "content": {
               "application/json": {
                 "schema": {

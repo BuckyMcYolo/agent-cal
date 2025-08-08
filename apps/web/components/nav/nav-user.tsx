@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -38,12 +39,17 @@ import { Skeleton } from "@workspace/ui/components/skeleton"
 import { useRouter } from "next/navigation"
 
 export function NavUser() {
+  const [mounted, setMounted] = React.useState(false)
   const { isMobile } = useSidebar()
   const { setTheme, theme } = useTheme()
 
   const { data, isPending, error } = authClient.useSession()
 
   const router = useRouter()
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <SidebarMenu>
@@ -54,7 +60,7 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {isPending ? (
+              {!mounted || isPending ? (
                 <>
                   <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -104,26 +110,44 @@ export function NavUser() {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={data?.user.image || undefined}
-                    alt={data?.user.name}
-                  />
-                  <AvatarFallback className="rounded-lg">
-                    {data?.user.name
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {data?.user.name}
-                  </span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {data?.user.email}
-                  </span>
-                </div>
+                {!mounted || isPending ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
+                      <span className="truncate font-medium">
+                        <Skeleton className="h-3 w-16" />
+                      </span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        <Skeleton className="h-3 w-24" />
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage
+                        src={data?.user.image || undefined}
+                        alt={data?.user.name}
+                      />
+                      <AvatarFallback className="rounded-lg">
+                        {data?.user.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">
+                        {data?.user.name}
+                      </span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        {data?.user.email}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuItem

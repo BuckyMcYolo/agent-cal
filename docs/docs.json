@@ -64,6 +64,7 @@
             "group": "Availability Schedules",
             "pages": [
               "api-reference/availability/get-all",
+              "api-reference/availability/get",
               "api-reference/availability/post"
             ]
           }
