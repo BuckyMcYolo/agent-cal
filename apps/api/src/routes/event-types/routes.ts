@@ -12,7 +12,7 @@ import { apiKeySecuritySchema } from "@/lib/helpers/openapi/schemas/security-sch
 import {
   selectEventTypeSchema,
   insertEventTypeSchema,
-  updateTasksSchema,
+  updateEventTypeSchema,
 } from "@workspace/db/schema/event-types"
 import userIdQuery from "@/lib/helpers/openapi/schemas/query/user-id-query"
 import orgIdQuery from "@/lib/helpers/openapi/schemas/query/org-id-query"
@@ -105,6 +105,96 @@ export const createEventType = createRoute({
   },
 })
 
+export const getEventType = createRoute({
+  path: "/event-types/{id}",
+  method: "get",
+  summary: "Get an Event Type by ID",
+  security: apiKeySecuritySchema,
+  tags,
+  request: {
+    params: UUIDParamsSchema,
+  },
+  middleware: [authMiddleware] as const,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: selectEventTypeSchema,
+      description: "The event type",
+    }),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Event type not found",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description:
+        "Forbidden - insufficient permissions to access this event type",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
+export const updateEventType = createRoute({
+  path: "/event-types/{id}",
+  method: "put",
+  summary: "Update an Event Type",
+  description:
+    "Update an event type with full schema support including all scheduling, booking limits, AI assistant settings, and other configuration options",
+  security: apiKeySecuritySchema,
+  tags,
+  request: {
+    params: UUIDParamsSchema,
+    body: jsonContentRequired({
+      schema: updateEventTypeSchema
+        .omit({
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          ownerId: true,
+          organizationId: true,
+        })
+        .partial(),
+      description:
+        "The event type fields to update. All fields are optional for partial updates.",
+    }),
+  },
+  middleware: [authMiddleware] as const,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: selectEventTypeSchema,
+      description: "The updated event type",
+    }),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Event type not found",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description:
+        "Forbidden - insufficient permissions to update this event type",
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+        errors: z.array(z.string()).optional(),
+      }),
+      description: "Bad request, invalid input data or validation errors",
+    }),
+    [HttpStatusCodes.CONFLICT]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+        field: z.string().optional(),
+      }),
+      description:
+        "Conflict - duplicate slug or other unique constraint violation",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
 export const deleteEventType = createRoute({
   path: "/event-types/{id}",
   method: "delete",
@@ -135,4 +225,6 @@ export const deleteEventType = createRoute({
 
 export type ListEventsTypesRoute = typeof listEventTypes
 export type CreateEventTypeRoute = typeof createEventType
+export type GetEventTypeRoute = typeof getEventType
+export type UpdateEventTypeRoute = typeof updateEventType
 export type DeleteEventTypeRoute = typeof deleteEventType

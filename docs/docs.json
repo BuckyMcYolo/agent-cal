@@ -56,8 +56,10 @@
             "group": "Event Types",
             "pages": [
               "api-reference/event-types/get-all",
-              "api-reference/event-types/delete",
-              "api-reference/event-types/post"
+              "api-reference/event-types/get",
+              "api-reference/event-types/post",
+              "api-reference/event-types/put",
+              "api-reference/event-types/delete"
             ]
           },
           {
@@ -65,7 +67,8 @@
             "pages": [
               "api-reference/availability/get-all",
               "api-reference/availability/get",
-              "api-reference/availability/post"
+              "api-reference/availability/post",
+              "api-reference/availability/put"
             ]
           }
         ]

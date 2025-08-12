@@ -96,14 +96,27 @@ export default function CreateEventTypeDialog({
 
       return res.json()
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["event-types"] })
       toast.success("Event type created successfully!")
       setOpen(false)
       form.reset()
+
+      // Optionally navigate to the new event type
+      // router.push(`/event-types/${data.id}`)
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to create event type")
+      const errorMessage = error.message || "Failed to create event type"
+
+      // Handle specific field errors
+      if (errorMessage.includes("title") && errorMessage.includes("exists")) {
+        form.setError("title", {
+          type: "manual",
+          message: errorMessage,
+        })
+      } else {
+        toast.error(errorMessage)
+      }
     },
   })
 

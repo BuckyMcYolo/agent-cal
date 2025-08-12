@@ -1536,6 +1536,918 @@
       }
     },
     "/event-types/{id}": {
+      "get": {
+        "summary": "Get an Event Type by ID",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Event Types"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The event type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "length": {
+                      "type": "integer",
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "hidden": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "listPosition": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "ownerId": {
+                      "type": "string"
+                    },
+                    "organizationId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "schedulingType": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": [
+                        "ROUND_ROBIN",
+                        "COLLECTIVE",
+                        "INDIVIDUAL"
+                      ]
+                    },
+                    "minimumBookingNotice": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "beforeEventBuffer": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "afterEventBuffer": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "limitBookingFrequency": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "dailyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "weeklyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "monthlyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "limitFutureBookings": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "maxDaysInFuture": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "requiresConfirmation": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "disableGuests": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "locationType": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": [
+                        "IN_PERSON",
+                        "VIRTUAL",
+                        "PHONE"
+                      ]
+                    },
+                    "timeZone": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lockTimezone": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "availabilityScheduleId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "aiEmailAssistantEnabled": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "aiPhoneAssistantEnabled": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "metadata": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": {
+                            "nullable": true
+                          }
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "nullable": true
+                          }
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt",
+                    "updatedAt",
+                    "title",
+                    "slug",
+                    "description",
+                    "length",
+                    "hidden",
+                    "listPosition",
+                    "ownerId",
+                    "organizationId",
+                    "schedulingType",
+                    "minimumBookingNotice",
+                    "beforeEventBuffer",
+                    "afterEventBuffer",
+                    "limitBookingFrequency",
+                    "dailyFrequencyLimit",
+                    "weeklyFrequencyLimit",
+                    "monthlyFrequencyLimit",
+                    "limitFutureBookings",
+                    "maxDaysInFuture",
+                    "requiresConfirmation",
+                    "disableGuests",
+                    "locationType",
+                    "timeZone",
+                    "lockTimezone",
+                    "availabilityScheduleId",
+                    "aiEmailAssistantEnabled",
+                    "aiPhoneAssistantEnabled",
+                    "metadata"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions to access this event type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event type not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an Event Type",
+        "description": "Update an event type with full schema support including all scheduling, booking limits, AI assistant settings, and other configuration options",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Event Types"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "The event type fields to update. All fields are optional for partial updates.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "length": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "hidden": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "listPosition": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "schedulingType": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "ROUND_ROBIN",
+                      "COLLECTIVE",
+                      "INDIVIDUAL"
+                    ]
+                  },
+                  "minimumBookingNotice": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "beforeEventBuffer": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "afterEventBuffer": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "limitBookingFrequency": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "dailyFrequencyLimit": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "weeklyFrequencyLimit": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "monthlyFrequencyLimit": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "limitFutureBookings": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "maxDaysInFuture": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "requiresConfirmation": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "disableGuests": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "locationType": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "IN_PERSON",
+                      "VIRTUAL",
+                      "PHONE"
+                    ]
+                  },
+                  "timeZone": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "lockTimezone": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "availabilityScheduleId": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uuid"
+                  },
+                  "aiEmailAssistantEnabled": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "aiPhoneAssistantEnabled": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "metadata": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "nullable": true
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {
+                          "nullable": true
+                        }
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "nullable": true
+                        }
+                      },
+                      {
+                        "nullable": true
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated event type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "length": {
+                      "type": "integer",
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "hidden": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "listPosition": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "ownerId": {
+                      "type": "string"
+                    },
+                    "organizationId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "schedulingType": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": [
+                        "ROUND_ROBIN",
+                        "COLLECTIVE",
+                        "INDIVIDUAL"
+                      ]
+                    },
+                    "minimumBookingNotice": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "beforeEventBuffer": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "afterEventBuffer": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "limitBookingFrequency": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "dailyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "weeklyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "monthlyFrequencyLimit": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "limitFutureBookings": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "maxDaysInFuture": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "requiresConfirmation": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "disableGuests": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "locationType": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": [
+                        "IN_PERSON",
+                        "VIRTUAL",
+                        "PHONE"
+                      ]
+                    },
+                    "timeZone": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lockTimezone": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "availabilityScheduleId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "aiEmailAssistantEnabled": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "aiPhoneAssistantEnabled": {
+                      "type": "boolean",
+                      "nullable": true
+                    },
+                    "metadata": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": {
+                            "nullable": true
+                          }
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "nullable": true
+                          }
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt",
+                    "updatedAt",
+                    "title",
+                    "slug",
+                    "description",
+                    "length",
+                    "hidden",
+                    "listPosition",
+                    "ownerId",
+                    "organizationId",
+                    "schedulingType",
+                    "minimumBookingNotice",
+                    "beforeEventBuffer",
+                    "afterEventBuffer",
+                    "limitBookingFrequency",
+                    "dailyFrequencyLimit",
+                    "weeklyFrequencyLimit",
+                    "monthlyFrequencyLimit",
+                    "limitFutureBookings",
+                    "maxDaysInFuture",
+                    "requiresConfirmation",
+                    "disableGuests",
+                    "locationType",
+                    "timeZone",
+                    "lockTimezone",
+                    "availabilityScheduleId",
+                    "aiEmailAssistantEnabled",
+                    "aiPhoneAssistantEnabled",
+                    "metadata"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid input data or validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions to update this event type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event type not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - duplicate slug or other unique constraint violation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "field": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete an Event Type",
         "security": [
@@ -2359,6 +3271,12 @@
                     "minLength": 1,
                     "maxLength": 255
                   },
+                  "isDefault": {
+                    "type": "boolean"
+                  },
+                  "timeZone": {
+                    "type": "string"
+                  },
                   "timeSlots": {
                     "type": "array",
                     "items": {
@@ -2503,6 +3421,142 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Availability schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "example": {
+                    "success": false,
+                    "message": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Availability Schedule",
+        "description": "Delete a specific availability schedule by its ID. User must own the schedule or be an admin in the organization.",
+        "tags": [
+          "Availability"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "required": [
+                "id"
+              ],
+              "example": "4651e634-a530-4484-9b09-9616a28f35e3"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Availability schedule deleted successfully"
           },
           "401": {
             "description": "Unauthorized - Authentication required",

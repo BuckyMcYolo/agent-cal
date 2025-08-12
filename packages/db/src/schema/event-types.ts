@@ -161,4 +161,4 @@ export const insertEventTypeSchema = createInsertSchema(eventType, {
   updatedAt: true,
 })
 
-export const updateTasksSchema = insertEventTypeSchema.partial()
+export const updateEventTypeSchema = createUpdateSchema(eventType)
