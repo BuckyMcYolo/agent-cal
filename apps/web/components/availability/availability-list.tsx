@@ -147,18 +147,6 @@ const AvailabilityList = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
-                    <Link href={`/availability/${schedule.id}`}>
-                      <Eye className="h-4 w-4" />
-                      View
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
-                    <Link href={`/availability/${schedule.id}`}>
-                      <Edit3 className="h-4 w-4" />
-                      Edit
-                    </Link>
-                  </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button

@@ -3,7 +3,15 @@
 import React, { useState, useEffect } from "react"
 import { useParams, usePathname } from "next/navigation"
 import Link from "next/link"
-import { Settings, Calendar, Zap, ArrowLeft, Menu, X } from "lucide-react"
+import {
+  Settings,
+  Calendar,
+  Zap,
+  SlidersHorizontal,
+  ArrowLeft,
+  Menu,
+  X,
+} from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -22,6 +30,11 @@ const sidebarItems = [
     title: "Advanced",
     icon: Zap,
     href: "/advanced",
+  },
+  {
+    title: "Scheduling",
+    icon: SlidersHorizontal,
+    href: "/scheduling",
   },
 ]
 
@@ -146,8 +159,8 @@ const EventTypeLayout = ({ children }: { children: React.ReactNode }) => {
                   </Link>
                 </Button>
                 <div className="min-w-0">
-                  <h1 className="font-semibold text-sm text-foreground truncate">
-                    Event Type
+                  <h1 className="font-semibold text-base text-foreground truncate">
+                    Event Types
                   </h1>
                 </div>
               </div>

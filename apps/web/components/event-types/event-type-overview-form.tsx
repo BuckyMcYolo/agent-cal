@@ -10,7 +10,6 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Switch } from "@workspace/ui/components/switch"
-import { Separator } from "@workspace/ui/components/separator"
 import {
   Card,
   CardContent,
@@ -24,19 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import {
-  Clock,
-  MapPin,
-  Settings,
-  Loader2,
-  Eye,
-  EyeOff,
-  AlertTriangle,
-} from "lucide-react"
+import { Loader2, AlertTriangle } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
 import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import { useUnsavedChanges } from "@/hooks/use-unsaved-changes"
 import {
   eventTypeOverviewSchema,
   type EventTypeOverviewFormData,
@@ -151,12 +141,7 @@ const EventTypeOverviewForm = () => {
     enableRealTimeValidation: true,
   })
 
-  // Unsaved changes warning
-  useUnsavedChanges({
-    hasUnsavedChanges,
-    message:
-      "You have unsaved changes to your event type. Are you sure you want to leave?",
-  })
+  // Removed unsaved changes leave-page warning and inline alert per design update
 
   // Watch form values
   const watchedTitle = watch("title")
@@ -233,19 +218,7 @@ const EventTypeOverviewForm = () => {
   }
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 lg:space-y-8">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-xl lg:text-2xl font-semibold text-foreground">
-          Event Overview
-        </h1>
-        <p className="text-sm lg:text-base text-muted-foreground">
-          Configure the basic details and settings for your event type.
-        </p>
-      </div>
-
-      <Separator />
-
+    <div className="space-y-6 lg:space-y-8">
       {/* Form-level error display */}
       {submitError && (
         <FormError
@@ -255,23 +228,48 @@ const EventTypeOverviewForm = () => {
         />
       )}
 
-      {/* Unsaved changes warning */}
-      {hasUnsavedChanges && (
-        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 text-sm">
-          <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-          <span>You have unsaved changes</span>
-        </div>
-      )}
-
       <form onSubmit={enhancedSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-            {/* Event Details Card */}
+        {/* Sticky action bar at top */}
+        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 pb-4 border-b border-border pt-4 -mt-4 px-0">
+          <ValidationStatus
+            isValid={formState.isValid}
+            isDirty={formState.isDirty}
+            isSubmitting={isSubmitting}
+            hasErrors={Object.keys(formState.errors).length > 0}
+          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                reset()
+                setIsSlugManuallyEdited(false)
+                clearSubmitError()
+              }}
+              disabled={isSubmitting || !hasUnsavedChanges}
+              className="touch-manipulation min-h-[44px]"
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              disabled={!canSubmit}
+              className="touch-manipulation min-h-[44px]"
+            >
+              {isSubmitting && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              Save Changes
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:gap-6">
+          <div className="space-y-4 lg:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" aria-hidden="true" />
-                  Event Details
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Event details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 p-4 lg:p-6">
@@ -314,7 +312,14 @@ const EventTypeOverviewForm = () => {
                       )}
                       placeholder="30-min-meeting"
                       value={watchedSlug}
-                      onChange={handleSlugChange}
+                      onChange={(e) => {
+                        handleSlugChange(e)
+                        // ensure dirtiness tracked for URL changes
+                        setValue("slug", e.target.value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }}
                     />
                   </div>
                   <FormError error={getFieldError("slug")} />
@@ -389,14 +394,9 @@ const EventTypeOverviewForm = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Location Settings Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" aria-hidden="true" />
-                  Location Settings
-                </CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Location</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -466,17 +466,10 @@ const EventTypeOverviewForm = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Visibility Settings Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {watchedHidden ? (
-                    <EyeOff className="h-4 w-4" aria-hidden="true" />
-                  ) : (
-                    <Eye className="h-4 w-4" aria-hidden="true" />
-                  )}
-                  Visibility Settings
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Visibility
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -508,94 +501,6 @@ const EventTypeOverviewForm = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Preview Card */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Preview</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="border border-border rounded-lg p-4 bg-muted/50">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      <h3 className="font-medium">
-                        {watchedTitle || "Event Title"}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      <span>{watchedLength || 30} minutes</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span className="text-lg">
-                        {
-                          LOCATION_TYPE_OPTIONS.find(
-                            (opt) => opt.value === watchedLocationType
-                          )?.icon
-                        }
-                      </span>
-                      <span>
-                        {
-                          LOCATION_TYPE_OPTIONS.find(
-                            (opt) => opt.value === watchedLocationType
-                          )?.label
-                        }
-                      </span>
-                    </div>
-
-                    {watchedDescription && (
-                      <p className="text-sm text-muted-foreground">
-                        {watchedDescription}
-                      </p>
-                    )}
-
-                    <Button className="w-full" size="sm" disabled>
-                      Book Meeting
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 pt-4 border-t border-border">
-          <ValidationStatus
-            isValid={formState.isValid}
-            isDirty={formState.isDirty}
-            isSubmitting={isSubmitting}
-            hasErrors={Object.keys(formState.errors).length > 0}
-          />
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset()
-                setIsSlugManuallyEdited(false)
-                clearSubmitError()
-              }}
-              disabled={isSubmitting || !hasUnsavedChanges}
-              className="touch-manipulation min-h-[44px]"
-            >
-              Reset
-            </Button>
-            <Button
-              type="submit"
-              disabled={!canSubmit}
-              className="touch-manipulation min-h-[44px]"
-            >
-              {isSubmitting && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              )}
-              Save Changes
-            </Button>
           </div>
         </div>
       </form>

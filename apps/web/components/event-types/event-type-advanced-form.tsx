@@ -8,29 +8,15 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Switch } from "@workspace/ui/components/switch"
-import { Separator } from "@workspace/ui/components/separator"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
-import {
-  Shield,
-  Clock,
-  Settings,
-  Bot,
-  Loader2,
-  Calendar,
-  Users,
-  CheckCircle,
-  AlertTriangle,
-  Minus,
-  Plus,
-} from "lucide-react"
+import { Loader2, AlertTriangle } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import { useUnsavedChanges } from "@/hooks/use-unsaved-changes"
 import {
   eventTypeAdvancedSchema,
   type EventTypeAdvancedFormData,
@@ -133,12 +119,7 @@ const EventTypeAdvancedForm = () => {
     enableRealTimeValidation: true,
   })
 
-  // Unsaved changes warning
-  useUnsavedChanges({
-    hasUnsavedChanges,
-    message:
-      "You have unsaved changes to your advanced settings. Are you sure you want to leave?",
-  })
+  // Removed unsaved changes leave-page warning and inline alert per design update
 
   // Watch form values for conditional rendering
   const watchedLimitBookingFrequency = watch("limitBookingFrequency")
@@ -211,20 +192,7 @@ const EventTypeAdvancedForm = () => {
   }
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 lg:space-y-8">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-xl lg:text-2xl font-semibold text-foreground">
-          Advanced Settings
-        </h1>
-        <p className="text-sm lg:text-base text-muted-foreground">
-          Configure booking limits, buffer times, and advanced features for your
-          event type.
-        </p>
-      </div>
-
-      <Separator />
-
+    <div className="space-y-6 lg:space-y-8">
       {/* Form-level error display */}
       {submitError && (
         <FormError
@@ -234,23 +202,48 @@ const EventTypeAdvancedForm = () => {
         />
       )}
 
-      {/* Unsaved changes warning */}
-      {hasUnsavedChanges && (
-        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 text-sm">
-          <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-          <span>You have unsaved changes</span>
-        </div>
-      )}
-
       <form onSubmit={enhancedSubmit} className="space-y-6">
+        {/* Sticky action bar at top */}
+        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 pb-4 border-b border-border pt-4 -mt-4 px-0">
+          <ValidationStatus
+            isValid={formState.isValid}
+            isDirty={formState.isDirty}
+            isSubmitting={isSubmitting}
+            hasErrors={Object.keys(formState.errors).length > 0}
+          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                reset()
+                clearSubmitError()
+              }}
+              disabled={isSubmitting || !hasUnsavedChanges}
+              className="touch-manipulation min-h-[44px]"
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              disabled={!canSubmit}
+              className="touch-manipulation min-h-[44px]"
+            >
+              {isSubmitting && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              Save Changes
+            </Button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
           <div className="space-y-4 lg:space-y-6">
             {/* Booking Frequency Limits Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  Booking Frequency Limits
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Booking limits
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 p-4 lg:p-6">
@@ -266,6 +259,7 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("limitBookingFrequency", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
@@ -374,10 +368,9 @@ const EventTypeAdvancedForm = () => {
 
             {/* Future Booking Limits Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Future Booking Limits
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Future booking window
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -393,6 +386,7 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("limitFutureBookings", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
@@ -435,10 +429,9 @@ const EventTypeAdvancedForm = () => {
 
             {/* Buffer Times Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Buffer Times
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Buffer times
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -518,10 +511,9 @@ const EventTypeAdvancedForm = () => {
           <div className="space-y-6">
             {/* Booking Controls Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  Booking Controls
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Booking controls
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -537,6 +529,7 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("requiresConfirmation", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
@@ -554,6 +547,7 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("disableGuests", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
@@ -563,10 +557,9 @@ const EventTypeAdvancedForm = () => {
 
             {/* AI Assistant Settings Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bot className="h-4 w-4" />
-                  AI Assistant Settings
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  AI assistant
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -582,6 +575,7 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("aiEmailAssistantEnabled", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
@@ -599,150 +593,13 @@ const EventTypeAdvancedForm = () => {
                     onCheckedChange={(checked) =>
                       setValue("aiPhoneAssistantEnabled", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                   />
                 </div>
               </CardContent>
             </Card>
-
-            {/* Settings Summary Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Settings Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Booking frequency limits:
-                    </span>
-                    <span
-                      className={cn(
-                        "font-medium",
-                        watchedLimitBookingFrequency
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {watchedLimitBookingFrequency ? "Enabled" : "Disabled"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Future booking limits:
-                    </span>
-                    <span
-                      className={cn(
-                        "font-medium",
-                        watchedLimitFutureBookings
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {watchedLimitFutureBookings ? "Enabled" : "Disabled"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Buffer times:</span>
-                    <span className="font-medium">
-                      {watchedBeforeEventBuffer}m / {watchedAfterEventBuffer}m
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Requires confirmation:
-                    </span>
-                    <span
-                      className={cn(
-                        "font-medium",
-                        watchedRequiresConfirmation
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {watchedRequiresConfirmation ? "Yes" : "No"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Guests disabled:
-                    </span>
-                    <span
-                      className={cn(
-                        "font-medium",
-                        watchedDisableGuests
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {watchedDisableGuests ? "Yes" : "No"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      AI assistants:
-                    </span>
-                    <div className="flex items-center gap-1">
-                      {watchedAiEmailAssistantEnabled && (
-                        <CheckCircle className="h-3 w-3 text-primary" />
-                      )}
-                      {watchedAiPhoneAssistantEnabled && (
-                        <CheckCircle className="h-3 w-3 text-primary" />
-                      )}
-                      <span className="font-medium text-xs">
-                        {watchedAiEmailAssistantEnabled ||
-                        watchedAiPhoneAssistantEnabled
-                          ? `${[watchedAiEmailAssistantEnabled && "Email", watchedAiPhoneAssistantEnabled && "Phone"].filter(Boolean).join(", ")}`
-                          : "None"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 pt-4 border-t border-border">
-          <ValidationStatus
-            isValid={formState.isValid}
-            isDirty={formState.isDirty}
-            isSubmitting={isSubmitting}
-            hasErrors={Object.keys(formState.errors).length > 0}
-          />
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset()
-                clearSubmitError()
-              }}
-              disabled={isSubmitting || !hasUnsavedChanges}
-              className="touch-manipulation min-h-[44px]"
-            >
-              Reset
-            </Button>
-            <Button
-              type="submit"
-              disabled={!canSubmit}
-              className="touch-manipulation min-h-[44px]"
-            >
-              {isSubmitting && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              )}
-              Save Changes
-            </Button>
           </div>
         </div>
       </form>

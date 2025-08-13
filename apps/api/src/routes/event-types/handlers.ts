@@ -14,6 +14,7 @@ import { eventType } from "@workspace/db/schema/event-types"
 import { sluggify } from "@/lib/misc/sluggify"
 import { getUserOrgbyUserId } from "@/lib/queries/users"
 import { userPreferences } from "@workspace/db/schema/user-preferences"
+import { availabilitySchedule } from "@workspace/db/schema/availability"
 
 export const listEventTypes: AppRouteHandler<ListEventsTypesRoute> = async (
   c
@@ -87,6 +88,15 @@ export const createEventType: AppRouteHandler<CreateEventTypeRoute> = async (
 
     const timeZone = getUserPreferences?.timezone || "America/New_York"
 
+    const getDefaultAvailabilitySchedule =
+      await db.query.availabilitySchedule.findFirst({
+        where: and(
+          eq(availabilitySchedule.isDefault, true),
+          eq(availabilitySchedule.organizationId, userOrg?.id || ""),
+          eq(availabilitySchedule.ownerId, user.id)
+        ),
+      })
+
     const [inserted] = await db
       .insert(eventType)
       .values({
@@ -97,6 +107,7 @@ export const createEventType: AppRouteHandler<CreateEventTypeRoute> = async (
         organizationId: userOrg?.id || "",
         slug: sluggify(title),
         timeZone: timeZone,
+        availabilityScheduleId: getDefaultAvailabilitySchedule?.id || null,
       })
       .returning()
 

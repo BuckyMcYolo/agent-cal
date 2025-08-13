@@ -460,7 +460,6 @@ const EventTypesList = () => {
           </div>
           <CreateEventTypeDialog />
         </div>
-
         <div className="bg-card rounded-lg border">
           <div className="text-center py-16 px-6">
             <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
