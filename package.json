@@ -9,8 +9,10 @@
     "dev:api": "turbo dev --filter @workspace/api...",
     "dev:docs": "cd docs && mintlify dev --port 5000",
     "build": "turbo build",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check": "biome check .",
+    "check:fix": "biome check . --write",
+    "format": "biome format . --write",
+    "lint": "biome lint . ",
     "db:studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
     "db:pull": "pnpm --filter @workspace/db exec drizzle-kit pull",
     "db:push": "pnpm --filter @workspace/db exec drizzle-kit push",
@@ -21,9 +23,8 @@
     "watch": "turbo watch"
   },
   "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
+    "@biomejs/biome": "2.3.10",
     "@workspace/typescript-config": "workspace:*",
-    "prettier": "^3.5.1",
     "turbo": "^2.4.2",
     "typescript": "5.7.3"
   },

@@ -1,38 +1,37 @@
 {
-  "name": "@workspace/db",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "tsc --watch",
-    "studio": "drizzle-kit studio",
-    "push": "drizzle-kit push",
-    "pull": "drizzle-kit pull",
-    "build": "rm -rf dist && tsc && tsc-alias"
-  },
-  "devDependencies": {
-    "@types/pg": "^8.11.11",
-    "@workspace/env-config": "workspace:*",
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
-    "drizzle-kit": "^0.30.5",
-    "tsx": "^4.7.1",
-    "tsc-alias": "^1.8.13"
-  },
-  "dependencies": {
-    "drizzle-orm": "^0.41.0",
-    "drizzle-zod": "^0.7.1",
-    "postgres": "^3.4.5",
-    "zod": "^3.24.2"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./schema/*": {
-      "types": "./dist/schema/*.d.ts",
-      "default": "./dist/schema/*.js"
-    }
-  }
+	"name": "@workspace/db",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsc --watch",
+		"studio": "drizzle-kit studio",
+		"push": "drizzle-kit push",
+		"pull": "drizzle-kit pull",
+		"build": "rm -rf dist && tsc && tsc-alias"
+	},
+	"devDependencies": {
+		"@types/pg": "^8.11.11",
+		"@workspace/env-config": "workspace:*",
+		"@workspace/typescript-config": "workspace:*",
+		"drizzle-kit": "^0.30.5",
+		"tsx": "^4.7.1",
+		"tsc-alias": "^1.8.13"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.41.0",
+		"drizzle-zod": "^0.7.1",
+		"postgres": "^3.4.5",
+		"zod": "^3.24.2"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./schema/*": {
+			"types": "./dist/schema/*.d.ts",
+			"default": "./dist/schema/*.js"
+		}
+	}
 }

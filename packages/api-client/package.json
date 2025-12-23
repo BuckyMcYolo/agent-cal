@@ -1,26 +1,24 @@
 {
-  "name": "@workspace/api-client",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "hono": "^4.7.5",
-    "@workspace/api": "workspace:*"
-  },
-  "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  }
+	"name": "@workspace/api-client",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsc --watch",
+		"build": "rm -rf dist && tsc",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"hono": "^4.7.5",
+		"@workspace/api": "workspace:*"
+	},
+	"devDependencies": {
+		"@workspace/typescript-config": "workspace:*"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	}
 }
