@@ -22,10 +22,31 @@
 		"expand": "auto",
 		"useEditorconfig": true
 	},
+	"json": {
+		"parser": {
+			"allowTrailingCommas": true
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"suspicious": {
+				"useIterableCallbackReturn": "off",
+				"noExplicitAny": "error",
+				"noDocumentCookie": "off"
+			},
+			"correctness": {
+				"noInvalidPositionAtImportRule": "off",
+				"useExhaustiveDependencies": "off",
+				"noUnusedFunctionParameters": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "error"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "error"
+			}
 		}
 	},
 	"javascript": {
@@ -80,11 +101,9 @@
 						"noNamespace": "error",
 						"useArrayLiterals": "error",
 						"useAsConstAssertion": "error",
-						"noNonNullAssertion": "error",
 						"noUselessElse": "error"
 					},
 					"suspicious": {
-						"noExplicitAny": "error",
 						"noExtraNonNullAssertion": "error",
 						"noMisleadingInstantiator": "error",
 						"noNonNullAssertedOptionalChain": "error",
@@ -113,14 +132,11 @@
 					},
 					"suspicious": {
 						"noAssignInExpressions": "off",
-						"noArrayIndexKey": "off",
-						"noExplicitAny": "warn"
+						"noArrayIndexKey": "off"
 					},
 					"correctness": {
 						"noUnusedVariables": "off",
-						"noUnusedImports": "warn",
-						"useExhaustiveDependencies": "warn",
-						"noUnusedFunctionParameters": "off"
+						"noUnusedImports": "warn"
 					},
 					"complexity": {
 						"noUselessFragments": "off"

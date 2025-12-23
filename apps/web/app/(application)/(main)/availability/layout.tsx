@@ -1,6 +1,4 @@
-import React from "react"
-import Link from "next/link"
-import { cn } from "@workspace/ui/lib/utils"
+import type React from "react"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

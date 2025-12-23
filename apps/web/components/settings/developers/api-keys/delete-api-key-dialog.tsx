@@ -11,11 +11,10 @@ import {
   AlertDialogTitle,
   AlertDialogHeader,
   AlertDialogCancel,
-  AlertDialogFooter,
 } from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
 import { Trash } from "lucide-react"
-import React, { useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 export default function DeleteApiKeyDialog({ keyId }: { keyId: string }) {

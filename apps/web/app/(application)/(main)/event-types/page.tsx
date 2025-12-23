@@ -3,7 +3,6 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query"
-import React from "react"
 import { apiClient } from "@/lib/utils/api-client"
 import EventTypesList from "@/components/event-types/event-types-list"
 

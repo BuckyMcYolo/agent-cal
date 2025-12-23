@@ -17,7 +17,7 @@ export const timeSlotSchema = z
       const minutes = Number(parts[1])
 
       // Check if conversion resulted in valid numbers
-      if (isNaN(hours) || isNaN(minutes)) return false
+      if (Number.isNaN(hours) || Number.isNaN(minutes)) return false
 
       return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59
     },

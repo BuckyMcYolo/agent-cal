@@ -1,4 +1,4 @@
-import React from "react"
+
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { Separator } from "@workspace/ui/components/separator"
 

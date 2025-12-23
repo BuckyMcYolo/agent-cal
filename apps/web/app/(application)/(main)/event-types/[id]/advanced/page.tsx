@@ -1,4 +1,4 @@
-import React from "react"
+
 import EventTypeAdvancedForm from "@/components/event-types/event-type-advanced-form"
 
 const Advanced = () => {

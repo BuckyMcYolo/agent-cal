@@ -1,19 +1,23 @@
 "use client"
 
-import { getTasks } from "@/lib/queries/get-tasks"
 import { apiClient } from "@/lib/utils/api-client"
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import React from "react"
+
+interface Task {
+  id: string
+  name: string
+  done: boolean
+}
 
 const TasksList = () => {
   const { data, isLoading, error } = useSuspenseQuery({
     queryKey: ["tasks"],
-    queryFn: async () => {
+    queryFn: async (): Promise<Task[] | null> => {
       const res = await apiClient.tasks.$get()
       if (res.ok) {
         const data = await res.json()
-        return data
+        return data as Task[]
       }
       return null
     },
@@ -25,7 +29,7 @@ const TasksList = () => {
     error: isTaskError,
   } = useQuery({
     queryKey: ["task", data?.[0]?.id ?? ""],
-    queryFn: async () => {
+    queryFn: async (): Promise<Task | null> => {
       const res = await apiClient.tasks[":id"].$get({
         param: {
           id: "897904d8-7a3b-4449-be07-5101b3952dff",
@@ -33,14 +37,14 @@ const TasksList = () => {
       })
       if (res.ok) {
         const data = await res.json()
-        return data
+        return data as Task
       }
       return null
     },
   })
 
   const { mutate } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (): Promise<Task> => {
       const res = await apiClient.tasks.$post({
         json: {
           name: "Test Task",
@@ -48,12 +52,11 @@ const TasksList = () => {
         },
       })
 
-      if (res.status == 200) {
-        const data = await res.json()
-      } else {
-        throw new Error("Failed to create task")
+      if (res.status === 200) {
+        const responseData = await res.json()
+        return responseData as Task
       }
-      return data
+      throw new Error("Failed to create task")
     },
   })
 
@@ -63,7 +66,7 @@ const TasksList = () => {
       {error && <p>Error: {error.message}</p>}
       {data && data.length > 0 && (
         <ul>
-          {data.map((task: any) => (
+          {data.map((task) => (
             <li key={task.id}>
               <p>{task.name}</p>
               <p>{task.done ? "Done" : "Not Done"}</p>

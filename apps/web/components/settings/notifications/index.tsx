@@ -6,7 +6,6 @@ import {
   CardDescription,
 } from "@workspace/ui/components/card"
 import { Switch } from "@workspace/ui/components/switch"
-import React from "react"
 
 export default function Notifications() {
   return (

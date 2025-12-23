@@ -2,7 +2,6 @@ import { useUser } from "@/hooks/use-user"
 import { apiClient } from "@/lib/utils/api-client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { authClient } from "@workspace/auth/client"
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -20,8 +19,8 @@ import { Label } from "@workspace/ui/components/label"
 import { Switch } from "@workspace/ui/components/switch"
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { SquarePen } from "lucide-react"
-import React, { useEffect, useState } from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { type SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -116,7 +115,7 @@ export default function UpdateApiKeyDialog({
           : await apiClient["api-keys"][":id"].$patch(body)
 
       const res = updateFn
-      if (res.status == 200) {
+      if (res.status === 200) {
         const data = await res.json()
         return data
       } else {

@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import type * as React from "react"
 import { IconHelp, IconSearch, IconWebhook } from "@tabler/icons-react"
 import { NavSettings } from "@/components/nav/nav-settings"
 import { NavUser } from "@/components/nav/nav-user"
@@ -16,8 +16,6 @@ import {
 import {
   ArrowBigLeft,
   Bell,
-  BookOpen,
-  Brain,
   CreditCard,
   Key,
   User,

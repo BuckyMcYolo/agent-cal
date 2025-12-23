@@ -1,4 +1,9 @@
-import { useForm, UseFormProps, FieldValues, Path } from "react-hook-form"
+import {
+  useForm,
+  type UseFormProps,
+  type FieldValues,
+  type Path,
+} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useEffect, useState } from "react"
@@ -8,9 +13,9 @@ import { parseApiError } from "@/lib/utils/form-validation"
 interface UseEnhancedFormOptions<T extends FieldValues>
   extends UseFormProps<T> {
   schema: z.ZodSchema<T>
-  onSubmit: (data: T) => Promise<any> | any
+  onSubmit: (data: T) => Promise<unknown> | unknown
   onSuccess?: (data: T) => void
-  onError?: (error: any) => void
+  onError?: (error: unknown) => void
   enableRealTimeValidation?: boolean
   successMessage?: string
 }
@@ -110,29 +115,37 @@ export const useEnhancedForm = <T extends FieldValues>({
         errorMessage.includes("constraint")
       ) {
         // Try to extract field-specific errors if available
-        const errorData = error as any
-        if (errorData?.response?.data?.errors) {
-          errorData.response.data.errors.forEach((err: string) => {
-            // Map common validation errors to fields
-            if (err.includes("length") || err.includes("15-minute")) {
-              setError("length" as Path<T>, {
-                type: "manual",
-                message: err,
-              })
-            }
-            if (err.includes("frequency")) {
-              setError("limitBookingFrequency" as Path<T>, {
-                type: "manual",
-                message: err,
-              })
-            }
-            if (err.includes("future")) {
-              setError("limitFutureBookings" as Path<T>, {
-                type: "manual",
-                message: err,
-              })
-            }
-          })
+        if (
+          error !== null &&
+          typeof error === "object" &&
+          "response" in error
+        ) {
+          const errorResponse = error as {
+            response?: { data?: { errors?: string[] } }
+          }
+          if (errorResponse?.response?.data?.errors) {
+            errorResponse.response.data.errors.forEach((err: string) => {
+              // Map common validation errors to fields
+              if (err.includes("length") || err.includes("15-minute")) {
+                setError("length" as Path<T>, {
+                  type: "manual",
+                  message: err,
+                })
+              }
+              if (err.includes("frequency")) {
+                setError("limitBookingFrequency" as Path<T>, {
+                  type: "manual",
+                  message: err,
+                })
+              }
+              if (err.includes("future")) {
+                setError("limitFutureBookings" as Path<T>, {
+                  type: "manual",
+                  message: err,
+                })
+              }
+            })
+          }
         }
       }
 

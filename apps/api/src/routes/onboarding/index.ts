@@ -18,7 +18,6 @@ import { sluggify } from "@/lib/misc/sluggify"
 import {
   availabilitySchedule,
   insertAvailabilitySchema,
-  insertWeeklyScheduleSchema,
   weeklyScheduleSlot,
 } from "@workspace/db/schema/availability"
 
@@ -292,7 +291,7 @@ export const completeOnboardingHandler: AppRouteHandler<
       error instanceof Error ? error.message : "Unknown error occurred"
     return c.json(
       {
-        message: "Failed to complete onboarding: " + errorMessage,
+        message: `Failed to complete onboarding: ${errorMessage}`,
         success: false,
       },
       HttpStatusCodes.INTERNAL_SERVER_ERROR

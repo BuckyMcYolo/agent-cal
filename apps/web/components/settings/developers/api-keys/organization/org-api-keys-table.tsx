@@ -1,7 +1,6 @@
 "use client"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { authClient } from "@workspace/auth/client"
 import {
   Table,
   TableBody,
@@ -11,11 +10,9 @@ import {
   TableRow,
 } from "@workspace/ui/components/table"
 import { DateTime } from "luxon"
-import { CreateApiKeyDialog } from "../create-api-key-dialog"
 import DeleteApiKeyDialog from "../delete-api-key-dialog"
 import UpdateApiKeyDialog from "../update-api-key-dialog"
 import { apiClient } from "@/lib/utils/api-client"
-import { useUser } from "@/hooks/use-user"
 import {
   Tooltip,
   TooltipContent,

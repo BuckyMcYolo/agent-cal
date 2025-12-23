@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { apiClient } from "@/lib/utils/api-client"
@@ -15,7 +15,6 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card"
 import { Loader2, AlertTriangle } from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
 import { useEnhancedForm } from "@/hooks/use-enhanced-form"
 import {
   eventTypeAdvancedSchema,

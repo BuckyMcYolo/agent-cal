@@ -1,8 +1,6 @@
 import { and, db, eq } from "@workspace/db"
 import type { AppRouteHandler } from "@/lib/types/app-types"
-import { tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 import type {
   CreateEventTypeRoute,
   DeleteEventTypeRoute,

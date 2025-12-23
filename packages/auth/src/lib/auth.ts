@@ -6,9 +6,7 @@ import {
   apiKey,
   openAPI,
   emailOTP,
-  bearer,
   phoneNumber,
-  customSession,
 } from "better-auth/plugins"
 import { db } from "@workspace/db"
 import { serverEnv } from "@workspace/env-config"
@@ -59,7 +57,7 @@ const options = {
   ],
   plugins: [
     phoneNumber({
-      sendOTP: ({ phoneNumber, code }, request) => {
+      sendOTP: ({ phoneNumber, code }, _request) => {
         // Implement sending OTP code via SMS
       },
     }),

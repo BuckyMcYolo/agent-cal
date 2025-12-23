@@ -3,7 +3,7 @@ import { apiClient } from "../utils/api-client"
 export const getUserPreferences = async () => {
   try {
     const res = await apiClient["my-preferences"].$get()
-    if (res.status == 200) {
+    if (res.status === 200) {
       const data = await res.json()
       return data
     } else if (res.status === 404) {

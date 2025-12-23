@@ -2,7 +2,6 @@ import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core"
 import {
   createInsertSchema,
   createSelectSchema,
-  createUpdateSchema,
 } from "drizzle-zod"
 
 export const tasks = pgTable("tasks", {

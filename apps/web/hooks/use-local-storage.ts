@@ -1,22 +1,25 @@
 import { useState } from "react"
 
-export const useLocalStorage = (key: string, initialValue: any) => {
-  const getStoredValue = () => {
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T | ((prev: T) => T)) => void] {
+  const getStoredValue = (): T => {
     if (typeof window === "undefined") {
       return initialValue
     }
     try {
       const item = window.localStorage.getItem(key)
-      return item !== null ? JSON.parse(item) : initialValue
+      return item !== null ? (JSON.parse(item) as T) : initialValue
     } catch (error) {
       console.error(error)
       return initialValue
     }
   }
 
-  const [storedValue, setStoredValue] = useState(getStoredValue)
+  const [storedValue, setStoredValue] = useState<T>(getStoredValue)
 
-  const setValue = (value: any) => {
+  const setValue = (value: T | ((prev: T) => T)) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =

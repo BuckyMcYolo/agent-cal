@@ -21,7 +21,6 @@ import {
   CopyIcon,
   Code,
   Trash2,
-  EyeOff,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -46,7 +45,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
+  type DragEndEvent,
 } from "@dnd-kit/core"
 import {
   arrayMove,
@@ -58,6 +57,13 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import type { InferResponseType } from "@workspace/api-client"
+
+// Derive EventType from API response
+type EventTypesResponse = InferResponseType<
+  (typeof apiClient)["event-types"]["$get"]
+>
+type EventType = EventTypesResponse extends Array<infer T> ? T : never
 
 /**
  * Sortable Event Type Card Component
@@ -74,7 +80,7 @@ import Link from "next/link"
  * - Visual feedback during drag operations
  */
 interface SortableEventTypeCardProps {
-  eventType: any
+  eventType: EventType
   onDelete: (id: string) => void
   onToggleHidden: (id: string, hidden: boolean) => void
   isDeleting: boolean
@@ -286,27 +292,25 @@ const SortableEventTypeCard = ({
 
 const EventTypesList = () => {
   const queryClient = useQueryClient()
-  const [eventTypes, setEventTypes] = useState<any[]>([])
+  const [eventTypes, setEventTypes] = useState<EventType[]>([])
   const [isReordering, setIsReordering] = useState(false)
 
   const { data: fetchedEventTypes } = useSuspenseQuery({
     queryKey: ["event-types"],
-    queryFn: async () => {
+    queryFn: async (): Promise<EventType[]> => {
       const res = await apiClient["event-types"].$get({
         query: {},
       })
       if (res.ok) {
-        const data = await res.json()
+        const data = (await res.json()) as EventType[]
         // Sort by listPosition to maintain order
         return data.sort(
-          (a: any, b: any) => (a.listPosition || 0) - (b.listPosition || 0)
+          (a, b) => (a.listPosition ?? 0) - (b.listPosition ?? 0)
         )
       }
       try {
-        const errorData = await res.json()
-        throw new Error(
-          (errorData as any)?.message || "Failed to fetch event types"
-        )
+        const errorData = (await res.json()) as { message?: string }
+        throw new Error(errorData?.message || "Failed to fetch event types")
       } catch {
         throw new Error("Failed to fetch event types")
       }

@@ -1,5 +1,5 @@
-import { index, integer, json, pgEnum, uuid } from "drizzle-orm/pg-core"
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core"
+import { index, json, pgEnum, uuid } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, } from "drizzle-orm/pg-core"
 import { user, organization } from "./auth"
 import { eventType } from "./event-types"
 import { relations } from "drizzle-orm"

@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import React from "react"
+import type React from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 

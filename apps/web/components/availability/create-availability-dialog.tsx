@@ -34,9 +34,8 @@ import {
   FormMessage,
   FormDescription,
 } from "@workspace/ui/components/form"
-import { Plus, Loader2, Clock, Trash2 } from "lucide-react"
+import { Plus, Loader2, Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import { cn } from "@workspace/ui/lib/utils"
 import { Card } from "@workspace/ui/components/card"
 import { Label } from "@workspace/ui/components/label"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
@@ -73,7 +72,16 @@ const createAvailabilitySchema = z.object({
 
 type CreateAvailabilityFormData = z.infer<typeof createAvailabilitySchema>
 
-const DAYS = [
+type DayKey =
+  | "sunday"
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+
+const DAYS: { key: DayKey; label: string }[] = [
   { key: "sunday", label: "Sunday" },
   { key: "monday", label: "Monday" },
   { key: "tuesday", label: "Tuesday" },
@@ -190,17 +198,17 @@ export default function CreateAvailabilityDialog({
   }
 
   // Helper function to add a time slot for a specific day
-  const addTimeSlot = (day: string) => {
-    const currentDay = watch(day as any) as DaySlot
+  const addTimeSlot = (day: DayKey) => {
+    const currentDay = watch(day)
     const updatedSlots = [...currentDay.slots, { startTime: "", endTime: "" }]
-    setValue(`${day}.slots` as any, updatedSlots)
+    setValue(`${day}.slots`, updatedSlots)
   }
 
   // Helper function to remove a time slot for a specific day
-  const removeTimeSlot = (day: string, index: number) => {
-    const currentDay = watch(day as any) as DaySlot
+  const removeTimeSlot = (day: DayKey, index: number) => {
+    const currentDay = watch(day)
     const updatedSlots = currentDay.slots.filter((_, i) => i !== index)
-    setValue(`${day}.slots` as any, updatedSlots)
+    setValue(`${day}.slots`, updatedSlots)
   }
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -269,7 +277,7 @@ export default function CreateAvailabilityDialog({
                       <div className="flex items-center space-x-2">
                         <FormField
                           control={form.control}
-                          name={`${key}.enabled` as any}
+                          name={`${key}.enabled`}
                           render={({ field }) => (
                             <FormItem className="flex items-center space-x-2">
                               <FormControl>
@@ -291,97 +299,95 @@ export default function CreateAvailabilityDialog({
                     </div>
 
                     {/* Time slots for this day - only shown if the day is enabled */}
-                    {watch(`${key}.enabled` as any) && (
+                    {watch(`${key}.enabled`) && (
                       <div className="space-y-4 pl-8">
-                        {watch(`${key}.slots` as any)?.map(
-                          (_: any, index: number) => (
-                            <div key={index} className="flex items-end gap-2">
-                              <FormField
-                                control={form.control}
-                                name={`${key}.slots.${index}.startTime` as any}
-                                render={({ field }) => (
-                                  <FormItem className="flex-1">
-                                    <FormLabel
-                                      className={
-                                        index > 0 ? "sr-only" : undefined
-                                      }
+                        {watch(`${key}.slots`).map((_, index) => (
+                          <div key={index} className="flex items-end gap-2">
+                            <FormField
+                              control={form.control}
+                              name={`${key}.slots.${index}.startTime`}
+                              render={({ field }) => (
+                                <FormItem className="flex-1">
+                                  <FormLabel
+                                    className={
+                                      index > 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Start Time
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Select
+                                      value={field.value}
+                                      onValueChange={field.onChange}
                                     >
-                                      Start Time
-                                    </FormLabel>
-                                    <FormControl>
-                                      <Select
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                      >
-                                        <SelectTrigger>
-                                          <SelectValue placeholder="Select time" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {TIME_OPTIONS.map((time) => (
-                                            <SelectItem
-                                              key={time.value}
-                                              value={time.value}
-                                            >
-                                              {time.label}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <div className="mx-2 mb-2">to</div>
-                              <FormField
-                                control={form.control}
-                                name={`${key}.slots.${index}.endTime` as any}
-                                render={({ field }) => (
-                                  <FormItem className="flex-1">
-                                    <FormLabel
-                                      className={
-                                        index > 0 ? "sr-only" : undefined
-                                      }
-                                    >
-                                      End Time
-                                    </FormLabel>
-                                    <FormControl>
-                                      <Select
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                      >
-                                        <SelectTrigger>
-                                          <SelectValue placeholder="Select time" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {TIME_OPTIONS.map((time) => (
-                                            <SelectItem
-                                              key={time.value}
-                                              value={time.value}
-                                            >
-                                              {time.label}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              {index > 0 && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => removeTimeSlot(key, index)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select time" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {TIME_OPTIONS.map((time) => (
+                                          <SelectItem
+                                            key={time.value}
+                                            value={time.value}
+                                          >
+                                            {time.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
                               )}
-                            </div>
-                          )
-                        )}
+                            />
+                            <div className="mx-2 mb-2">to</div>
+                            <FormField
+                              control={form.control}
+                              name={`${key}.slots.${index}.endTime`}
+                              render={({ field }) => (
+                                <FormItem className="flex-1">
+                                  <FormLabel
+                                    className={
+                                      index > 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    End Time
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Select
+                                      value={field.value}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select time" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {TIME_OPTIONS.map((time) => (
+                                          <SelectItem
+                                            key={time.value}
+                                            value={time.value}
+                                          >
+                                            {time.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            {index > 0 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeTimeSlot(key, index)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        ))}
 
                         <Button
                           type="button"

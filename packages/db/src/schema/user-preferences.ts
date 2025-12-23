@@ -3,7 +3,6 @@ import {
   pgTable,
   text,
   timestamp,
-  pgEnum,
   uuid,
 } from "drizzle-orm/pg-core"
 import { user } from "./auth"

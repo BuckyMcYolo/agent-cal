@@ -32,11 +32,8 @@ import {
   Plus,
   ArrowLeft,
   Calendar,
-  User,
-  Building2,
   CheckCircle2,
   XCircle,
-  MoveLeft,
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
@@ -576,9 +573,12 @@ const AvailabilityScheduleDetail = ({
         (a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime)
       )
       for (let i = 1; i < sorted.length; i++) {
+        const current = sorted[i]
+        const previous = sorted[i - 1]
         if (
-          timeToMinutes(sorted[i]!.startTime) <
-          timeToMinutes(sorted[i - 1]!.endTime)
+          current &&
+          previous &&
+          timeToMinutes(current.startTime) < timeToMinutes(previous.endTime)
         ) {
           const dayName = DAYS[day.dayOfWeek]
           toast.error(`Overlapping time slots on ${dayName}.`)
@@ -718,9 +718,12 @@ const AvailabilityScheduleDetail = ({
       (a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime)
     )
     for (let i = 1; i < sorted.length; i++) {
+      const current = sorted[i]
+      const previous = sorted[i - 1]
       if (
-        timeToMinutes(sorted[i]!.startTime) <
-        timeToMinutes(sorted[i - 1]!.endTime)
+        current &&
+        previous &&
+        timeToMinutes(current.startTime) < timeToMinutes(previous.endTime)
       ) {
         return true
       }
@@ -1233,8 +1236,7 @@ const AvailabilityScheduleDetail = ({
                               return acc + dayMinutes
                             }, 0)
                           return Math.floor(totalMinutes / 60)
-                        })()}
-                        h
+                        })()}h
                       </div>
                       <div className="text-xs text-muted-foreground">
                         Weekly Hours

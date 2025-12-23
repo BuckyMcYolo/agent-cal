@@ -6,8 +6,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
-import React from "react"
-import { UserSession } from "@workspace/auth"
+import type React from "react"
+import type { UserSession } from "@workspace/auth"
 import { usePathname, useRouter } from "next/navigation"
 
 const LayoutTabs = ({

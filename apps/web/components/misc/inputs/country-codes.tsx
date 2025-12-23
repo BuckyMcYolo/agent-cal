@@ -1,5 +1,5 @@
 // Country code data with SVG flags
-import { ReactNode } from "react"
+import type { ReactNode } from "react"
 
 // SVG Flags for countries
 const USFlag = () => (

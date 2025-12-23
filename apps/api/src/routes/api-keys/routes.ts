@@ -10,7 +10,6 @@ import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-sc
 import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
 import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
 import { paginationSchema } from "@/lib/helpers/openapi/schemas/response/pagination-schema"
-import type { User } from "@workspace/auth"
 
 export const createKey = createRoute({
   path: "/api-keys",

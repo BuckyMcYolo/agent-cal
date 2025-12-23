@@ -1,23 +1,31 @@
 {
-	"name": "@workspace/env-config",
-	"version": "0.0.0",
-	"private": true,
-	"type": "module",
-	"devDependencies": {
-		"@workspace/typescript-config": "workspace:*"
-	},
-	"scripts": {
-		"build": "rm -rf dist && tsc"
-	},
-	"exports": {
-		".": {
-			"default": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"dependencies": {
-		"dotenv": "^16.4.7",
-		"dotenv-expand": "^12.0.1",
-		"zod": "^3.24.2"
-	}
+  "name": "@workspace/env-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "default": "./dist/client-env.js",
+      "types": "./dist/client-env.d.ts"
+    },
+    "./server": {
+      "default": "./dist/server-env.js",
+      "types": "./dist/server-env.d.ts"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "dotenv-expand": "^12.0.1",
+    "zod": "^3.24.2"
+  }
 }

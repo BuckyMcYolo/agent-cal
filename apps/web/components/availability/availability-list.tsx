@@ -12,12 +12,7 @@ import { Separator } from "@workspace/ui/components/separator"
 import {
   Clock,
   Settings,
-  Eye,
-  Edit3,
   MoreHorizontal,
-  Calendar,
-  Globe,
-  Plus,
   CheckCircle2,
 } from "lucide-react"
 import {
@@ -31,7 +26,6 @@ import { DeleteDialog } from "@/components/misc/dialogs/delete-dialog"
 import CreateAvailabilityDialog from "@/components/availability/create-availability-dialog"
 import Link from "next/link"
 
-import React from "react"
 import SchedulePreviewCard from "./schedule-preview-card"
 
 const AvailabilityList = () => {

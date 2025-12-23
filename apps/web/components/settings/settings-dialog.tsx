@@ -1,8 +1,6 @@
 "use client"
 
-import * as React from "react"
 import {
-  ArrowBigLeft,
   Bell,
   Check,
   Globe,
@@ -25,14 +23,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@workspace/ui/components/breadcrumb"
-import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogTrigger,
 } from "@workspace/ui/components/dialog"
 import {
   Sidebar,

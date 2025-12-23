@@ -1,4 +1,4 @@
-import React from "react"
+import type React from "react"
 import { CheckCircle, AlertCircle, Clock } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 

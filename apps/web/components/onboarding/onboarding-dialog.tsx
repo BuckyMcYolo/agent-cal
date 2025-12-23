@@ -1,5 +1,4 @@
 "use client"
-import { authClient } from "@workspace/auth/client"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -8,11 +7,11 @@ import {
   DialogDescription,
   DialogContent,
   DialogFooter,
-  DialogClose,
 } from "@workspace/ui/components/dialog"
-import { redirect, useRouter } from "next/navigation"
-import React, { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
+import type React from "react"
+import { useState } from "react"
+import { useForm, type Path } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -24,10 +23,6 @@ import {
   FormMessage,
   FormDescription,
 } from "@workspace/ui/components/form"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@workspace/ui/components/radio-group"
 import { Input } from "@workspace/ui/components/input"
 import {
   Select,
@@ -44,7 +39,6 @@ import {
   User,
   Calendar,
   HelpCircle,
-  MessageSquare,
   ChevronLeft,
   ChevronRight,
   House,
@@ -155,6 +149,25 @@ const onboardingSchema = z.object({
 // Type for the form data
 type OnboardingFormValues = z.infer<typeof onboardingSchema>
 
+type DayKey =
+  | "sunday"
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+
+const DAY_KEYS: DayKey[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+]
+
 const OnboardingDialog = () => {
   // Get the current user's role from auth client
   const { user, error, isLoading } = useUser()
@@ -260,7 +273,6 @@ const OnboardingDialog = () => {
         }
         // For non-admin users, just proceed (no validation needed for welcome screen)
         return true
-        break
       case 2:
         fieldsToValidate = ["usedCalendarTools", "familiarWithTools"]
 
@@ -291,7 +303,7 @@ const OnboardingDialog = () => {
           }
         }
         break
-      case 3:
+      case 3: {
         fieldsToValidate = ["schedulingType", "timezone"]
 
         // Additional validation for timezone
@@ -304,27 +316,19 @@ const OnboardingDialog = () => {
           return false
         }
         break
+      }
       case 4:
         fieldsToValidate = ["referralSource"]
         if (watch("referralSource") === "other") {
           fieldsToValidate.push("referralDetails")
         }
         break
-      case 5:
+      case 5: {
         // Validate availability schedule
         fieldsToValidate = ["scheduleName"]
 
         // Validate that at least one day is enabled
-        const days = [
-          "sunday",
-          "monday",
-          "tuesday",
-          "wednesday",
-          "thursday",
-          "friday",
-          "saturday",
-        ]
-        const hasEnabledDay = days.some((day) => watch(day as any).enabled)
+        const hasEnabledDay = DAY_KEYS.some((day) => watch(day).enabled)
 
         if (!hasEnabledDay) {
           form.setError("monday.enabled", {
@@ -335,52 +339,62 @@ const OnboardingDialog = () => {
         }
 
         // For each enabled day, validate that all slots have valid times
-        for (const day of days) {
-          const dayData = watch(day as any) as DaySlot
+        for (const day of DAY_KEYS) {
+          const dayData = watch(day)
           if (dayData.enabled) {
             for (let i = 0; i < dayData.slots.length; i++) {
               const slot = dayData.slots[i]
               if (!slot?.startTime || !slot?.endTime) {
-                form.setError(`${day}.slots.${i}.startTime` as any, {
-                  type: "manual",
-                  message: "Start time is required",
-                })
-                form.setError(`${day}.slots.${i}.endTime` as any, {
-                  type: "manual",
-                  message: "End time is required",
-                })
+                form.setError(
+                  `${day}.slots.${i}.startTime` as Path<OnboardingFormValues>,
+                  {
+                    type: "manual",
+                    message: "Start time is required",
+                  }
+                )
+                form.setError(
+                  `${day}.slots.${i}.endTime` as Path<OnboardingFormValues>,
+                  {
+                    type: "manual",
+                    message: "End time is required",
+                  }
+                )
                 return false
               }
 
               // Ensure end time is after start time
               if (slot.startTime >= slot.endTime) {
-                form.setError(`${day}.slots.${i}.endTime` as any, {
-                  type: "manual",
-                  message: "End time must be after start time",
-                })
+                form.setError(
+                  `${day}.slots.${i}.endTime` as Path<OnboardingFormValues>,
+                  {
+                    type: "manual",
+                    message: "End time must be after start time",
+                  }
+                )
                 return false
               }
             }
           }
         }
         break
+      }
     }
 
-    return await trigger(fieldsToValidate as any)
+    return await trigger(fieldsToValidate as Path<OnboardingFormValues>[])
   }
 
   // Helper function to add a time slot for a specific day
-  const addTimeSlot = (day: string) => {
-    const currentDay = watch(day as any) as DaySlot
+  const addTimeSlot = (day: DayKey) => {
+    const currentDay = watch(day)
     const updatedSlots = [...currentDay.slots, { startTime: "", endTime: "" }]
-    setValue(`${day}.slots` as any, updatedSlots)
+    setValue(`${day}.slots`, updatedSlots)
   }
 
   // Helper function to remove a time slot for a specific day
-  const removeTimeSlot = (day: string, index: number) => {
-    const currentDay = watch(day as any) as DaySlot
+  const removeTimeSlot = (day: DayKey, index: number) => {
+    const currentDay = watch(day)
     const updatedSlots = currentDay.slots.filter((_, i) => i !== index)
-    setValue(`${day}.slots` as any, updatedSlots)
+    setValue(`${day}.slots`, updatedSlots)
   }
 
   const { mutate, isPending } = useMutation({
@@ -391,11 +405,10 @@ const OnboardingDialog = () => {
           onboarding: {
             timezone: data.timezone,
             calendarService: data.calendarService,
-            shouldShowFullTour:
+            shouldShowFullTour: !!(
               data.familiarWithTools === "notAtAll" ||
               data.familiarWithTools === "somewhat"
-                ? true
-                : false,
+            ),
             schedulingPreference: data.schedulingType,
             referralSource:
               data.referralSource === "other"
@@ -1167,21 +1180,23 @@ const OnboardingDialog = () => {
                           for each day.
                         </p>
                         {/* Days of the week */}
-                        {[
-                          { key: "monday", label: "Monday" },
-                          { key: "tuesday", label: "Tuesday" },
-                          { key: "wednesday", label: "Wednesday" },
-                          { key: "thursday", label: "Thursday" },
-                          { key: "friday", label: "Friday" },
-                          { key: "saturday", label: "Saturday" },
-                          { key: "sunday", label: "Sunday" },
-                        ].map(({ key, label }) => (
+                        {(
+                          [
+                            { key: "monday", label: "Monday" },
+                            { key: "tuesday", label: "Tuesday" },
+                            { key: "wednesday", label: "Wednesday" },
+                            { key: "thursday", label: "Thursday" },
+                            { key: "friday", label: "Friday" },
+                            { key: "saturday", label: "Saturday" },
+                            { key: "sunday", label: "Sunday" },
+                          ] as const
+                        ).map(({ key, label }) => (
                           <Card key={key} className="p-4">
                             <div className="flex items-center justify-between mb-4">
                               <div className="flex items-center space-x-2">
                                 <FormField
                                   control={form.control}
-                                  name={`${key}.enabled` as any}
+                                  name={`${key}.enabled`}
                                   render={({ field }) => (
                                     <FormItem className="flex items-center space-x-2">
                                       <FormControl>
@@ -1203,98 +1218,100 @@ const OnboardingDialog = () => {
                             </div>
 
                             {/* Time slots for this day - only shown if the day is enabled */}
-                            {watch(`${key}.enabled` as any) && (
+                            {watch(`${key}.enabled`) && (
                               <div className="space-y-4 pl-8">
-                                {watch(`${key}.slots` as any)?.map(
-                                  (_: any, index: number) => (
-                                    <div
-                                      key={index}
-                                      className="flex items-end gap-2"
-                                    >
-                                      <FormField
-                                        control={form.control}
-                                        name={
-                                          `${key}.slots.${index}.startTime` as any
-                                        }
-                                        render={({ field }) => (
-                                          <FormItem className="flex-1">
-                                            <FormLabel
-                                              className={
-                                                index > 0
-                                                  ? "sr-only"
-                                                  : undefined
-                                              }
+                                {watch(`${key}.slots`).map((_, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-end gap-2"
+                                  >
+                                    <FormField
+                                      control={form.control}
+                                      name={`${key}.slots.${index}.startTime`}
+                                      render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                          <FormLabel
+                                            className={
+                                              index > 0 ? "sr-only" : undefined
+                                            }
+                                          >
+                                            Start Time
+                                          </FormLabel>
+                                          <FormControl>
+                                            <Select
+                                              value={field.value}
+                                              onValueChange={field.onChange}
                                             >
-                                              Start Time
-                                            </FormLabel>
-                                            <FormControl>
-                                              <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger>
-                                                  <SelectValue placeholder="Select time" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                  {TIME_OPTIONS.map((time) => (
-                                                    <SelectItem key={time.value} value={time.value}>
-                                                      {time.label}
-                                                    </SelectItem>
-                                                  ))}
-                                                </SelectContent>
-                                              </Select>
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                      <div className="mx-2 mb-2">to</div>
-                                      <FormField
-                                        control={form.control}
-                                        name={
-                                          `${key}.slots.${index}.endTime` as any
-                                        }
-                                        render={({ field }) => (
-                                          <FormItem className="flex-1">
-                                            <FormLabel
-                                              className={
-                                                index > 0
-                                                  ? "sr-only"
-                                                  : undefined
-                                              }
-                                            >
-                                              End Time
-                                            </FormLabel>
-                                            <FormControl>
-                                              <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger>
-                                                  <SelectValue placeholder="Select time" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                  {TIME_OPTIONS.map((time) => (
-                                                    <SelectItem key={time.value} value={time.value}>
-                                                      {time.label}
-                                                    </SelectItem>
-                                                  ))}
-                                                </SelectContent>
-                                              </Select>
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                      {index > 0 && (
-                                        <Button
-                                          type="button"
-                                          variant="ghost"
-                                          size="icon"
-                                          onClick={() =>
-                                            removeTimeSlot(key, index)
-                                          }
-                                        >
-                                          <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="Select time" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                {TIME_OPTIONS.map((time) => (
+                                                  <SelectItem
+                                                    key={time.value}
+                                                    value={time.value}
+                                                  >
+                                                    {time.label}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
                                       )}
-                                    </div>
-                                  )
-                                )}
+                                    />
+                                    <div className="mx-2 mb-2">to</div>
+                                    <FormField
+                                      control={form.control}
+                                      name={`${key}.slots.${index}.endTime`}
+                                      render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                          <FormLabel
+                                            className={
+                                              index > 0 ? "sr-only" : undefined
+                                            }
+                                          >
+                                            End Time
+                                          </FormLabel>
+                                          <FormControl>
+                                            <Select
+                                              value={field.value}
+                                              onValueChange={field.onChange}
+                                            >
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="Select time" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                {TIME_OPTIONS.map((time) => (
+                                                  <SelectItem
+                                                    key={time.value}
+                                                    value={time.value}
+                                                  >
+                                                    {time.label}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    {index > 0 && (
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() =>
+                                          removeTimeSlot(key, index)
+                                        }
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                  </div>
+                                ))}
 
                                 <Button
                                   type="button"

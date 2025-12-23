@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import type React from "react"
+import { useState, useEffect } from "react"
 import { useParams, usePathname } from "next/navigation"
 import Link from "next/link"
 import {

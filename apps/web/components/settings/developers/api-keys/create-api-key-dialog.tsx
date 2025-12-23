@@ -1,12 +1,11 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import React, { useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Input } from "@workspace/ui/components/input"
 import {
   Tabs,
-  TabsContent,
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
@@ -16,13 +15,12 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { type SubmitHandler, useForm } from "react-hook-form"
 import { Switch } from "@workspace/ui/components/switch"
 import {
   AlertDialog,
@@ -113,10 +111,10 @@ export function CreateApiKeyDialog() {
           permissions: permissions,
         },
       })
-      if (res.status == 200) {
+      if (res.status === 200) {
         const data = await res.json()
         return data
-      } else if (res.status == 401) {
+      } else if (res.status === 401) {
         const error = await res.json()
         throw new Error(error.message)
       }

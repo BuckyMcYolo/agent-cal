@@ -3,9 +3,9 @@
  */
 
 import type { AppOpenAPI } from "../lib/types/app-types"
-import * as fs from "fs"
-import * as path from "path"
-import { fileURLToPath } from "url"
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 import { serverEnv } from "@workspace/env-config/index"
 import app from "../app"
 

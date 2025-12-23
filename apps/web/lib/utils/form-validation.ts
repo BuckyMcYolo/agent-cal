@@ -190,76 +190,85 @@ export type EventTypeAvailabilityFormData = z.infer<
 export type EventTypeAdvancedFormData = z.infer<typeof eventTypeAdvancedSchema>
 
 // Error message helpers
-export const getFieldErrorMessage = (error: any): string => {
+export const getFieldErrorMessage = (error: unknown): string => {
   if (typeof error === "string") return error
-  if (error?.message) return error.message
+  if (error !== null && typeof error === "object" && "message" in error) {
+    return String(error.message)
+  }
   return "Invalid value"
 }
 
 // API error parsing
-export const parseApiError = (error: any): string => {
+export const parseApiError = (error: unknown): string => {
   if (typeof error === "string") return error
 
+  if (error === null || typeof error !== "object") {
+    return "An unexpected error occurred. Please try again."
+  }
+
   // Handle API response errors
-  if (error?.response?.data?.message) {
-    return error.response.data.message
+  if ("response" in error) {
+    const responseError = error as {
+      response?: { data?: { message?: string } }
+    }
+    if (responseError.response?.data?.message) {
+      return responseError.response.data.message
+    }
   }
 
   // Handle fetch errors
-  if (error?.message) {
+  if ("message" in error && typeof error.message === "string") {
+    const message = error.message
     // Check for specific constraint violations
     if (
-      error.message.includes("unique constraint") ||
-      error.message.includes("already exists") ||
-      error.message.includes("URL slug")
+      message.includes("unique constraint") ||
+      message.includes("already exists") ||
+      message.includes("URL slug")
     ) {
       return "This URL slug is already in use. Please choose a different one."
     }
 
-    if (error.message.includes("similar title")) {
+    if (message.includes("similar title")) {
       return "An event type with a similar title already exists. Please choose a different title or customize the URL slug."
     }
 
-    if (error.message.includes("validation")) {
+    if (message.includes("validation")) {
       return "Please check your input and try again."
     }
 
-    if (error.message.includes("15-minute")) {
+    if (message.includes("15-minute")) {
       return "Duration must be in 15-minute increments (15, 30, 45, etc.)"
     }
 
-    if (error.message.includes("frequency limit")) {
+    if (message.includes("frequency limit")) {
       return "At least one frequency limit must be set when frequency limiting is enabled."
     }
 
-    if (error.message.includes("future booking")) {
+    if (message.includes("future booking")) {
       return "Maximum days in future must be set when future booking limits are enabled."
     }
 
-    if (error.message.includes("buffer")) {
+    if (message.includes("buffer")) {
       return "Buffer times must be non-negative values."
     }
 
-    if (error.message.includes("booking notice")) {
+    if (message.includes("booking notice")) {
       return "Minimum booking notice must be a non-negative value."
     }
 
-    if (error.message.includes("not authenticated")) {
+    if (message.includes("not authenticated")) {
       return "You must be logged in to perform this action."
     }
 
-    if (
-      error.message.includes("permission") ||
-      error.message.includes("forbidden")
-    ) {
+    if (message.includes("permission") || message.includes("forbidden")) {
       return "You don't have permission to perform this action."
     }
 
-    if (error.message.includes("not found")) {
+    if (message.includes("not found")) {
       return "The requested event type was not found."
     }
 
-    return error.message
+    return message
   }
 
   return "An unexpected error occurred. Please try again."

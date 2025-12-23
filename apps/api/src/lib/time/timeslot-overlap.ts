@@ -42,7 +42,7 @@ export const validateTimeSlots = (
     if (!slotsByDay[slot.dayOfWeek]) {
       slotsByDay[slot.dayOfWeek] = []
     }
-    slotsByDay[slot.dayOfWeek]!.push({
+    slotsByDay[slot.dayOfWeek]?.push({
       startTime: slot.startTime,
       endTime: slot.endTime,
     })

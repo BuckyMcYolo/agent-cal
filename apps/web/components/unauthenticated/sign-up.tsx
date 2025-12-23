@@ -5,8 +5,8 @@ import { Input } from "@workspace/ui/components/input"
 import { EyeIcon, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { SignUpForm, signUpSchema } from "./auth-utils"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { type SignUpForm, signUpSchema } from "./auth-utils"
+import { type SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authClient } from "@workspace/auth/client"
 import { toast } from "sonner"
@@ -40,14 +40,14 @@ export default function SignUp() {
       {
         email: data.email,
         password: data.password,
-        name: data.firstName + " " + data.lastName,
+        name: `${data.firstName} ${data.lastName}`,
         callbackURL: "/onboarding",
       },
       {
         onRequest: () => setLoading(true),
         onResponse: () => setLoading(false),
         onError(context) {
-          toast.error("Error: " + context.error.message)
+          toast.error(`Error: ${context.error.message}`)
         },
         onSuccess: async () => {
           const { data: org } = await authClient.organization.create({
@@ -55,7 +55,7 @@ export default function SignUp() {
             slug: sluggify(defaultOrgName),
             fetchOptions: {
               onError(context) {
-                toast.error("Error: " + context.error.message)
+                toast.error(`Error: ${context.error.message}`)
               },
               onSuccess() {
                 router.replace("/onboarding")

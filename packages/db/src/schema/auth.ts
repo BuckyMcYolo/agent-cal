@@ -15,7 +15,6 @@ import {
   integer,
   timestamp,
   boolean,
-  pgEnum,
   unique,
 } from "drizzle-orm/pg-core"
 import { eventType } from "./event-types"

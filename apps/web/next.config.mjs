@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-import path from "path"
+import path from "node:path"
 import { config } from "dotenv"
 import { expand } from "dotenv-expand"
-import { fileURLToPath } from "url"
+import { fileURLToPath } from "node:url"
 
 // Rename __filename to currentFilename to avoid conflict
 const currentFilename = fileURLToPath(import.meta.url)

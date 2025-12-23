@@ -1,5 +1,4 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { AppSidebar } from "../nav/app-sidebar"
 import { SiteHeader } from "../nav/site-header"
 import { cookies } from "next/headers"
 import { SettingsSidebar } from "../nav/settings-sidebar"

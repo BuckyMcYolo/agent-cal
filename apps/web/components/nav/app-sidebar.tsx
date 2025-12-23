@@ -1,11 +1,10 @@
 "use client"
 
-import * as React from "react"
+import type * as React from "react"
 import {
   IconHelp,
   IconSearch,
   IconSettings,
-  IconWebhook,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav/nav-main"
@@ -21,18 +20,12 @@ import {
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
 import {
-  BookOpen,
   Brain,
   Calendar,
-  CalendarClock,
-  ChartColumn,
   Clock,
-  Key,
   LinkIcon,
-  ListCheck,
   Plug,
   SendToBack,
-  Tags,
 } from "lucide-react"
 import Image from "next/image"
 import LogoImage from "../../public/favicon.svg"

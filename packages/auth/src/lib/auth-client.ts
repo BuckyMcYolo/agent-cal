@@ -6,10 +6,9 @@ import {
   emailOTPClient,
   inferAdditionalFields,
   phoneNumberClient,
-  customSessionClient,
 } from "better-auth/client/plugins"
-import { clientEnv } from "@workspace/env-config"
-import { auth } from "./auth"
+import clientEnv from "@workspace/env-config/client"
+import type { auth } from "./auth"
 
 export const authClient = createAuthClient({
   plugins: [
@@ -27,7 +26,7 @@ export const authClient = createAuthClient({
       const isServer = typeof window === "undefined"
 
       if (isServer) {
-        //@ts-ignore
+        //@ts-expect-error
         const { cookies } = await import("next/headers")
         const cookieStore = await cookies()
         const allCookies = cookieStore.getAll()

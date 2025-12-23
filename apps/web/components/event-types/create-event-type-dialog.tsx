@@ -198,7 +198,7 @@ export default function CreateEventTypeDialog({
               Duration *
             </label>
             <Select
-              onValueChange={(value) => setValue("length", parseInt(value))}
+              onValueChange={(value) => setValue("length", parseInt(value, 10))}
               defaultValue={watch("length")?.toString()}
             >
               <SelectTrigger>

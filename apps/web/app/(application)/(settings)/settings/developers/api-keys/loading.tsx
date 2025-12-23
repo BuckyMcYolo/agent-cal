@@ -1,5 +1,4 @@
 import TableSkeleton from "@/components/misc/loaders/table-skeleton"
-import React from "react"
 
 export default function Loading() {
   return (

@@ -11,7 +11,10 @@ export interface AppBindings {
     authMethod?: "api-key" | "user-token"
   }
 }
-export type AppOpenAPI<S extends Schema = {}> = OpenAPIHono<AppBindings, S>
+export type AppOpenAPI<S extends Schema = Record<string, never>> = OpenAPIHono<
+  AppBindings,
+  S
+>
 
 export type AppRouteHandler<R extends RouteConfig> = RouteHandler<
   R,

@@ -91,16 +91,39 @@ export const updateTask: AppRouteHandler<UpdateKeyRoute> = async (c) => {
         HttpstatusCodes.NOT_FOUND
       )
     }
+    // Parse permissions from JSON string if needed
+    let parsedPermissions: { all?: ("read" | "write")[] } = {
+      all: ["read", "write"],
+    }
+    if (updateKey.permissions) {
+      try {
+        const parsed: unknown =
+          typeof updateKey.permissions === "string"
+            ? JSON.parse(updateKey.permissions)
+            : updateKey.permissions
+        if (
+          parsed &&
+          typeof parsed === "object" &&
+          "all" in parsed &&
+          Array.isArray(parsed.all)
+        ) {
+          parsedPermissions = parsed as { all: ("read" | "write")[] }
+        }
+      } catch {
+        // Keep default permissions on parse error
+      }
+    }
+
     return c.json(
       {
         id: updateKey.id,
         name: updateKey.name ?? "",
-        permissions: updateKey.permissions as any,
+        permissions: parsedPermissions,
       },
       HttpstatusCodes.OK
     )
   } catch (error) {
-    console.error("Error creating API key:", error)
+    console.error("Error updating API key:", error)
     return c.json(
       { success: false, message: "Failed to update API key" },
       HttpstatusCodes.INTERNAL_SERVER_ERROR
@@ -368,11 +391,34 @@ export const updateOrgApiKey: AppRouteHandler<UpdateOrgKeyRoute> = async (
       )
     }
 
+    // Parse permissions from JSON string if needed
+    let parsedPermissions: { all?: ("read" | "write")[] } = {
+      all: ["read", "write"],
+    }
+    if (updateKey.permissions) {
+      try {
+        const parsed: unknown =
+          typeof updateKey.permissions === "string"
+            ? JSON.parse(updateKey.permissions)
+            : updateKey.permissions
+        if (
+          parsed &&
+          typeof parsed === "object" &&
+          "all" in parsed &&
+          Array.isArray(parsed.all)
+        ) {
+          parsedPermissions = parsed as { all: ("read" | "write")[] }
+        }
+      } catch {
+        // Keep default permissions on parse error
+      }
+    }
+
     return c.json(
       {
         id: updateKey.id,
         name: updateKey.name ?? "",
-        permissions: updateKey.permissions as any,
+        permissions: parsedPermissions,
       },
       HttpstatusCodes.OK
     )

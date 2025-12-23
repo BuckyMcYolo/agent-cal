@@ -1,4 +1,4 @@
-import React from "react"
+import type React from "react"
 
 interface WeeklySlot {
   dayOfWeek: number
@@ -22,7 +22,7 @@ const DAYS = [
 
 const formatTime = (time: string) => {
   const [hours, minutes] = time.split(":")
-  const hour = parseInt(hours || "0")
+  const hour = parseInt(hours || "0", 10)
   const ampm = hour >= 12 ? "PM" : "AM"
   const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour
   return `${displayHour}${minutes !== "00" ? `:${minutes}` : ""} ${ampm}`

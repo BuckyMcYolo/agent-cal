@@ -47,7 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     }
 
     const handleIncrement = () => {
-      const currentNumericValue = parseInt(currentValue as string) || 0
+      const currentNumericValue = parseInt(currentValue as string, 10) || 0
       const newValue = (currentNumericValue + 1).toString()
 
       if (!isControlled) {
@@ -60,7 +60,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     }
 
     const handleDecrement = () => {
-      const currentNumericValue = parseInt(currentValue as string) || 0
+      const currentNumericValue = parseInt(currentValue as string, 10) || 0
       const newValue = (currentNumericValue - 1).toString()
 
       if (!isControlled) {

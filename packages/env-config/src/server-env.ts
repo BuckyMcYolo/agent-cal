@@ -1,9 +1,9 @@
 // packages/config/index.ts
-import path from "path"
+import path from "node:path"
 import { z } from "zod"
 import { config } from "dotenv"
 import { expand } from "dotenv-expand"
-import { fileURLToPath } from "url"
+import { fileURLToPath } from "node:url"
 
 const isClient = typeof window !== "undefined"
 const isNextJS =
@@ -18,7 +18,7 @@ if (isNextJS) {
       "return require(modulePath)"
     )
     dynamicRequire("server-only")
-  } catch (e) {
+  } catch (_e) {
     // Silently continue if server-only isn't available
   }
 }
@@ -29,7 +29,7 @@ try {
   // For ESM
   const currentFilename = fileURLToPath(import.meta.url)
   currentDirname = path.dirname(currentFilename)
-} catch (error) {
+} catch (_error) {
   // For CommonJS or environments where import.meta is not available
   currentDirname = __dirname || "."
 }
@@ -87,7 +87,7 @@ if (!isClient) {
 
 // Create a proxy for server environment that throws in client components
 const serverEnv = new Proxy({} as ServerEnv, {
-  get: (target, prop) => {
+  get: (_target, prop) => {
     // If we're in a client environment, throw an error
     if (isClient) {
       throw new Error(

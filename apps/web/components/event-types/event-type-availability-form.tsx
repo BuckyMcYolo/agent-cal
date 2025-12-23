@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import { useEffect, } from "react"
 import { useParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { apiClient } from "@/lib/utils/api-client"
@@ -21,7 +21,6 @@ import {
 } from "@workspace/ui/components/select"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { Loader2, AlertTriangle } from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
 import { useEnhancedForm } from "@/hooks/use-enhanced-form"
 import {
   eventTypeAvailabilitySchema,

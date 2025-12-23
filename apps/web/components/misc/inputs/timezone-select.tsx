@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   Select,
   SelectContent,
@@ -33,14 +32,22 @@ const FALLBACK_TIMEZONES: string[] = [
   "Australia/Sydney",
 ]
 
+// Intl.supportedValuesOf is available in modern browsers but not in all TypeScript versions
+declare global {
+  interface Intl {
+    supportedValuesOf?: (key: string) => string[]
+  }
+}
+
 const getTimezones = (): string[] => {
   try {
-    const zones: string[] | undefined =
-      typeof Intl !== "undefined" && (Intl as any).supportedValuesOf
-        ? (Intl as any).supportedValuesOf("timeZone")
-        : undefined
-    if (Array.isArray(zones) && zones.length > 0) return zones
-  } catch {}
+    if (typeof Intl !== "undefined" && Intl.supportedValuesOf) {
+      const zones = Intl.supportedValuesOf("timeZone")
+      if (Array.isArray(zones) && zones.length > 0) return zones
+    }
+  } catch {
+    // Fall through to fallback
+  }
   return FALLBACK_TIMEZONES
 }
 

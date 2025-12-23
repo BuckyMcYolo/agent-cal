@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { User, Save, Camera, Check } from "lucide-react"
+import { Save, Camera } from "lucide-react"
 
 // Import Shadcn components
 import { Button } from "@workspace/ui/components/button"
@@ -26,7 +26,6 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar"
 import { Switch } from "@workspace/ui/components/switch"
-import { Badge } from "@workspace/ui/components/badge"
 import { Separator } from "@workspace/ui/components/separator"
 import {
   AlertDialog,
@@ -39,8 +38,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
-import { authClient } from "@workspace/auth/client"
-import { useQuery } from "@tanstack/react-query"
 import { useUser } from "@/hooks/use-user"
 import PhoneNumberInput from "@/components/misc/inputs/phone-number-input"
 
@@ -60,7 +57,7 @@ const UserAccountSettings = () => {
         name: user.name || "",
         email: user.email || "",
         phone: user.phoneNumber || "",
-        timezone: user.timezone || "",
+        timezone: "timezone" in user ? (user.timezone as string) || "" : "",
       })
     }
   }, [user])
