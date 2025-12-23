@@ -5,7 +5,7 @@
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "baseUrl": ".", 
+    "baseUrl": ".",
     "outDir": "dist",
     "paths": {
       "@workspace/auth": ["../../packages/auth/dist"],
@@ -13,12 +13,11 @@
       "@workspace/db/*": ["../../packages/db/dist/*"],
       "@workspace/env-config/*": ["../../packages/env-config/dist/*"],
       "@/*": ["./src/*"]
-    },
-    
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"],
   "tsc-alias": {
-    "resolveFullPaths": true,
+    "resolveFullPaths": true
   }
 }

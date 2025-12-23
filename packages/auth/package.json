@@ -1,33 +1,33 @@
 {
-	"name": "@workspace/auth",
-	"version": "0.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "tsc --watch",
-		"typecheck": "tsc --noEmit",
-		"build": "rm -rf dist && tsc"
-	},
-	"dependencies": {
-		"@workspace/db": "workspace:*",
-		"@workspace/env-config": "workspace:*",
-		"better-auth": "^1.2.5"
-	},
-	"devDependencies": {
-		"@workspace/typescript-config": "workspace:*"
-	},
-	"exports": {
-		".": {
-			"types": "./src/lib/auth.ts",
-			"default": "./dist/lib/auth.js"
-		},
-		"./client": {
-			"types": "./src/lib/auth-client.ts",
-			"default": "./dist/lib/auth-client.js"
-		},
-		"./utils": {
-			"types": "./src/lib/auth-utils.ts",
-			"default": "./dist/lib/auth-utils.js"
-		}
-	}
+  "name": "@workspace/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "@workspace/db": "workspace:*",
+    "@workspace/env-config": "workspace:*",
+    "better-auth": "^1.2.5"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/lib/auth.ts",
+      "default": "./dist/lib/auth.js"
+    },
+    "./client": {
+      "types": "./src/lib/auth-client.ts",
+      "default": "./dist/lib/auth-client.js"
+    },
+    "./utils": {
+      "types": "./src/lib/auth-utils.ts",
+      "default": "./dist/lib/auth-utils.js"
+    }
+  }
 }

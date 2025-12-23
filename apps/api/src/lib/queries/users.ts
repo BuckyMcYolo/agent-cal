@@ -1,5 +1,5 @@
-import { db } from "@workspace/db"
 import type { User } from "@workspace/auth"
+import { db } from "@workspace/db"
 
 /**
  * Retrieves the organization that a user belongs to.

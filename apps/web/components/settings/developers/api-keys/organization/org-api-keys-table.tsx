@@ -1,24 +1,24 @@
 "use client"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { Switch } from "@workspace/ui/components/switch"
 import {
   Table,
   TableBody,
   TableCell,
-  TableHeader,
   TableHead,
+  TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { DateTime } from "luxon"
-import DeleteApiKeyDialog from "../delete-api-key-dialog"
-import UpdateApiKeyDialog from "../update-api-key-dialog"
-import { apiClient } from "@/lib/utils/api-client"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { Switch } from "@workspace/ui/components/switch"
+import { DateTime } from "luxon"
+import { apiClient } from "@/lib/utils/api-client"
+import DeleteApiKeyDialog from "../delete-api-key-dialog"
+import UpdateApiKeyDialog from "../update-api-key-dialog"
 
 export default function OrgAPIKeysTable() {
   const {

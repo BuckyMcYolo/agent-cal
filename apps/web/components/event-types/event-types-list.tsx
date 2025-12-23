@@ -1,27 +1,30 @@
 "use client"
 
-import { apiClient } from "@/lib/utils/api-client"
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query"
+import type { InferResponseType } from "@workspace/api-client"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Separator } from "@workspace/ui/components/separator"
-import {
-  Clock,
-  MapPin,
-  Eye,
-  Edit3,
-  MoreHorizontal,
-  Calendar,
-  Globe,
-  GripVertical,
-  CopyIcon,
-  Code,
-  Trash2,
-} from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,35 +32,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { Separator } from "@workspace/ui/components/separator"
 import { Switch } from "@workspace/ui/components/switch"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import CreateEventTypeDialog from "./create-event-type-dialog"
-import { toast } from "sonner"
-import { DeleteDialog } from "../misc/dialogs/delete-dialog"
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core"
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { useState, useEffect } from "react"
+  Calendar,
+  Clock,
+  Code,
+  CopyIcon,
+  Edit3,
+  Eye,
+  Globe,
+  GripVertical,
+  MapPin,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react"
 import Link from "next/link"
-import type { InferResponseType } from "@workspace/api-client"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { apiClient } from "@/lib/utils/api-client"
+import { DeleteDialog } from "../misc/dialogs/delete-dialog"
+import CreateEventTypeDialog from "./create-event-type-dialog"
 
 // Derive EventType from API response
 type EventTypesResponse = InferResponseType<

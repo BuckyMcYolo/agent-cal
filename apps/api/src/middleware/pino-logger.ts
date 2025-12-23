@@ -1,7 +1,7 @@
+import { serverEnv } from "@workspace/env-config"
 import { pinoLogger } from "hono-pino"
 import pino from "pino"
 import pretty from "pino-pretty"
-import { serverEnv } from "@workspace/env-config"
 
 export function pinoLoggerMiddleware() {
   return pinoLogger({

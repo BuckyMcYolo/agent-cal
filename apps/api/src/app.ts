@@ -1,15 +1,15 @@
 import { auth } from "@workspace/auth"
+import serverEnv from "@workspace/env-config/server-env"
+import { cors } from "hono/cors"
 import createApp from "@/lib/helpers/app/create-app"
 import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
-import tasksRouter from "./routes/tasks"
-import { cors } from "hono/cors"
-import serverEnv from "@workspace/env-config/server-env"
 import apiKeysRouter from "./routes/api-keys"
+import availabilityRouter from "./routes/availability"
 import eventTypesRouter from "./routes/event-types"
 import onboardingRouter from "./routes/onboarding"
+import tasksRouter from "./routes/tasks"
 import userPreferencesRouter from "./routes/user"
-import availabilityRouter from "./routes/availability"
 
 const app = createApp()
 

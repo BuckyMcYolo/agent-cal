@@ -1,7 +1,6 @@
 import { createRouter } from "@/lib/helpers/app/create-app"
-
-import * as routes from "./routes"
 import * as handlers from "./handlers"
+import * as routes from "./routes"
 
 const eventTypesRouter = createRouter()
   .openapi(routes.listEventTypes, handlers.listEventTypes)

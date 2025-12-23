@@ -1,6 +1,6 @@
-import { apiClient } from "@/lib/utils/api-client"
 import { useQuery } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
+import { apiClient } from "@/lib/utils/api-client"
 
 export const useUser = ({
   disableCache = false,

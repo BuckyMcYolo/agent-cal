@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { z } from "zod"
-import { apiClient } from "@/lib/utils/api-client"
+import { Button } from "@workspace/ui/components/button"
+import { Card } from "@workspace/ui/components/card"
 import {
   Dialog,
   DialogContent,
@@ -15,9 +13,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
-import { Button } from "@workspace/ui/components/button"
-import { Switch } from "@workspace/ui/components/switch"
+import { Label } from "@workspace/ui/components/label"
+import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import {
   Select,
   SelectContent,
@@ -25,20 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@workspace/ui/components/form"
-import { Plus, Loader2, Trash2 } from "lucide-react"
+import { Switch } from "@workspace/ui/components/switch"
+import { Loader2, Plus, Trash2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { Card } from "@workspace/ui/components/card"
-import { Label } from "@workspace/ui/components/label"
-import { ScrollArea } from "@workspace/ui/components/scroll-area"
+import { z } from "zod"
+import { apiClient } from "@/lib/utils/api-client"
 
 // Define the day slot type and schema
 type DaySlot = {

@@ -1,11 +1,11 @@
 "use client"
 
-import type * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import { buttonVariants } from "@workspace/ui/components/button"
 
 import { cn } from "@workspace/ui/lib/utils"
-import { buttonVariants } from "@workspace/ui/components/button"
 import { Loader2 } from "lucide-react"
+import type * as React from "react"
 
 function AlertDialog({
   ...props

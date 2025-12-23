@@ -1,10 +1,10 @@
-import APIKeysTable from "@/components/settings/developers/api-keys/api-keys-table"
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
+import APIKeysTable from "@/components/settings/developers/api-keys/api-keys-table"
 
 const Page = async () => {
   const queryClient = new QueryClient()

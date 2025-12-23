@@ -1,10 +1,10 @@
-import AvailabilityList from "@/components/availability/availability-list"
-import { apiClient } from "@/lib/utils/api-client"
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query"
+import AvailabilityList from "@/components/availability/availability-list"
+import { apiClient } from "@/lib/utils/api-client"
 
 const AvailabilityPage = async () => {
   const queryClient = new QueryClient()

@@ -1,16 +1,16 @@
-import {
-  pgTable,
-  uuid,
-  timestamp,
-  text,
-  boolean,
-  pgEnum,
-  json,
-  index,
-} from "drizzle-orm/pg-core"
-import { booking } from "./booking"
-import { user } from "./auth"
 import { relations } from "drizzle-orm"
+import {
+  boolean,
+  index,
+  json,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
+import { user } from "./auth"
+import { booking } from "./booking"
 
 export const hostStatusEnum = pgEnum("host_status", [
   "PENDING",

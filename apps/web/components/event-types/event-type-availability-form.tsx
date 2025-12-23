@@ -1,17 +1,15 @@
 "use client"
 
-import { useEffect, } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { apiClient } from "@/lib/utils/api-client"
+import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Label } from "@workspace/ui/components/label"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { Label } from "@workspace/ui/components/label"
 import {
   Select,
   SelectContent,
@@ -20,16 +18,18 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { Skeleton } from "@workspace/ui/components/skeleton"
-import { Loader2, AlertTriangle } from "lucide-react"
-import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import {
-  eventTypeAvailabilitySchema,
-  type EventTypeAvailabilityFormData,
-} from "@/lib/utils/form-validation"
+import { AlertTriangle, Loader2 } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useEffect } from "react"
+import SchedulePreviewTable from "@/components/availability/schedule-preview-table"
 import { FormError } from "@/components/misc/form-error"
 import { ValidationStatus } from "@/components/misc/validation-status"
-import SchedulePreviewTable from "@/components/availability/schedule-preview-table"
-import { Badge } from "@workspace/ui/components/badge"
+import { useEnhancedForm } from "@/hooks/use-enhanced-form"
+import { apiClient } from "@/lib/utils/api-client"
+import {
+  type EventTypeAvailabilityFormData,
+  eventTypeAvailabilitySchema,
+} from "@/lib/utils/form-validation"
 
 const EventTypeAvailabilityForm = () => {
   const params = useParams()

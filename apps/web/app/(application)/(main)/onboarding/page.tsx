@@ -1,6 +1,6 @@
+import { redirect } from "next/navigation"
 import OnboardingDialog from "@/components/onboarding/onboarding-dialog"
 import { getUserPreferences } from "@/lib/queries/get-user-preferences"
-import { redirect } from "next/navigation"
 
 const Page = async () => {
   const userPreferences = await getUserPreferences()

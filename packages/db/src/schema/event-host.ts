@@ -1,15 +1,15 @@
+import { relations } from "drizzle-orm"
 import {
-  uuid,
+  boolean,
+  index,
+  integer,
   pgTable,
   text,
   timestamp,
-  boolean,
-  integer,
-  index,
+  uuid,
 } from "drizzle-orm/pg-core"
 import { user } from "./auth"
 import { eventType } from "./event-types"
-import { relations } from "drizzle-orm"
 
 // This table will store the available hosts for each event type
 export const eventHost = pgTable(

@@ -1,14 +1,21 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Input } from "@workspace/ui/components/input"
 import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@workspace/ui/components/tabs"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import {
   Select,
@@ -18,25 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { type SubmitHandler, useForm } from "react-hook-form"
 import { Switch } from "@workspace/ui/components/switch"
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogHeader,
-  AlertDialogCancel,
-  AlertDialogFooter,
-} from "@workspace/ui/components/alert-dialog"
-import { Button } from "@workspace/ui/components/button"
+import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { Plus } from "lucide-react"
+import { useState } from "react"
+import { type SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 import { apiClient } from "@/lib/utils/api-client"
-import { Badge } from "@workspace/ui/components/badge"
 
 export function CreateApiKeyDialog() {
   const [createKeyDialogOpen, setCreateKeyDialogOpen] = useState(false)

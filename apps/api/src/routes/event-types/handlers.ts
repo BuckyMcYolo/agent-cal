@@ -1,6 +1,11 @@
 import { and, db, eq } from "@workspace/db"
-import type { AppRouteHandler } from "@/lib/types/app-types"
+import { availabilitySchedule } from "@workspace/db/schema/availability"
+import { eventType } from "@workspace/db/schema/event-types"
+import { userPreferences } from "@workspace/db/schema/user-preferences"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { sluggify } from "@/lib/misc/sluggify"
+import { getUserOrgbyUserId } from "@/lib/queries/users"
+import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {
   CreateEventTypeRoute,
   DeleteEventTypeRoute,
@@ -8,11 +13,6 @@ import type {
   ListEventsTypesRoute,
   UpdateEventTypeRoute,
 } from "./routes"
-import { eventType } from "@workspace/db/schema/event-types"
-import { sluggify } from "@/lib/misc/sluggify"
-import { getUserOrgbyUserId } from "@/lib/queries/users"
-import { userPreferences } from "@workspace/db/schema/user-preferences"
-import { availabilitySchedule } from "@workspace/db/schema/availability"
 
 export const listEventTypes: AppRouteHandler<ListEventsTypesRoute> = async (
   c

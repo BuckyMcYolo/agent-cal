@@ -1,20 +1,20 @@
+import { relations, sql } from "drizzle-orm"
 import {
+  boolean,
+  check,
+  index,
+  integer,
+  pgEnum,
   pgTable,
   text,
-  timestamp,
-  boolean,
-  uuid,
-  integer,
-  index,
   time,
-  pgEnum,
-  check,
+  timestamp,
+  uuid,
 } from "drizzle-orm/pg-core"
-import { relations, sql } from "drizzle-orm"
-import { user, organization } from "./auth"
-import { eventType } from "./event-types"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
+import { organization, user } from "./auth"
+import { eventType } from "./event-types"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [
   "BLOCK", // Blocks time off (unavailable)

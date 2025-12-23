@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { useHeader, type HeaderConfig } from "./header-provider"
+import { type HeaderConfig, useHeader } from "./header-provider"
 
 type HeaderMountProps = HeaderConfig
 

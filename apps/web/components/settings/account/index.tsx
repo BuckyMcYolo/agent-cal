@@ -1,32 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Save, Camera } from "lucide-react"
-
-// Import Shadcn components
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar"
-import { Switch } from "@workspace/ui/components/switch"
-import { Separator } from "@workspace/ui/components/separator"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,8 +11,35 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
-import { useUser } from "@/hooks/use-user"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
+
+// Import Shadcn components
+import { Button } from "@workspace/ui/components/button"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { Separator } from "@workspace/ui/components/separator"
+import { Switch } from "@workspace/ui/components/switch"
+import { Camera, Save } from "lucide-react"
+import { useEffect, useState } from "react"
 import PhoneNumberInput from "@/components/misc/inputs/phone-number-input"
+import { useUser } from "@/hooks/use-user"
 
 const UserAccountSettings = () => {
   const { user, isLoading, error } = useUser()

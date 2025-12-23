@@ -10,19 +10,19 @@
 
 import { relations } from "drizzle-orm"
 import {
+  boolean,
+  integer,
   pgTable,
   text,
-  integer,
   timestamp,
-  boolean,
   unique,
 } from "drizzle-orm/pg-core"
-import { eventType } from "./event-types"
-import { booking } from "./booking"
-import { eventHost } from "./event-host"
-import { bookingHost } from "./booking-host"
-import { availabilitySchedule } from "./availability"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { availabilitySchedule } from "./availability"
+import { booking } from "./booking"
+import { bookingHost } from "./booking-host"
+import { eventHost } from "./event-host"
+import { eventType } from "./event-types"
 import { userPreferences } from "./user-preferences"
 
 export const user = pgTable("user", {

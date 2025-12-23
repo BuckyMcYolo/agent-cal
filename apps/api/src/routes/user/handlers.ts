@@ -1,6 +1,6 @@
-import type { AppRouteHandler } from "@/lib/types/app-types"
 import { db } from "@workspace/db"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import type { AppRouteHandler } from "@/lib/types/app-types"
 import type { GetUserPreferencesRoute } from "./routes"
 
 export const listUserPreferences: AppRouteHandler<

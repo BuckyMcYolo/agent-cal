@@ -1,6 +1,5 @@
 "use client"
 
-import { apiClient } from "@/lib/utils/api-client"
 import {
   useMutation,
   useQueryClient,
@@ -8,23 +7,19 @@ import {
 } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Separator } from "@workspace/ui/components/separator"
-import {
-  Clock,
-  Settings,
-  MoreHorizontal,
-  CheckCircle2,
-} from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { toast } from "sonner"
-import { DeleteDialog } from "@/components/misc/dialogs/delete-dialog"
-import CreateAvailabilityDialog from "@/components/availability/create-availability-dialog"
+import { Separator } from "@workspace/ui/components/separator"
+import { CheckCircle2, Clock, MoreHorizontal, Settings } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
+import CreateAvailabilityDialog from "@/components/availability/create-availability-dialog"
+import { DeleteDialog } from "@/components/misc/dialogs/delete-dialog"
+import { apiClient } from "@/lib/utils/api-client"
 
 import SchedulePreviewCard from "./schedule-preview-card"
 

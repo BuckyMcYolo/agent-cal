@@ -1,9 +1,10 @@
 // src/lib/better-auth-middleware.ts
-import type { Context, Next } from "hono"
+
 import { auth } from "@workspace/auth"
+import serverEnv from "@workspace/env-config/server-env"
+import type { Context, Next } from "hono"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import type { AppBindings } from "@/lib/types/app-types"
-import serverEnv from "@workspace/env-config/server-env"
 
 /**
  * Middleware that authenticates requests using Better Auth.

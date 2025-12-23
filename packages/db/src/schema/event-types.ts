@@ -1,25 +1,25 @@
+import { relations } from "drizzle-orm"
 import {
-  pgTable,
-  text,
-  timestamp,
   boolean,
-  uuid,
+  index,
   integer,
   json,
   pgEnum,
+  pgTable,
+  text,
+  timestamp,
   unique,
-  index,
+  uuid,
 } from "drizzle-orm/pg-core"
-import { user, organization } from "./auth"
 import {
   createInsertSchema,
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-zod"
-import { relations } from "drizzle-orm"
+import { organization, user } from "./auth"
+import { availabilitySchedule } from "./availability"
 import { booking } from "./booking"
 import { eventHost } from "./event-host"
-import { availabilitySchedule } from "./availability"
 
 // Define event type scheduling enum
 export const schedulingTypeEnum = pgEnum("scheduling_type", [

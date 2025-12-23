@@ -1,21 +1,21 @@
-import { useUser } from "@/hooks/use-user"
-import { apiClient } from "@/lib/utils/api-client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogTitle,
   AlertDialogHeader,
-  AlertDialogCancel,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
 import { Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useUser } from "@/hooks/use-user"
+import { apiClient } from "@/lib/utils/api-client"
 
 export default function DeleteApiKeyDialog({ keyId }: { keyId: string }) {
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null)

@@ -1,8 +1,8 @@
 "use client"
 
-import type React from "react"
+import { ExternalLink, Globe } from "lucide-react"
 import Link from "next/link"
-import { Globe, ExternalLink } from "lucide-react"
+import type React from "react"
 
 type WeeklySlot = {
   dayOfWeek: number

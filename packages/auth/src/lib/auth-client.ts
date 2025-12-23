@@ -1,13 +1,13 @@
-import { createAuthClient } from "better-auth/react"
+import clientEnv from "@workspace/env-config/client"
 import {
   adminClient,
-  organizationClient,
   apiKeyClient,
   emailOTPClient,
   inferAdditionalFields,
+  organizationClient,
   phoneNumberClient,
 } from "better-auth/client/plugins"
-import clientEnv from "@workspace/env-config/client"
+import { createAuthClient } from "better-auth/react"
 import type { auth } from "./auth"
 
 export const authClient = createAuthClient({

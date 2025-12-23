@@ -1,7 +1,7 @@
 "use client"
-import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { cn } from "@workspace/ui/lib/utils"
+import * as React from "react"
 
 // Create Context for the tabs
 const TabsContext = React.createContext<{

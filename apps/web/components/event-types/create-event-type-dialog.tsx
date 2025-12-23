@@ -1,11 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { z } from "zod"
-import { apiClient } from "@/lib/utils/api-client"
+import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
   DialogContent,
@@ -16,8 +13,6 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
-import { Textarea } from "@workspace/ui/components/textarea"
-import { Button } from "@workspace/ui/components/button"
 import {
   Select,
   SelectContent,
@@ -25,9 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { Plus, Loader2 } from "lucide-react"
-import { toast } from "sonner"
+import { Textarea } from "@workspace/ui/components/textarea"
 import { cn } from "@workspace/ui/lib/utils"
+import { Loader2, Plus } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
+import { apiClient } from "@/lib/utils/api-client"
 
 const createEventTypeSchema = z.object({
   title: z

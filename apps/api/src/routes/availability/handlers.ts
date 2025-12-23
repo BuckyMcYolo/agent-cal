@@ -1,22 +1,22 @@
 import { db, eq } from "@workspace/db"
-import type { AppRouteHandler } from "@/lib/types/app-types"
-import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import {
   availabilitySchedule,
   weeklyScheduleSlot,
 } from "@workspace/db/schema/availability"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import {
   getUserOrgbyUserId,
   getUserPreferencesByUserId,
 } from "@/lib/queries/users"
+import { dayToInteger } from "@/lib/time/conversions"
+import { validateTimeSlots } from "@/lib/time/timeslot-overlap"
+import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {
-  ListAvailabilityRoute,
   GetAvailabilityRoute,
+  ListAvailabilityRoute,
   PostAvailabilityRoute,
   UpdateAvailabilityRoute,
 } from "./routes"
-import { dayToInteger } from "@/lib/time/conversions"
-import { validateTimeSlots } from "@/lib/time/timeslot-overlap"
 
 export const listAvailability: AppRouteHandler<ListAvailabilityRoute> = async (
   c

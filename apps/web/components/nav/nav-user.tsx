@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -8,6 +7,7 @@ import {
   IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react"
+import { authClient } from "@workspace/auth/client"
 import {
   Avatar,
   AvatarFallback,
@@ -28,15 +28,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@workspace/ui/components/toggle-group"
 import { Laptop, Loader2, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { authClient } from "@workspace/auth/client"
-import { Skeleton } from "@workspace/ui/components/skeleton"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
+import React from "react"
 
 export function NavUser() {
   const [mounted, setMounted] = React.useState(false)

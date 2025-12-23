@@ -1,5 +1,5 @@
-import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 import { z } from "@hono/zod-openapi"
+import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
 
 export const notFoundSchema = z
   .object({

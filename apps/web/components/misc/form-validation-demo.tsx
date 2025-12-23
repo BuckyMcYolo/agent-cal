@@ -1,23 +1,23 @@
 "use client"
 
-import type React from "react"
-import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import {
-  eventTypeOverviewSchema,
-  type EventTypeOverviewFormData,
-} from "@/lib/utils/form-validation"
 import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { Loader2 } from "lucide-react"
+import type React from "react"
 import { FormError } from "@/components/misc/form-error"
 import { ValidationStatus } from "@/components/misc/validation-status"
-import { Loader2 } from "lucide-react"
+import { useEnhancedForm } from "@/hooks/use-enhanced-form"
+import {
+  type EventTypeOverviewFormData,
+  eventTypeOverviewSchema,
+} from "@/lib/utils/form-validation"
 
 /**
  * Demo component to showcase enhanced form validation features

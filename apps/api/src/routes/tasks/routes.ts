@@ -1,19 +1,19 @@
-import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
 import { createRoute, z } from "@hono/zod-openapi"
 import {
   insertTasksSchema,
   selectTasksSchema,
   updateTasksSchema,
 } from "@workspace/db/schema/tasks"
-import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
 import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
 import createErrorSchema from "@/lib/helpers/openapi/schemas/error/create-error-schema"
-import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
-import { authMiddleware } from "@/middleware/bearer-auth-middleware"
+import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
+import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
+import UUIDParamsSchema from "@/lib/helpers/openapi/schemas/params/uuid-params"
 import { apiKeySecuritySchema } from "@/lib/helpers/openapi/schemas/security-schemas"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 
 const tags = ["Tasks"]
 

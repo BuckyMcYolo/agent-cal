@@ -1,27 +1,27 @@
 "use client"
 
-import { useEffect } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { apiClient } from "@/lib/utils/api-client"
 import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Switch } from "@workspace/ui/components/switch"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
-import { Loader2, AlertTriangle } from "lucide-react"
-import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import {
-  eventTypeAdvancedSchema,
-  type EventTypeAdvancedFormData,
-} from "@/lib/utils/form-validation"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { Switch } from "@workspace/ui/components/switch"
+import { AlertTriangle, Loader2 } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useEffect } from "react"
 import { FormError } from "@/components/misc/form-error"
 import { ValidationStatus } from "@/components/misc/validation-status"
+import { useEnhancedForm } from "@/hooks/use-enhanced-form"
+import { apiClient } from "@/lib/utils/api-client"
+import {
+  type EventTypeAdvancedFormData,
+  eventTypeAdvancedSchema,
+} from "@/lib/utils/form-validation"
 
 const EventTypeAdvancedForm = () => {
   const params = useParams()

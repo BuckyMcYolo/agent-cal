@@ -1,11 +1,11 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
-import { useHeader } from "../root/header-provider"
-import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@workspace/ui/components/button"
 import { ChevronLeft } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { useHeader } from "../root/header-provider"
 
 export function SiteHeader() {
   const { config } = useHeader()

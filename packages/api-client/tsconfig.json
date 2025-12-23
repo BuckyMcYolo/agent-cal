@@ -6,7 +6,7 @@
     "rootDir": "src",
     "paths": {
       "@workspace/api/*": ["../../apps/api/src/app*"]
-    },
+    }
   },
   "watchOptions": {
     "excludeDirectories": [

@@ -1,29 +1,29 @@
 "use client"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import { Card } from "@workspace/ui/components/card"
 import {
   Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogContent,
-  DialogFooter,
 } from "@workspace/ui/components/dialog"
-import { useRouter } from "next/navigation"
-import type React from "react"
-import { useState } from "react"
-import { useForm, type Path } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { Progress } from "@workspace/ui/components/progress"
+import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import {
   Select,
   SelectContent,
@@ -31,35 +31,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { Switch } from "@workspace/ui/components/switch"
 import { Textarea } from "@workspace/ui/components/textarea"
-import { Progress } from "@workspace/ui/components/progress"
+import { cn } from "@workspace/ui/lib/utils"
 import {
-  CheckCircle2,
   Briefcase,
-  User,
   Calendar,
-  HelpCircle,
+  CalendarDays,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  House,
+  Clock,
   Globe,
-  CalendarDays,
+  HelpCircle,
+  House,
   Plus,
   Trash2,
-  Clock,
+  User,
 } from "lucide-react"
 import Image from "next/image"
-import logoImage from "../../public/favicon.svg"
-import { useUser } from "@/hooks/use-user"
+import { useRouter } from "next/navigation"
+import type React from "react"
+import { useState } from "react"
 import Confetti from "react-confetti"
-import { apiClient } from "@/lib/utils/api-client"
-import { useMutation } from "@tanstack/react-query"
+import { type Path, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { Card } from "@workspace/ui/components/card"
-import { Switch } from "@workspace/ui/components/switch"
-import { Label } from "@workspace/ui/components/label"
-import { ScrollArea } from "@workspace/ui/components/scroll-area"
-import { cn } from "@workspace/ui/lib/utils"
+import { z } from "zod"
+import { useUser } from "@/hooks/use-user"
+import { apiClient } from "@/lib/utils/api-client"
+import logoImage from "../../public/favicon.svg"
 
 const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, i) => {
   const hour = Math.floor(i / 4)

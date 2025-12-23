@@ -1,15 +1,15 @@
-import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
-import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 import { createRoute, z } from "@hono/zod-openapi"
-import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { selectApiKeySchema } from "@workspace/db/schema/auth"
+import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
+import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
+import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
 import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
+import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
 import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
 import IdStringParamsSchema from "@/lib/helpers/openapi/schemas/params/id-string-params"
-import { selectApiKeySchema } from "@workspace/db/schema/auth"
-import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
-import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
-import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
 import { paginationSchema } from "@/lib/helpers/openapi/schemas/response/pagination-schema"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 
 export const createKey = createRoute({
   path: "/api-keys",

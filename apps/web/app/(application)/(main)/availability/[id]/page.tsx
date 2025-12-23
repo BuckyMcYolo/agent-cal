@@ -1,43 +1,10 @@
 "use client"
 
-import React, { useState, useEffect, use } from "react"
-import { apiClient } from "@/lib/utils/api-client"
 import {
-  useSuspenseQuery,
   useMutation,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Badge } from "@workspace/ui/components/badge"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import { Switch } from "@workspace/ui/components/switch"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import {
-  Clock,
-  Edit3,
-  Save,
-  X,
-  Plus,
-  ArrowLeft,
-  Calendar,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react"
-import { toast } from "sonner"
-import Link from "next/link"
-import { Skeleton } from "@workspace/ui/components/skeleton"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,9 +16,42 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card"
+import { Input } from "@workspace/ui/components/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Switch } from "@workspace/ui/components/switch"
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Edit3,
+  Plus,
+  Save,
+  X,
+  XCircle,
+} from "lucide-react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import React, { use, useEffect, useState } from "react"
+import { toast } from "sonner"
 // import { usePathname } from "next/navigation"
 import { TimezoneSelect } from "@/components/misc/inputs/timezone-select"
+import { apiClient } from "@/lib/utils/api-client"
 
 interface WeeklyScheduleSlot {
   id: string

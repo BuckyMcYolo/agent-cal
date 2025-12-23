@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 
 import "@workspace/ui/globals.css"
-import { ThemeProvider } from "@/components/root/theme-provider"
 import { Toaster } from "@workspace/ui/components/sonner"
+import { ThemeProvider } from "@/components/root/theme-provider"
 
 const fontSans = Geist({
   subsets: ["latin"],

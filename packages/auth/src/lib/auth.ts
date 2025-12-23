@@ -1,15 +1,15 @@
-import { betterAuth, type BetterAuthOptions } from "better-auth"
+import { db } from "@workspace/db"
+import { serverEnv } from "@workspace/env-config"
+import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
   admin,
-  organization,
   apiKey,
-  openAPI,
   emailOTP,
+  openAPI,
+  organization,
   phoneNumber,
 } from "better-auth/plugins"
-import { db } from "@workspace/db"
-import { serverEnv } from "@workspace/env-config"
 
 const options = {
   appName: "AgentCal",

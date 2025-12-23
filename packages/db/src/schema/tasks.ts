@@ -1,8 +1,5 @@
-import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core"
-import {
-  createInsertSchema,
-  createSelectSchema,
-} from "drizzle-zod"
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().defaultRandom(),

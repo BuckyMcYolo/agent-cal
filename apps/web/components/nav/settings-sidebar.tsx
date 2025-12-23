@@ -1,9 +1,6 @@
 "use client"
 
-import type * as React from "react"
 import { IconHelp, IconSearch, IconWebhook } from "@tabler/icons-react"
-import { NavSettings } from "@/components/nav/nav-settings"
-import { NavUser } from "@/components/nav/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -13,18 +10,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import {
-  ArrowBigLeft,
-  Bell,
-  CreditCard,
-  Key,
-  User,
-  Video,
-} from "lucide-react"
-import Link from "next/link"
-import { NavSecondary } from "./nav-secondary"
+import { ArrowBigLeft, Bell, CreditCard, Key, User, Video } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
+import type * as React from "react"
+import { NavSettings } from "@/components/nav/nav-settings"
+import { NavUser } from "@/components/nav/nav-user"
 import LogoImage from "../../public/favicon.svg"
+import { NavSecondary } from "./nav-secondary"
 
 const data = {
   user: [

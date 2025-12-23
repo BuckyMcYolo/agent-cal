@@ -1,12 +1,12 @@
-import type React from "react"
 import {
   Table,
   TableBody,
   TableCell,
-  TableHeader,
   TableHead,
+  TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
+import type React from "react"
 
 export interface TableSkeletonProps {
   /**

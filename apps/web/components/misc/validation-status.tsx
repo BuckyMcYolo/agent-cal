@@ -1,6 +1,6 @@
-import type React from "react"
-import { CheckCircle, AlertCircle, Clock } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
+import { AlertCircle, CheckCircle, Clock } from "lucide-react"
+import type React from "react"
 
 interface ValidationStatusProps {
   isValid: boolean

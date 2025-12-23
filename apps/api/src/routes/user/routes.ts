@@ -1,11 +1,11 @@
-import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 import { createRoute, z } from "@hono/zod-openapi"
-import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
-import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
+import type { User } from "@workspace/auth"
 import { selectUserPreferences } from "@workspace/db/schema/user-preferences"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"
-import type { User } from "@workspace/auth"
+import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
+import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 
 const UserPreferencesWithUserSchema = z.object({
   ...selectUserPreferences.shape,

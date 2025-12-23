@@ -1,5 +1,5 @@
-import LayoutTabs from "@/components/settings/developers/api-keys/layout-tabs"
 import { authClient } from "@workspace/auth/client"
+import LayoutTabs from "@/components/settings/developers/api-keys/layout-tabs"
 
 export default async function ApiKeysLayout({
   children,

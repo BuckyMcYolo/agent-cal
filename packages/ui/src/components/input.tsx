@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { cn } from "@workspace/ui/lib/utils"
+import { ChevronDown, ChevronUp } from "lucide-react"
+import * as React from "react"
 import { Label } from "./label"
-import { ChevronUp, ChevronDown } from "lucide-react"
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

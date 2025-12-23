@@ -1,9 +1,9 @@
 // packages/config/index.ts
 import path from "node:path"
-import { z } from "zod"
+import { fileURLToPath } from "node:url"
 import { config } from "dotenv"
 import { expand } from "dotenv-expand"
-import { fileURLToPath } from "node:url"
+import { z } from "zod"
 
 const isClient = typeof window !== "undefined"
 const isNextJS =

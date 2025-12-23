@@ -1,6 +1,6 @@
 import type { AppType } from "@workspace/api/app"
+import type { InferRequestType, InferResponseType } from "hono/client"
 import { hc } from "hono/client"
-import type { InferResponseType, InferRequestType } from "hono/client"
 
 // Re-export hono client types for consumers
 export type { InferResponseType, InferRequestType }

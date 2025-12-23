@@ -1,5 +1,3 @@
-import OrgAPIKeysTable from "@/components/settings/developers/api-keys/organization/org-api-keys-table"
-import { apiClient } from "@/lib/utils/api-client"
 import {
   dehydrate,
   HydrationBoundary,
@@ -7,6 +5,8 @@ import {
 } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
 import { redirect } from "next/navigation"
+import OrgAPIKeysTable from "@/components/settings/developers/api-keys/organization/org-api-keys-table"
+import { apiClient } from "@/lib/utils/api-client"
 
 const Page = async () => {
   const { data } = await authClient.getSession()

@@ -1,10 +1,10 @@
 import {
+  dehydrate,
   HydrationBoundary,
   QueryClient,
-  dehydrate,
 } from "@tanstack/react-query"
-import { apiClient } from "@/lib/utils/api-client"
 import EventTypesList from "@/components/event-types/event-types-list"
+import { apiClient } from "@/lib/utils/api-client"
 
 const Page = async () => {
   const queryClient = new QueryClient()

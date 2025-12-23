@@ -1,14 +1,14 @@
 "use client"
 
+import type { UserSession } from "@workspace/auth"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
-import type React from "react"
-import type { UserSession } from "@workspace/auth"
 import { usePathname, useRouter } from "next/navigation"
+import type React from "react"
 
 const LayoutTabs = ({
   children,

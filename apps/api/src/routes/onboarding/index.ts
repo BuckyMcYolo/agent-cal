@@ -1,25 +1,25 @@
-import { createRouter } from "@/lib/helpers/app/create-app"
-import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
-import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
-import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
-import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 import { createRoute, z } from "@hono/zod-openapi"
-import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
-import {
-  insertOnboardingPreferences,
-  userPreferences,
-} from "@workspace/db/schema/user-preferences"
-import type { AppRouteHandler } from "@/lib/types/app-types"
 import { db, eq } from "@workspace/db"
 import { organization } from "@workspace/db/schema/auth"
-import { getUserOrgbyUserId } from "@/lib/queries/users"
-import { sluggify } from "@/lib/misc/sluggify"
 import {
   availabilitySchedule,
   insertAvailabilitySchema,
   weeklyScheduleSlot,
 } from "@workspace/db/schema/availability"
+import {
+  insertOnboardingPreferences,
+  userPreferences,
+} from "@workspace/db/schema/user-preferences"
+import { createRouter } from "@/lib/helpers/app/create-app"
+import { zodSchemaToOpenAPI } from "@/lib/helpers/openapi/drizzle-zod-to-openapi"
+import { unauthorizedSchema } from "@/lib/helpers/openapi/schemas/error/unauthorized-schema"
+import jsonContent from "@/lib/helpers/openapi/schemas/json-content"
+import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-required"
+import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import { sluggify } from "@/lib/misc/sluggify"
+import { getUserOrgbyUserId } from "@/lib/queries/users"
+import type { AppRouteHandler } from "@/lib/types/app-types"
+import { authMiddleware } from "@/middleware/bearer-auth-middleware"
 
 export const completeOnboardingRoute = createRoute({
   path: "/onboarding",

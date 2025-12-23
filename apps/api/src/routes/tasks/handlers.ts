@@ -1,15 +1,15 @@
 import { db, eq } from "@workspace/db"
-import type {
-  CreateRoute,
-  ListRoute,
-  GetOneRoute,
-  PatchRoute,
-  RemoveRoute,
-} from "./routes"
-import type { AppRouteHandler } from "@/lib/types/app-types"
 import { tasks } from "@workspace/db/schema/tasks"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import * as HttpStatusPhrases from "@/lib/misc/http-status-phrases"
+import type { AppRouteHandler } from "@/lib/types/app-types"
+import type {
+  CreateRoute,
+  GetOneRoute,
+  ListRoute,
+  PatchRoute,
+  RemoveRoute,
+} from "./routes"
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const tasks = await db.query.tasks.findMany()

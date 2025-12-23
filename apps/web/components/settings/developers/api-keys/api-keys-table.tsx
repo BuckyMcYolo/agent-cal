@@ -2,24 +2,24 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
+import { Switch } from "@workspace/ui/components/switch"
 import {
   Table,
   TableBody,
   TableCell,
-  TableHeader,
   TableHead,
+  TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { DateTime } from "luxon"
-import { CreateApiKeyDialog } from "./create-api-key-dialog"
-import DeleteApiKeyDialog from "./delete-api-key-dialog"
-import UpdateApiKeyDialog from "./update-api-key-dialog"
-import { Switch } from "@workspace/ui/components/switch"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
+import { DateTime } from "luxon"
+import { CreateApiKeyDialog } from "./create-api-key-dialog"
+import DeleteApiKeyDialog from "./delete-api-key-dialog"
+import UpdateApiKeyDialog from "./update-api-key-dialog"
 
 export default function APIKeysTable() {
   const {

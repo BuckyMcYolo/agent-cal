@@ -1,22 +1,15 @@
 "use client"
 
-import type React from "react"
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { apiClient } from "@/lib/utils/api-client"
-import { sluggify } from "@/lib/utils/sluggify"
 import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Textarea } from "@workspace/ui/components/textarea"
-import { Switch } from "@workspace/ui/components/switch"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
 import {
   Select,
   SelectContent,
@@ -24,16 +17,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { Loader2, AlertTriangle } from "lucide-react"
-
+import { Switch } from "@workspace/ui/components/switch"
+import { Textarea } from "@workspace/ui/components/textarea"
 import { cn } from "@workspace/ui/lib/utils"
-import { useEnhancedForm } from "@/hooks/use-enhanced-form"
-import {
-  eventTypeOverviewSchema,
-  type EventTypeOverviewFormData,
-} from "@/lib/utils/form-validation"
+import { AlertTriangle, Loader2 } from "lucide-react"
+import { useParams } from "next/navigation"
+import type React from "react"
+import { useEffect, useState } from "react"
 import { FormError } from "@/components/misc/form-error"
 import { ValidationStatus } from "@/components/misc/validation-status"
+import { useEnhancedForm } from "@/hooks/use-enhanced-form"
+import { apiClient } from "@/lib/utils/api-client"
+import {
+  type EventTypeOverviewFormData,
+  eventTypeOverviewSchema,
+} from "@/lib/utils/form-validation"
+import { sluggify } from "@/lib/utils/sluggify"
 
 // Duration options in 15-minute increments
 const DURATION_OPTIONS = [

@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import {
   createContext,
   useCallback,
@@ -8,7 +9,6 @@ import {
   useMemo,
   useState,
 } from "react"
-import { usePathname } from "next/navigation"
 
 export type HeaderConfig = {
   title?: React.ReactNode

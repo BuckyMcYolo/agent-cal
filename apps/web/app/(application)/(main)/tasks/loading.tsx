@@ -1,5 +1,3 @@
-
-
 const Loading = () => {
   return <div>Loading server side...</div>
 }

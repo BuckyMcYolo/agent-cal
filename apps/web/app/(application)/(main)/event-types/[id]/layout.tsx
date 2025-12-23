@@ -1,20 +1,20 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useParams, usePathname } from "next/navigation"
-import Link from "next/link"
-import {
-  Settings,
-  Calendar,
-  Zap,
-  SlidersHorizontal,
-  ArrowLeft,
-  Menu,
-  X,
-} from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import {
+  ArrowLeft,
+  Calendar,
+  Menu,
+  Settings,
+  SlidersHorizontal,
+  X,
+  Zap,
+} from "lucide-react"
+import Link from "next/link"
+import { useParams, usePathname } from "next/navigation"
+import type React from "react"
+import { useEffect, useState } from "react"
 
 const sidebarItems = [
   {

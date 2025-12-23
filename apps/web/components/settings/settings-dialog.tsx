@@ -1,21 +1,6 @@
 "use client"
 
 import {
-  Bell,
-  Check,
-  Globe,
-  Home,
-  Keyboard,
-  Link,
-  Lock,
-  Menu,
-  MessageCircle,
-  Paintbrush,
-  Settings,
-  Video,
-} from "lucide-react"
-
-import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -39,6 +24,20 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@workspace/ui/components/sidebar"
+import {
+  Bell,
+  Check,
+  Globe,
+  Home,
+  Keyboard,
+  Link,
+  Lock,
+  Menu,
+  MessageCircle,
+  Paintbrush,
+  Settings,
+  Video,
+} from "lucide-react"
 
 const data = {
   nav: [

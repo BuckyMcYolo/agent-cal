@@ -1,13 +1,13 @@
+import { relations } from "drizzle-orm"
 import {
+  boolean,
+  index,
   pgTable,
   text,
   timestamp,
-  boolean,
   uuid,
-  index,
 } from "drizzle-orm/pg-core"
 import { booking } from "./booking"
-import { relations } from "drizzle-orm"
 
 export const attendee = pgTable(
   "attendee",

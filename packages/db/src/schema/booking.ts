@@ -1,10 +1,17 @@
-import { index, json, pgEnum, uuid } from "drizzle-orm/pg-core"
-import { pgTable, text, timestamp, } from "drizzle-orm/pg-core"
-import { user, organization } from "./auth"
-import { eventType } from "./event-types"
 import { relations } from "drizzle-orm"
+import {
+  index,
+  json,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
 import { attendee } from "./attendee"
+import { organization, user } from "./auth"
 import { bookingHost } from "./booking-host"
+import { eventType } from "./event-types"
 
 export const bookingStatusEnum = pgEnum("booking_status", [
   "SCHEDULED",

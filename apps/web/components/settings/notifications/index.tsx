@@ -1,9 +1,9 @@
 import {
   Card,
-  CardHeader,
   CardContent,
-  CardTitle,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@workspace/ui/components/card"
 import { Switch } from "@workspace/ui/components/switch"
 

@@ -1,7 +1,7 @@
-import type { PinoLogger } from "hono-pino"
-import type { RouteConfig, RouteHandler, OpenAPIHono } from "@hono/zod-openapi"
-import type { Schema } from "hono"
+import type { OpenAPIHono, RouteConfig, RouteHandler } from "@hono/zod-openapi"
 import type { Session, User } from "@workspace/auth"
+import type { Schema } from "hono"
+import type { PinoLogger } from "hono-pino"
 
 export interface AppBindings {
   Variables: {

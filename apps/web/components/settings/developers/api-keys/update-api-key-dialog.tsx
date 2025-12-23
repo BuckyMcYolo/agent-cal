@@ -1,17 +1,15 @@
-import { useUser } from "@/hooks/use-user"
-import { apiClient } from "@/lib/utils/api-client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogHeader,
-  AlertDialogCancel,
   AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
@@ -23,6 +21,8 @@ import { useEffect, useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import { useUser } from "@/hooks/use-user"
+import { apiClient } from "@/lib/utils/api-client"
 
 export default function UpdateApiKeyDialog({
   keyId,

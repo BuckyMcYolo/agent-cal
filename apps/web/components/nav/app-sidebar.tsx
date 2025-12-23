@@ -1,15 +1,6 @@
 "use client"
 
-import type * as React from "react"
-import {
-  IconHelp,
-  IconSearch,
-  IconSettings,
-} from "@tabler/icons-react"
-
-import { NavMain } from "@/components/nav/nav-main"
-import { NavSettings } from "@/components/nav/nav-settings"
-import { NavUser } from "@/components/nav/nav-user"
+import { IconHelp, IconSearch, IconSettings } from "@tabler/icons-react"
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +19,10 @@ import {
   SendToBack,
 } from "lucide-react"
 import Image from "next/image"
+import type * as React from "react"
+import { NavMain } from "@/components/nav/nav-main"
+import { NavSettings } from "@/components/nav/nav-settings"
+import { NavUser } from "@/components/nav/nav-user"
 import LogoImage from "../../public/favicon.svg"
 
 const data = {

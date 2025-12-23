@@ -1,19 +1,19 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { authClient } from "@workspace/auth/client"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { EyeIcon, EyeOff } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { type SignUpForm, signUpSchema } from "./auth-utils"
-import { type SubmitHandler, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { authClient } from "@workspace/auth/client"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import LogoImage from "../../public/logo.png"
 import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { type SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { sluggify } from "@/lib/utils/sluggify"
+import LogoImage from "../../public/logo.png"
+import { type SignUpForm, signUpSchema } from "./auth-utils"
 
 export default function SignUp() {
   const [passwordType, setPasswordType] = useState<"password" | "text">(

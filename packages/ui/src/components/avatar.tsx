@@ -1,9 +1,8 @@
 "use client"
 
-import type * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
-
 import { cn } from "@workspace/ui/lib/utils"
+import type * as React from "react"
 
 function Avatar({
   className,

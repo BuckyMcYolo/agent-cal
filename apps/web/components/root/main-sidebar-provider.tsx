@@ -1,7 +1,7 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
+import { cookies } from "next/headers"
 import { AppSidebar } from "../nav/app-sidebar"
 import { SiteHeader } from "../nav/site-header"
-import { cookies } from "next/headers"
 
 export default async function MainSideBarProvider({
   children,
