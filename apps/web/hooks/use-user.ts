@@ -25,6 +25,9 @@ export const useUser = ({
       if (preferencesRes.ok) {
         const preferencesData = await preferencesRes.json()
         return { ...preferencesData, ...sessionRes.data?.user }
+      } else if (preferencesRes.status === 404) {
+        // Handle 404 gracefully - user preferences not found (e.g., during onboarding)
+        return { ...sessionRes.data?.user }
       } else {
         const data = await preferencesRes.json()
         throw new Error(data.message)

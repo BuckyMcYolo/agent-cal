@@ -6,9 +6,9 @@ import React from "react"
 const Page = async () => {
   const userPreferences = await getUserPreferences()
 
-  // if (userPreferences.onboardingCompleted) {
-  //   redirect("/event-types")
-  // }
+  if (userPreferences.onboardingCompleted) {
+    redirect("/event-types")
+  }
 
   // console.log("activeMember", activeMember)
   // console.log("data", data)
