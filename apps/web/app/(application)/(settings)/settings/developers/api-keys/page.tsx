@@ -4,9 +4,11 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 import APIKeysTable from "@/components/settings/developers/api-keys/api-keys-table"
+import { requireAuth } from "@/lib/auth/require-auth"
 import { apiClient } from "@/lib/utils/api-client"
 
 const Page = async () => {
+  await requireAuth()
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery({

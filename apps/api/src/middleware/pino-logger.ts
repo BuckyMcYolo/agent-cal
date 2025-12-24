@@ -8,6 +8,14 @@ export function pinoLoggerMiddleware() {
     pino: pino(
       {
         level: serverEnv.LOG_LEVEL || "info",
+        redact: {
+          paths: [
+            "req.headers.cookie",
+            "req.headers.authorization",
+            "res.headers['set-cookie']",
+          ],
+          remove: true,
+        },
       },
       serverEnv.NODE_ENV === "production" ? undefined : pretty()
     ),

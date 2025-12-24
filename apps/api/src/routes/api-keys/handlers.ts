@@ -1,6 +1,6 @@
 import { auth } from "@workspace/auth"
-import { and, count, db, desc, eq } from "@workspace/db"
-import { apikey } from "@workspace/db/schema/auth"
+import { and, count, db, desc, eq, sql } from "@workspace/db"
+import { apikey, user } from "@workspace/db/schema/auth"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {
@@ -16,6 +16,7 @@ import type {
  */
 export const listKeys: AppRouteHandler<ListKeysRoute> = async (c) => {
   try {
+    const t0 = Date.now()
     const { page = 1, perPage = 10 } = c.req.valid("query")
 
     const org = c.var.organization
@@ -26,32 +27,78 @@ export const listKeys: AppRouteHandler<ListKeysRoute> = async (c) => {
       )
     }
 
-    const totalKeysCount = await db
-      .select({ count: count() })
+    const t1 = Date.now()
+    // Single query with count using window function
+    const keysWithCount = await db
+      .select({
+        id: apikey.id,
+        name: apikey.name,
+        start: apikey.start,
+        prefix: apikey.prefix,
+        userId: apikey.userId,
+        organizationId: apikey.organizationId,
+        createdAt: apikey.createdAt,
+        updatedAt: apikey.updatedAt,
+        enabled: apikey.enabled,
+        expiresAt: apikey.expiresAt,
+        permissions: apikey.permissions,
+        metadata: apikey.metadata,
+        refillInterval: apikey.refillInterval,
+        refillAmount: apikey.refillAmount,
+        lastRefillAt: apikey.lastRefillAt,
+        rateLimitEnabled: apikey.rateLimitEnabled,
+        rateLimitTimeWindow: apikey.rateLimitTimeWindow,
+        rateLimitMax: apikey.rateLimitMax,
+        requestCount: apikey.requestCount,
+        remaining: apikey.remaining,
+        lastRequest: apikey.lastRequest,
+        // User fields
+        userName: user.name,
+        userEmail: user.email,
+        // Total count via window function
+        totalCount: sql<number>`count(*) over()`.as("total_count"),
+      })
       .from(apikey)
+      .leftJoin(user, eq(apikey.userId, user.id))
       .where(eq(apikey.organizationId, org.id))
-      .execute()
+      .orderBy(desc(apikey.createdAt))
+      .limit(perPage)
+      .offset((page - 1) * perPage)
+    console.log(`[api-keys] DB query took ${Date.now() - t1}ms`)
 
-    const keys = await db.query.apikey.findMany({
-      where: eq(apikey.organizationId, org.id),
-      orderBy: desc(apikey.createdAt),
-      limit: perPage,
-      offset: (page - 1) * perPage,
-      columns: {
-        key: false, // Never return the actual key
-      },
-      with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    })
+    // Transform results to match expected shape
+    const keys = keysWithCount.map((row) => ({
+      id: row.id,
+      name: row.name,
+      start: row.start,
+      prefix: row.prefix,
+      userId: row.userId,
+      organizationId: row.organizationId,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      enabled: row.enabled,
+      expiresAt: row.expiresAt,
+      permissions: row.permissions,
+      metadata: row.metadata,
+      refillInterval: row.refillInterval,
+      refillAmount: row.refillAmount,
+      lastRefillAt: row.lastRefillAt,
+      rateLimitEnabled: row.rateLimitEnabled,
+      rateLimitTimeWindow: row.rateLimitTimeWindow,
+      rateLimitMax: row.rateLimitMax,
+      requestCount: row.requestCount,
+      remaining: row.remaining,
+      lastRequest: row.lastRequest,
+      user: row.userId
+        ? {
+            id: row.userId,
+            name: row.userName ?? "",
+            email: row.userEmail ?? "",
+          }
+        : null,
+    }))
 
-    const totalItems = totalKeysCount[0]?.count ?? 0
+    const totalItems = keysWithCount[0]?.totalCount ?? 0
     const totalPages = Math.ceil(totalItems / perPage)
 
     const meta = {

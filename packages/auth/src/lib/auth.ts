@@ -22,12 +22,12 @@ const options = {
   },
   // Cookie cache
   // This is used to cache the session in a cookie for faster access
-  // session: {
-  //   cookieCache: {
-  //     enabled: true,
-  //     maxAge: 5 * 60, // 5 minutes
-  //   },
-  // },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
   //rate limiting
   rateLimit: {
     enabled: true,

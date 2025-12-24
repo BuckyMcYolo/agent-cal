@@ -1,6 +1,6 @@
 import { auth } from "@workspace/auth"
 import { and, db, eq } from "@workspace/db"
-import { apikey, member, organization } from "@workspace/db/schema/auth"
+import { apikey, member } from "@workspace/db/schema/auth"
 import { serverEnv } from "@workspace/env-config/server"
 import type { Context, Next } from "hono"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
@@ -138,7 +138,9 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
       console.log("[Auth] Authenticating via session")
     }
 
+    const t1 = Date.now()
     const session = await auth.api.getSession({ headers })
+    console.log(`[Auth] getSession took ${Date.now() - t1}ms`)
 
     if (!session) {
       return c.json(
@@ -164,25 +166,18 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
       )
     }
 
-    // Get the organization
-    const org = await db.query.organization.findFirst({
-      where: eq(organization.id, activeOrganizationId),
-    })
-
-    if (!org) {
-      return c.json(
-        { success: false, message: "Organization not found" },
-        HttpStatusCodes.UNAUTHORIZED
-      )
-    }
-
-    // Get the member record
+    // Fetch member with organization in a single query
+    const t2 = Date.now()
     const memberRecord = await db.query.member.findFirst({
       where: and(
         eq(member.userId, session.user.id),
         eq(member.organizationId, activeOrganizationId)
       ),
+      with: {
+        organization: true,
+      },
     })
+    console.log(`[Auth] member+org query took ${Date.now() - t2}ms`)
 
     if (!memberRecord) {
       return c.json(
@@ -191,6 +186,14 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
           message: "You are not a member of the selected organization",
         },
         HttpStatusCodes.FORBIDDEN
+      )
+    }
+
+    const org = memberRecord.organization
+    if (!org) {
+      return c.json(
+        { success: false, message: "Organization not found" },
+        HttpStatusCodes.UNAUTHORIZED
       )
     }
 
@@ -216,7 +219,7 @@ export const authMiddleware = async (c: Context<AppBindings>, next: Next) => {
 
     await next()
   } catch (error) {
-    c.var.logger?.error("Authentication error:", error)
+    c.var.logger?.error({ err: error }, "Authentication error")
     return c.json(
       {
         success: false,

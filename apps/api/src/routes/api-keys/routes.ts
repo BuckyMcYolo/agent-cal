@@ -9,7 +9,7 @@ import jsonContentRequired from "@/lib/helpers/openapi/schemas/json-content-requ
 import IdStringParamsSchema from "@/lib/helpers/openapi/schemas/params/id-string-params"
 import { paginationSchema } from "@/lib/helpers/openapi/schemas/response/pagination-schema"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import { authMiddleware } from "@/middleware/bearer-auth-middleware"
+import { authMiddleware } from "@/middleware/auth-middleware"
 
 // Schema for API key with optional user info (who created it)
 const ApiKeyWithUserSchema = z.object({

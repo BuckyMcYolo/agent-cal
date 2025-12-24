@@ -14,7 +14,7 @@ import {
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
 import { organization, user } from "../auth"
-import { eventType } from "./event-types"
+import { eventType } from "../event-type"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [
   "BLOCK", // Blocks time off (unavailable)
