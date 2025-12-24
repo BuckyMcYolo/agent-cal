@@ -1,0 +1,38 @@
+{
+  "name": "@workspace/calendar-integrations",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist && tsc && tsc-alias"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*",
+    "@types/node": "^20.11.5",
+    "tsc-alias": "^1.8.13",
+    "tsx": "^4.7.1"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "zod": "^3.24.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./google": {
+      "types": "./dist/google/index.d.ts",
+      "default": "./dist/google/index.js"
+    },
+    "./microsoft": {
+      "types": "./dist/microsoft/index.d.ts",
+      "default": "./dist/microsoft/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
+    }
+  }
+}
