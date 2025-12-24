@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import { LayoutDashboard, Key } from "lucide-react"
+import { Key, LayoutDashboard } from "lucide-react"
 import Image from "next/image"
 import type * as React from "react"
 import { NavMain } from "@/components/nav/nav-main"

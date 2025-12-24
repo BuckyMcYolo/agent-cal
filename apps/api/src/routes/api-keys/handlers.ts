@@ -1,5 +1,5 @@
 import { auth } from "@workspace/auth"
-import { and, count, db, desc, eq, sql } from "@workspace/db"
+import { and, db, desc, eq, sql } from "@workspace/db"
 import { apikey, user } from "@workspace/db/schema/auth"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import type { AppRouteHandler } from "@/lib/types/app-types"
@@ -16,7 +16,7 @@ import type {
  */
 export const listKeys: AppRouteHandler<ListKeysRoute> = async (c) => {
   try {
-    const t0 = Date.now()
+    const _t0 = Date.now()
     const { page = 1, perPage = 10 } = c.req.valid("query")
 
     const org = c.var.organization

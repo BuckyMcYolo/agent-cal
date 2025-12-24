@@ -28,18 +28,18 @@ import {
 } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+// Centralized relations (to avoid circular dependencies)
+import * as relationsSchema from "./schema/_relations"
 // Core auth schema (Better Auth + AgentCal extensions)
 import * as authSchema from "./schema/auth"
+import * as availabilityRuleSchema from "./schema/availability-rule"
+import * as availabilityScheduleSchema from "./schema/availability-schedule"
+import * as bookingSchema from "./schema/booking"
 // New multi-tenant API schema
 import * as businessSchema from "./schema/business"
 import * as businessUserSchema from "./schema/business-user"
 import * as calendarConnectionSchema from "./schema/calendar-connection"
 import * as eventTypeSchema from "./schema/event-type"
-import * as availabilityRuleSchema from "./schema/availability-rule"
-import * as availabilityScheduleSchema from "./schema/availability-schedule"
-import * as bookingSchema from "./schema/booking"
-// Centralized relations (to avoid circular dependencies)
-import * as relationsSchema from "./schema/_relations"
 
 const client = postgres(serverEnv.DATABASE_URL)
 export const db = drizzle({

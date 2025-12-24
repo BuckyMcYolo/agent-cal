@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { authClient } from "@workspace/auth/client"
+import { redirect } from "next/navigation"
 
 /**
  * Gets the current session, optionally refreshing from the database.
