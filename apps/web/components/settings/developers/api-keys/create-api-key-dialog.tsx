@@ -77,7 +77,7 @@ export function CreateApiKeyDialog() {
     handleSubmit,
     getValues,
     setValue,
-    formState: { errors, isSubmitting, touchedFields, isValid },
+    formState: { errors, touchedFields, isValid },
     reset,
   } = useForm<ApiKeyForm>({
     resolver: zodResolver(apiKeySchema),
@@ -90,9 +90,7 @@ export function CreateApiKeyDialog() {
   })
 
   const onCreateKey: SubmitHandler<ApiKeyForm> = async (data) => {
-    createApiKey({
-      name: data.name,
-    })
+    createApiKey({ name: data.name })
   }
 
   const { mutate: createApiKey, isPending: isCreatingKey } = useMutation({
@@ -108,37 +106,46 @@ export function CreateApiKeyDialog() {
         },
       })
       if (res.status === 200) {
-        const data = await res.json()
-        return data
-      } else if (res.status === 401) {
-        const error = await res.json()
-        throw new Error(error.message)
+        return await res.json()
       }
+      const error = await res.json()
+      throw new Error(error.message)
     },
     mutationKey: ["create-api-key"],
     onSuccess: (data) => {
       toast.success("API key created successfully")
-      queryClient.invalidateQueries({
-        queryKey: ["api-keys-user"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["api-keys-org"],
-      })
+      queryClient.invalidateQueries({ queryKey: ["api-keys"] })
       setCreateKeyDialogOpen(false)
       reset()
       setCopyKeyDialogOpen(true)
+
+      // Parse permissions from string if needed
+      let parsedPermissions: ("read" | "write")[] = []
+      if (data?.permissions) {
+        try {
+          const parsed =
+            typeof data.permissions === "string"
+              ? JSON.parse(data.permissions)
+              : data.permissions
+          if (parsed?.all) {
+            parsedPermissions = parsed.all
+          }
+        } catch {
+          // Keep empty array on parse error
+        }
+      }
+
       setApiKey({
         name: data?.name ?? "",
         key: data?.key ?? "",
-        permissions: {
-          all: data?.permissions?.all ?? [],
-        },
+        permissions: { all: parsedPermissions },
       })
     },
     onError: (error) => {
       toast.error(`Error creating API key: ${error.message}`)
     },
   })
+
   return (
     <div className="flex items-center justify-end">
       <AlertDialog open={createKeyDialogOpen}>
@@ -158,9 +165,8 @@ export function CreateApiKeyDialog() {
           <AlertDialogHeader>
             <AlertDialogTitle>Create API Key</AlertDialogTitle>
             <AlertDialogDescription>
-              This API key is tied to your user and can make requests against
-              resources in your organization. If you are removed from the
-              organization, this key will be disabled.
+              This API key is owned by your organization and can make requests
+              against resources in your organization.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <form
@@ -180,7 +186,7 @@ export function CreateApiKeyDialog() {
                 type="text"
                 placeholder="My API Key"
                 className="border p-2 rounded"
-              />{" "}
+              />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -256,7 +262,7 @@ export function CreateApiKeyDialog() {
               >
                 Create
               </AlertDialogAction>
-            </AlertDialogFooter>{" "}
+            </AlertDialogFooter>
           </form>
         </AlertDialogContent>
       </AlertDialog>

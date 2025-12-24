@@ -1,15 +1,10 @@
 import { auth } from "@workspace/auth"
-import serverEnv from "@workspace/env-config/server-env"
+import { serverEnv } from "@workspace/env-config/server"
 import { cors } from "hono/cors"
 import createApp from "@/lib/helpers/app/create-app"
 import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import apiKeysRouter from "./routes/api-keys"
-import availabilityRouter from "./routes/availability"
-import eventTypesRouter from "./routes/event-types"
-import onboardingRouter from "./routes/onboarding"
-import tasksRouter from "./routes/tasks"
-import userPreferencesRouter from "./routes/user"
 
 const app = createApp()
 
@@ -37,15 +32,7 @@ app.use(
 
 configureOpenAPI(app)
 
-const routes = [
-  index,
-  tasksRouter,
-  apiKeysRouter,
-  eventTypesRouter,
-  onboardingRouter,
-  userPreferencesRouter,
-  availabilityRouter,
-] as const
+const routes = [index, apiKeysRouter] as const
 
 routes.forEach((route) => app.route("/", route))
 

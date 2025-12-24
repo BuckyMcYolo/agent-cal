@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { organization, user } from "./auth"
+import { organization, user } from "../auth"
 import { eventType } from "./event-types"
 
 export const exceptionTypeEnum = pgEnum("exception_type", [

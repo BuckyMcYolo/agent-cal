@@ -101,4 +101,5 @@ const serverEnv = new Proxy({} as ServerEnv, {
   },
 })
 
+export { serverEnv }
 export default serverEnv

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
 import { authClient } from "@workspace/auth/client"
-import { apiClient } from "@/lib/utils/api-client"
 
 export const useUser = ({
   disableCache = false,
@@ -14,24 +13,12 @@ export const useUser = ({
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const [sessionRes, preferencesRes] = await Promise.all([
-        authClient.getSession({
-          query: {
-            disableCookieCache: disableCache ?? true,
-          },
-        }),
-        apiClient["my-preferences"].$get(),
-      ])
-      if (preferencesRes.ok) {
-        const preferencesData = await preferencesRes.json()
-        return { ...preferencesData, ...sessionRes.data?.user }
-      } else if (preferencesRes.status === 404) {
-        // Handle 404 gracefully - user preferences not found (e.g., during onboarding)
-        return { ...sessionRes.data?.user }
-      } else {
-        const data = await preferencesRes.json()
-        throw new Error(data.message)
-      }
+      const sessionRes = await authClient.getSession({
+        query: {
+          disableCookieCache: disableCache ?? true,
+        },
+      })
+      return sessionRes.data?.user
     },
   })
 

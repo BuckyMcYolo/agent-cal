@@ -5,7 +5,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
-import { serverEnv } from "@workspace/env-config/index"
+import { serverEnv } from "@workspace/env-config/server"
 import app from "../app"
 import type { AppOpenAPI } from "../lib/types/app-types"
 

@@ -1,4 +1,4 @@
-import { serverEnv } from "@workspace/env-config"
+import { serverEnv } from "@workspace/env-config/server"
 import { pinoLogger } from "hono-pino"
 import pino from "pino"
 import pretty from "pino-pretty"

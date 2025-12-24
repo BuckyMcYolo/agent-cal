@@ -3,10 +3,10 @@ import * as handlers from "./handlers"
 import * as routes from "./routes"
 
 const apiKeysRouter = createRouter()
-  .openapi(routes.createKey, handlers.createTask)
-  .openapi(routes.updateKey, handlers.updateTask)
-  .openapi(routes.listOrgKeys, handlers.listOrgKeys)
-  .openapi(routes.deleteOrgKey, handlers.deleteOrgKey)
-  .openapi(routes.updateOrgKey, handlers.updateOrgApiKey)
+  .openapi(routes.listKeys, handlers.listKeys)
+  .openapi(routes.getKey, handlers.getKey)
+  .openapi(routes.createKey, handlers.createKey)
+  .openapi(routes.updateKey, handlers.updateKey)
+  .openapi(routes.deleteKey, handlers.deleteKey)
 
 export default apiKeysRouter

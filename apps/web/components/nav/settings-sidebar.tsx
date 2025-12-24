@@ -108,7 +108,7 @@ export function SettingsSidebar({
               asChild
               className="flex items-center gap-2 text-sm font-medium bg-accent hover:bg-accent/75"
             >
-              <Link href="/event-types">
+              <Link href="/dashboard">
                 <ArrowBigLeft className="!size-5 group-data-[collapsible=icon]:-translate-x-0.5 transition-all duration-400" />
                 <span>Back</span>
               </Link>

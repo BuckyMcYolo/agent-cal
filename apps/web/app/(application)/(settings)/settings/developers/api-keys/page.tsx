@@ -3,23 +3,22 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query"
-import { authClient } from "@workspace/auth/client"
 import APIKeysTable from "@/components/settings/developers/api-keys/api-keys-table"
+import { apiClient } from "@/lib/utils/api-client"
 
 const Page = async () => {
   const queryClient = new QueryClient()
 
-  queryClient.prefetchQuery({
-    queryKey: ["api-keys-user"],
+  await queryClient.prefetchQuery({
+    queryKey: ["api-keys"],
     queryFn: async () => {
-      const res = await authClient.apiKey.list({
-        fetchOptions: {
-          onError(context) {
-            throw new Error(context.error.message)
-          },
-        },
+      const res = await apiClient["api-keys"].$get({
+        query: { page: "1", perPage: "50" },
       })
-      return res.data
+      if (res.status === 200) {
+        return await res.json()
+      }
+      throw new Error("Failed to fetch API keys")
     },
   })
 

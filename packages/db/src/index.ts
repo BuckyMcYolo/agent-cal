@@ -1,4 +1,4 @@
-import { serverEnv } from "@workspace/env-config"
+import { serverEnv } from "@workspace/env-config/server"
 import {
   and,
   asc,
@@ -28,30 +28,33 @@ import {
 } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
-import * as attendeeSchema from "./schema/attendee"
-import * as betterAuthSchema from "./schema/auth"
-import * as availabilitySchema from "./schema/availability"
+// Core auth schema (Better Auth + AgentCal extensions)
+import * as authSchema from "./schema/auth"
+// New multi-tenant API schema
+import * as businessSchema from "./schema/business"
+import * as businessUserSchema from "./schema/business-user"
+import * as calendarConnectionSchema from "./schema/calendar-connection"
+import * as eventTypeSchema from "./schema/event-type"
+import * as availabilityRuleSchema from "./schema/availability-rule"
+import * as availabilityScheduleSchema from "./schema/availability-schedule"
 import * as bookingSchema from "./schema/booking"
-import * as bookingHostSchema from "./schema/booking-host"
-import * as eventHostSchema from "./schema/event-host"
-import * as eventTypeSchema from "./schema/event-types"
-import * as taskSchema from "./schema/tasks"
-import * as userPreferencesSchema from "./schema/user-preferences"
+// Centralized relations (to avoid circular dependencies)
+import * as relationsSchema from "./schema/_relations"
 
 const client = postgres(serverEnv.DATABASE_URL)
 export const db = drizzle({
   client,
   casing: "snake_case",
   schema: {
-    ...betterAuthSchema,
-    ...taskSchema,
-    ...bookingSchema,
-    ...bookingHostSchema,
+    ...authSchema,
+    ...businessSchema,
+    ...businessUserSchema,
+    ...calendarConnectionSchema,
     ...eventTypeSchema,
-    ...eventHostSchema,
-    ...availabilitySchema,
-    ...attendeeSchema,
-    ...userPreferencesSchema,
+    ...availabilityScheduleSchema,
+    ...availabilityRuleSchema,
+    ...bookingSchema,
+    ...relationsSchema,
   },
 })
 

@@ -1,4 +1,5 @@
-import { db } from "@workspace/db"
+import { db, eq } from "@workspace/db"
+import { user } from "@workspace/db/schema/auth"
 import { serverEnv } from "@workspace/env-config"
 import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
@@ -43,8 +44,61 @@ const options = {
   databaseHooks: {
     user: {
       create: {
-        after: async (user) => {
-          console.log("User created", user)
+        after: async (userData) => {
+          console.log("[Better Auth] User created", userData.id)
+        },
+      },
+    },
+    session: {
+      // Set activeOrganizationId when a session is created
+      create: {
+        before: async (session) => {
+          // Get the user with their member records
+          const userData = await db.query.user.findFirst({
+            where: eq(user.id, session.userId),
+            with: {
+              members: true,
+            },
+          })
+
+          // If user has no memberships, leave activeOrganizationId null
+          if (!userData?.members || userData.members.length === 0) {
+            console.log(
+              "[Better Auth] User has no organization memberships",
+              session.userId
+            )
+            return {
+              data: {
+                ...session,
+                activeOrganizationId: null,
+              },
+            }
+          }
+
+          // Set the first organization as the active one
+          const firstMember = userData.members[0]
+          if (!firstMember) {
+            return {
+              data: {
+                ...session,
+                activeOrganizationId: null,
+              },
+            }
+          }
+
+          const organizationId = firstMember.organizationId
+
+          console.log("[Better Auth] Setting active organization", {
+            userId: session.userId,
+            organizationId,
+          })
+
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: organizationId,
+            },
+          }
         },
       },
     },
@@ -90,48 +144,9 @@ const options = {
 
 export const auth = betterAuth({
   ...options,
-  plugins: [
-    ...(options.plugins ?? []),
-    // customSession(async ({ user, session }) => {
-    //   const member = await db.query.member.findFirst({
-    //     where: (member, { eq }) => eq(member.userId, user.id),
-    //     with: {
-    //       organization: true,
-    //     },
-    //   })
-
-    //   // now both user and session will infer the fields added by plugins and your custom fields
-    //   return {
-    //     user: {
-    //       ...user,
-    //       organization: member?.organization,
-    //       member: {
-    //         id: member?.id,
-    //         role: member?.role,
-    //         userId: member?.userId,
-    //       },
-    //     },
-    //     session,
-    //   }
-    // }, options), // pass options here
-  ],
+  plugins: [...(options.plugins ?? [])],
 })
 
 export type UserSession = typeof auth.$Infer.Session
 export type Session = typeof auth.$Infer.Session.session
 export type User = typeof auth.$Infer.Session.user
-// export interface UserWithOrganization extends User {
-//   organization?: {
-//     id: string
-//     name: string
-//     createdAt: Date
-//     metadata: string | null
-//     slug: string | null
-//     logo: string | null
-//   }
-//   member: {
-//     id?: string
-//     role?: string
-//     userId?: string
-//   }
-// }

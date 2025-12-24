@@ -1,101 +1,78 @@
-import { relations } from "drizzle-orm"
 import {
   index,
-  json,
+  jsonb,
   pgEnum,
   pgTable,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core"
-import { attendee } from "./attendee"
-import { organization, user } from "./auth"
-import { bookingHost } from "./booking-host"
-import { eventType } from "./event-types"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { business } from "./business"
+import { businessUser } from "./business-user"
+import { eventType } from "./event-type"
 
 export const bookingStatusEnum = pgEnum("booking_status", [
-  "SCHEDULED",
-  "CANCELLED",
-  "COMPLETED",
-  "RESCHEDULED",
-  "NO_SHOW",
+  "pending",
+  "confirmed",
+  "cancelled",
+  "completed",
+  "no_show",
 ])
 
-// Now let's expand our booking table to support the event types
 export const booking = pgTable(
   "booking",
   {
-    id: uuid().primaryKey().defaultRandom(),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
+    id: uuid("id").primaryKey().defaultRandom(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
-
-    // Scheduling information
-    title: text().notNull(),
-    description: text(),
-    startTime: timestamp().notNull(),
-    endTime: timestamp().notNull(),
-    timezone: text().notNull(),
-
-    // Relations
-
-    // the user who created the inital eventType and therefore is the defaut owner of the booking and can edit it and delete/remove other hosts & guests
-    ownerId: text()
+    businessId: uuid("business_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    organizationId: text().references(() => organization.id, {
-      onDelete: "cascade",
-    }),
-    eventTypeId: uuid().references(() => eventType.id, {
+      .references(() => business.id, { onDelete: "cascade" }),
+    businessUserId: uuid("business_user_id")
+      .notNull()
+      .references(() => businessUser.id, { onDelete: "cascade" }),
+    eventTypeId: uuid("event_type_id").references(() => eventType.id, {
       onDelete: "set null",
     }),
-
-    status: bookingStatusEnum("status").notNull().default("SCHEDULED"),
-    cancellationReason: text(),
-
-    // AI agent information
-    // handledByAgent: boolean().default(false),
-    // agentId: uuid(),
-    // agentType: text(), // type of agent (email, phone, chat, etc.)
-    // agentNotes: text(),
-
-    // Location information
-    //--------------FUTURE REFERENCE-------------------------
-    //   locationId: uuid(location_id"),
-    // This will be a table to store structured location information depending on type (Zoom/Google links, meeting room details, phone numbers, etc.)
-
-    // Custom data from the booking form
-    //--------------FUTURE REFERENCE-------------------------
-    // formResponses: uuid()
-    // This will be a table to store the form responses from the booking form
-
-    // Metadata for extensibility
-    metadata: json(),
+    title: text("title").notNull(),
+    description: text("description"),
+    startTime: timestamp("start_time").notNull(),
+    endTime: timestamp("end_time").notNull(),
+    timezone: text("timezone").notNull(),
+    status: bookingStatusEnum("status").notNull().default("pending"),
+    calendarEventId: text("calendar_event_id"), // External calendar event ID
+    // Attendee info (flattened - single attendee per booking for MVP)
+    attendeeEmail: text("attendee_email").notNull(),
+    attendeeName: text("attendee_name").notNull(),
+    attendeeTimezone: text("attendee_timezone"),
+    cancellationReason: text("cancellation_reason"),
+    metadata: jsonb("metadata"),
   },
-  (t) => [
-    index("booking_owner_idx").on(t.ownerId),
-    index("booking_event_type_idx").on(t.eventTypeId),
-    index("booking_organization_idx").on(t.organizationId),
-    index("booking_start_time_idx").on(t.startTime),
-    index("booking_end_time_idx").on(t.endTime),
+  (table) => [
+    index("booking_business_idx").on(table.businessId),
+    index("booking_user_idx").on(table.businessUserId),
+    index("booking_event_type_idx").on(table.eventTypeId),
+    index("booking_start_time_idx").on(table.startTime),
+    index("booking_end_time_idx").on(table.endTime),
+    index("booking_status_idx").on(table.status),
+    index("booking_calendar_event_idx").on(table.calendarEventId),
   ]
 )
 
-export const bookingRelations = relations(booking, ({ one, many }) => ({
-  owner: one(user, {
-    fields: [booking.ownerId],
-    references: [user.id],
-  }),
-  eventType: one(eventType, {
-    fields: [booking.eventTypeId],
-    references: [eventType.id],
-  }),
-  organization: one(organization, {
-    fields: [booking.organizationId],
-    references: [organization.id],
-  }),
-  attendees: many(attendee),
-  bookingHosts: many(bookingHost),
-}))
+// Relations are defined in a separate relations file to avoid circular dependencies
+// See: packages/db/src/schema/_relations.ts
+
+export const selectBookingSchema = createSelectSchema(booking)
+export const insertBookingSchema = createInsertSchema(booking).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+export const updateBookingSchema = insertBookingSchema.partial()
+
+export type Booking = typeof booking.$inferSelect
+export type NewBooking = typeof booking.$inferInsert

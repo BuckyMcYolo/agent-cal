@@ -1,3 +1,5 @@
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
@@ -21,7 +23,6 @@ import { useEffect, useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { useUser } from "@/hooks/use-user"
 import { apiClient } from "@/lib/utils/api-client"
 
 export default function UpdateApiKeyDialog({
@@ -35,8 +36,6 @@ export default function UpdateApiKeyDialog({
   keyPermissions?: string
   keyEnabled: boolean
 }) {
-  const { user, isLoading } = useUser()
-
   const [keyToEdit, setKeyToEdit] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
@@ -86,52 +85,36 @@ export default function UpdateApiKeyDialog({
         enabled: keyEnabled,
       })
     }
-  }, [keyToEdit])
+  }, [keyToEdit, keyId, keyName, keyEnabled, parsedPermissions, reset])
 
-  const onCreateKey: SubmitHandler<ApiKeyForm> = async (data) => {
-    updateApiKey({
-      name: data.name,
-    })
+  const onSubmit: SubmitHandler<ApiKeyForm> = async (data) => {
+    updateApiKey({ name: data.name })
   }
 
   const { mutate: updateApiKey, isPending: isUpdatingKey } = useMutation({
     mutationFn: async ({ name }: { name: string }) => {
       const permissions: ("read" | "write")[] =
         getValues("permissions") === "all" ? ["read", "write"] : ["read"]
-      const body = {
-        param: {
-          id: keyId,
-        },
+
+      const res = await apiClient["api-keys"][":id"].$patch({
+        param: { id: keyId },
         json: {
           name,
-          permissions: permissions,
+          permissions,
           enabled: getValues("enabled"),
         },
-      }
+      })
 
-      const updateFn =
-        user?.role === "admin"
-          ? await apiClient["api-keys"].org[":id"].$patch(body)
-          : await apiClient["api-keys"][":id"].$patch(body)
-
-      const res = updateFn
       if (res.status === 200) {
-        const data = await res.json()
-        return data
-      } else {
-        const error = await res.json()
-        throw new Error(error.message)
+        return await res.json()
       }
+      const error = await res.json()
+      throw new Error(error.message)
     },
     mutationKey: ["update-api-key"],
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("API key updated successfully")
-      queryClient.invalidateQueries({
-        queryKey: ["api-keys-user"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["api-keys-org"],
-      })
+      queryClient.invalidateQueries({ queryKey: ["api-keys"] })
       setKeyToEdit(null)
       reset()
     },
@@ -147,9 +130,7 @@ export default function UpdateApiKeyDialog({
           size="icon"
           variant="ghost"
           className="size-7"
-          onClick={() => {
-            setKeyToEdit(keyId)
-          }}
+          onClick={() => setKeyToEdit(keyId)}
         >
           <SquarePen className="size-4" />
         </Button>
@@ -161,17 +142,12 @@ export default function UpdateApiKeyDialog({
             Edit the API key details and permissions.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={handleSubmit(onCreateKey)}
-        >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
             <Label htmlFor="api-key-name">Name</Label>
             <Input
               defaultValue={keyName}
-              {...register("name", {
-                required: true,
-              })}
+              {...register("name", { required: true })}
               error={Boolean(errors?.name?.message && touchedFields.name)}
               helperText={
                 errors?.name?.message && touchedFields.name
@@ -181,11 +157,10 @@ export default function UpdateApiKeyDialog({
               type="text"
               placeholder="My API Key"
               className="border p-2 rounded"
-            />{" "}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="api-key-enabled">Enabled</Label>
-
             <Switch
               id="api-key-enabled"
               {...register("enabled")}
@@ -195,7 +170,7 @@ export default function UpdateApiKeyDialog({
               }}
             />
             <p className="text-sm text-muted-foreground">
-              {keyEnabled
+              {getValues("enabled")
                 ? "This API key is enabled and can be used."
                 : "This API key is disabled and cannot be used."}
             </p>
@@ -232,7 +207,7 @@ export default function UpdateApiKeyDialog({
             >
               Save changes
             </AlertDialogAction>
-          </AlertDialogFooter>{" "}
+          </AlertDialogFooter>
         </form>
       </AlertDialogContent>
     </AlertDialog>

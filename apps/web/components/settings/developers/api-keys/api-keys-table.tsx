@@ -1,7 +1,6 @@
 "use client"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { authClient } from "@workspace/auth/client"
 import { Switch } from "@workspace/ui/components/switch"
 import {
   Table,
@@ -17,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { DateTime } from "luxon"
+import { apiClient } from "@/lib/utils/api-client"
 import { CreateApiKeyDialog } from "./create-api-key-dialog"
 import DeleteApiKeyDialog from "./delete-api-key-dialog"
 import UpdateApiKeyDialog from "./update-api-key-dialog"
@@ -27,27 +27,40 @@ export default function APIKeysTable() {
     isLoading,
     error,
   } = useSuspenseQuery({
-    queryKey: ["api-keys-user"],
+    queryKey: ["api-keys"],
     queryFn: async () => {
-      const res = await authClient.apiKey.list({
-        fetchOptions: {
-          onError(context) {
-            throw new Error(context.error.message)
-          },
-        },
+      const res = await apiClient["api-keys"].$get({
+        query: { page: "1", perPage: "50" },
       })
-      return res.data
+      if (res.status === 200) {
+        const data = await res.json()
+        return {
+          ...data,
+          data: data.data?.map((key) => ({
+            ...key,
+            createdAt: new Date(key.createdAt),
+            updatedAt: new Date(key.updatedAt),
+            lastRequest: key.lastRequest ? new Date(key.lastRequest) : null,
+            expiresAt: key.expiresAt ? new Date(key.expiresAt) : null,
+          })),
+        }
+      }
+      const errorData = await res.json()
+      throw new Error(errorData.message)
     },
   })
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">API Keys</h1>
-      <p className="text-sm text-muted-foreground">
-        Manage your API keys and permissions.
-      </p>
+      <header className="pb-2">
+        <h1 className="text-2xl font-bold">API Keys</h1>
+        <p className="text-sm text-muted-foreground">
+          Manage API keys for your organization.
+        </p>
+      </header>
 
       <CreateApiKeyDialog />
+
       <Table>
         <TableHeader className="bg-muted/50 rounded-xl">
           <TableRow>
@@ -55,31 +68,32 @@ export default function APIKeysTable() {
             <TableHead>Created</TableHead>
             <TableHead>Last Used</TableHead>
             <TableHead>Expires</TableHead>
+            <TableHead>Created By</TableHead>
             <TableHead className="w-[100px]">Permissions</TableHead>
-            <TableHead className="text-right"></TableHead>
+            <TableHead className="text-right" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
+              <TableCell colSpan={7} className="text-center">
                 Loading...
               </TableCell>
             </TableRow>
           ) : error ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
+              <TableCell colSpan={7} className="text-center">
                 {error.message}
               </TableCell>
             </TableRow>
-          ) : apiKeys?.length === 0 ? (
+          ) : apiKeys?.meta.totalItems === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center p-4">
+              <TableCell colSpan={7} className="text-center p-4">
                 No API keys found.
               </TableCell>
             </TableRow>
           ) : (
-            apiKeys
+            apiKeys?.data
               ?.sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
               .map((key) => (
                 <TableRow key={key.id} className="hover:bg-transparent">
@@ -97,6 +111,9 @@ export default function APIKeysTable() {
                       ? "Never"
                       : DateTime.fromJSDate(key.expiresAt).toFormat("ff")}
                   </TableCell>
+                  <TableCell>
+                    <span>{key.user?.name ?? "—"}</span>
+                  </TableCell>
                   <TableCell className="w-[100px] capitalize">
                     {key.permissions
                       ? JSON.parse(key.permissions)?.all?.join(", ")
@@ -108,7 +125,7 @@ export default function APIKeysTable() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span>
-                            <Switch checked={key.enabled} disabled />
+                            <Switch checked={key.enabled ?? true} disabled />
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -117,14 +134,12 @@ export default function APIKeysTable() {
                           </p>
                         </TooltipContent>
                       </Tooltip>
-                      {/* Update API Key */}
                       <UpdateApiKeyDialog
                         keyId={key.id}
                         keyName={key.name ?? "Untitled"}
-                        keyPermissions={key.permissions}
-                        keyEnabled={key.enabled}
+                        keyPermissions={key.permissions ?? undefined}
+                        keyEnabled={key.enabled ?? true}
                       />
-                      {/* Delete API Key */}
                       <DeleteApiKeyDialog keyId={key.id} />
                     </div>
                   </TableCell>

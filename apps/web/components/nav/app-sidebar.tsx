@@ -10,14 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
-import {
-  Brain,
-  Calendar,
-  Clock,
-  LinkIcon,
-  Plug,
-  SendToBack,
-} from "lucide-react"
+import { LayoutDashboard, Key } from "lucide-react"
 import Image from "next/image"
 import type * as React from "react"
 import { NavMain } from "@/components/nav/nav-main"
@@ -28,40 +21,15 @@ import LogoImage from "../../public/favicon.svg"
 const data = {
   navMain: [
     {
-      title: "Event Types",
-      url: "/event-types",
-      icon: <LinkIcon size={18} />,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: <LayoutDashboard size={18} />,
     },
     {
-      title: "Availability",
-      url: "/availability",
-      icon: <Clock size={18} />,
+      title: "API Keys",
+      url: "/settings/developers/api-keys",
+      icon: <Key size={18} />,
     },
-    {
-      title: "Bookings",
-      url: "/bookings",
-      icon: <Calendar size={18} />,
-    },
-    {
-      title: "Connectors",
-      url: "/connectors",
-      icon: <Plug size={18} />,
-    },
-    {
-      title: "Agent Canvas",
-      url: "/agent-canvas",
-      icon: <SendToBack size={18} />,
-    },
-    {
-      title: "Knowledge Base",
-      url: "/knowledge-base",
-      icon: <Brain size={18} />,
-    },
-    // {
-    //   title: "Monitoring",
-    //   url: "/monitoring",
-    //   icon: <ChartColumn size={18} />,
-    // },
   ],
 
   navSecondary: [
