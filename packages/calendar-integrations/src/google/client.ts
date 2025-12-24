@@ -105,11 +105,18 @@ export class GoogleCalendarClient implements ICalendarProvider {
     params: RefreshTokenParams
   ): Promise<OAuthCredentials> {
     try {
-      this.oauth2Client.setCredentials({
+      // Create a new local client to avoid race conditions with concurrent refresh calls
+      const client = new google.auth.OAuth2(
+        this.config.clientId,
+        this.config.clientSecret,
+        this.config.redirectUri
+      )
+
+      client.setCredentials({
         refresh_token: params.refreshToken,
       })
 
-      const { credentials } = await this.oauth2Client.refreshAccessToken()
+      const { credentials } = await client.refreshAccessToken()
 
       if (!credentials.access_token) {
         throw new CalendarErrorClass(
@@ -118,8 +125,8 @@ export class GoogleCalendarClient implements ICalendarProvider {
         )
       }
 
-      // Get user email (cached in most cases)
-      const oauth2 = google.oauth2({ version: "v2", auth: this.oauth2Client })
+      // Get user email using the local client
+      const oauth2 = google.oauth2({ version: "v2", auth: client })
       const userInfo = await oauth2.userinfo.get()
 
       return {
@@ -184,10 +191,12 @@ export class GoogleCalendarClient implements ICalendarProvider {
       const busyBlocks =
         response.data.calendars?.[params.calendarId]?.busy || []
 
-      return busyBlocks.map((block) => ({
-        start: new Date(block.start || ""),
-        end: new Date(block.end || ""),
-      }))
+      return busyBlocks
+        .filter((block) => block.start && block.end)
+        .map((block) => ({
+          start: new Date(block.start!),
+          end: new Date(block.end!),
+        }))
     } catch (error) {
       throw this.handleError(error, "Failed to get busy times")
     }
@@ -249,6 +258,14 @@ export class GoogleCalendarClient implements ICalendarProvider {
       if (params.description !== undefined)
         updateData.description = params.description
       if (params.location !== undefined) updateData.location = params.location
+
+      // Validate timezone is provided when updating times
+      if ((params.startTime || params.endTime) && !params.timezone) {
+        throw new CalendarErrorClass(
+          "timezone is required when updating startTime or endTime",
+          "PROVIDER_ERROR"
+        )
+      }
 
       if (params.startTime && params.timezone) {
         updateData.start = {
@@ -359,6 +376,17 @@ export class GoogleCalendarClient implements ICalendarProvider {
     event: calendar_v3.Schema$Event,
     calendarId: string
   ): CalendarEvent {
+    // Validate that event has required date/time fields
+    const startDateTime = event.start?.dateTime || event.start?.date
+    const endDateTime = event.end?.dateTime || event.end?.date
+
+    if (!startDateTime || !endDateTime) {
+      throw new CalendarErrorClass(
+        `Event ${event.id} is missing required start or end time`,
+        "PROVIDER_ERROR"
+      )
+    }
+
     const attendees: CalendarEventAttendee[] = (event.attendees || []).map(
       (attendee) => ({
         email: attendee.email || "",
@@ -377,8 +405,8 @@ export class GoogleCalendarClient implements ICalendarProvider {
       calendarId,
       title: event.summary || "",
       description: event.description || undefined,
-      startTime: new Date(event.start?.dateTime || event.start?.date || ""),
-      endTime: new Date(event.end?.dateTime || event.end?.date || ""),
+      startTime: new Date(startDateTime),
+      endTime: new Date(endDateTime),
       timezone: event.start?.timeZone || "UTC",
       attendees,
       location: event.location || undefined,
