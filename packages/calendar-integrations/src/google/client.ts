@@ -1,4 +1,4 @@
-import { google, type calendar_v3 } from "googleapis"
+import { type calendar_v3, google } from "googleapis"
 import type {
   BusyTimeBlock,
   CalendarError,
@@ -89,7 +89,9 @@ export class GoogleCalendarClient implements ICalendarProvider {
       return {
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token || undefined,
-        expiresAt: tokens.expiry_date ? new Date(tokens.expiry_date) : undefined,
+        expiresAt: tokens.expiry_date
+          ? new Date(tokens.expiry_date)
+          : undefined,
         email: userInfo.data.email || "",
         providerAccountId: userInfo.data.id || undefined,
       }
@@ -192,10 +194,13 @@ export class GoogleCalendarClient implements ICalendarProvider {
         response.data.calendars?.[params.calendarId]?.busy || []
 
       return busyBlocks
-        .filter((block) => block.start && block.end)
+        .filter(
+          (block): block is { start: string; end: string } =>
+            Boolean(block.start) && Boolean(block.end)
+        )
         .map((block) => ({
-          start: new Date(block.start!),
-          end: new Date(block.end!),
+          start: new Date(block.start),
+          end: new Date(block.end),
         }))
     } catch (error) {
       throw this.handleError(error, "Failed to get busy times")
@@ -411,7 +416,11 @@ export class GoogleCalendarClient implements ICalendarProvider {
       attendees,
       location: event.location || undefined,
       meetingUrl: event.hangoutLink || undefined,
-      status: event.status as "confirmed" | "tentative" | "cancelled" | undefined,
+      status: event.status as
+        | "confirmed"
+        | "tentative"
+        | "cancelled"
+        | undefined,
       iCalUID: event.iCalUID || undefined,
     }
   }
@@ -457,11 +466,7 @@ export class GoogleCalendarClient implements ICalendarProvider {
       }
 
       if (code === 409) {
-        return new CalendarErrorClass(
-          `${message}: Conflict`,
-          "CONFLICT",
-          error
-        )
+        return new CalendarErrorClass(`${message}: Conflict`, "CONFLICT", error)
       }
 
       if (code === 429) {

@@ -35,6 +35,7 @@ import * as authSchema from "./schema/auth"
 import * as availabilityRuleSchema from "./schema/availability-rule"
 import * as availabilityScheduleSchema from "./schema/availability-schedule"
 import * as bookingSchema from "./schema/booking"
+import * as bookingEventSchema from "./schema/booking-event"
 // New multi-tenant API schema
 import * as businessSchema from "./schema/business"
 import * as businessUserSchema from "./schema/business-user"
@@ -54,6 +55,7 @@ export const db = drizzle({
     ...availabilityScheduleSchema,
     ...availabilityRuleSchema,
     ...bookingSchema,
+    ...bookingEventSchema,
     ...relationsSchema,
   },
 })

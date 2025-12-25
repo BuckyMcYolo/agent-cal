@@ -4,6 +4,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
@@ -23,11 +24,13 @@ export const business = pgTable(
       .references(() => organization.id, { onDelete: "cascade" }),
     referenceCustomerId: text("reference_customer_id"), // The org's internal ID for this business/customer
     name: text("name").notNull(),
+    slug: text("slug").notNull(), // URL-friendly identifier for public booking pages
     metadata: jsonb("metadata"),
   },
   (table) => [
     index("business_org_idx").on(table.organizationId),
     index("business_reference_customer_id_idx").on(table.referenceCustomerId),
+    unique("business_slug_unique").on(table.slug),
   ]
 )
 

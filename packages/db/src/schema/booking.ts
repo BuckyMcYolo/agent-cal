@@ -20,6 +20,15 @@ export const bookingStatusEnum = pgEnum("booking_status", [
   "no_show",
 ])
 
+export const locationTypeEnum = pgEnum("location_type", [
+  "google_meet",
+  "microsoft_teams",
+  "zoom",
+  "phone",
+  "in_person",
+  "custom", // For other video conferencing or custom locations
+])
+
 export const booking = pgTable(
   "booking",
   {
@@ -45,6 +54,13 @@ export const booking = pgTable(
     timezone: text("timezone").notNull(),
     status: bookingStatusEnum("status").notNull().default("pending"),
     calendarEventId: text("calendar_event_id"), // External calendar event ID
+    // Meeting location info
+    locationType: locationTypeEnum("location_type"), // For displaying provider icons
+    location: text("location"), // Physical address or custom location details
+    meetingUrl: text("meeting_url"), // Video call URL if applicable
+    // Assignment tracking (for debugging "why did Sarah get this booking?")
+    assignedVia: text("assigned_via"), // "round_robin", "least_busy", "manual", "event_type_locked"
+    assignmentMetadata: jsonb("assignment_metadata"), // { availableUserIds: [...], reason: "..." }
     // Attendee info (flattened - single attendee per booking for MVP)
     attendeeEmail: text("attendee_email").notNull(),
     attendeeName: text("attendee_name").notNull(),
