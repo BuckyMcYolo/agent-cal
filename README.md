@@ -10,11 +10,14 @@ APIs, SDKs, and embeddable components for SaaS companies building AI-powered sch
 
 AgentCal provides the backend infrastructure that AI agents need to schedule appointments. Instead of building calendar integrations, availability logic, and booking management from scratch, use our APIs and SDKs to add scheduling to your AI product in minutes.
 
-**Built for:**
-- AI phone agent platforms (Vapi, Bland, Retell)
-- AI chatbot/assistant builders
-- Vertical SaaS adding AI scheduling
-- Any product with AI agents that need to book appointments
+**Built for any B2B product that books appointments** (optimized for AI agents):
+
+AgentCal operates in a **B2B2B model**:
+- **Your SaaS platform** (our customer) integrates our API
+- **Your customers** (businesses) connect their calendars and configure availability
+- **Their end users** book appointments through your platform
+
+Whether you're building AI assistants, scheduling tools, or vertical SaaS, AgentCal handles the complex calendar infrastructure so you can focus on your product.
 
 ---
 
