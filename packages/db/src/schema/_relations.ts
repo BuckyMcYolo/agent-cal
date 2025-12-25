@@ -15,6 +15,7 @@ import {
 import { availabilityRule } from "./availability-rule"
 import { availabilitySchedule } from "./availability-schedule"
 import { booking } from "./booking"
+import { bookingEvent } from "./booking-event"
 import { business } from "./business"
 import { businessUser } from "./business-user"
 import { calendarConnection } from "./calendar-connection"
@@ -121,6 +122,7 @@ export const businessUserRelations = relations(
     }),
     calendarConnections: many(calendarConnection),
     availabilitySchedules: many(availabilitySchedule),
+    eventTypes: many(eventType),
     bookings: many(booking),
   })
 )
@@ -130,6 +132,10 @@ export const eventTypeRelations = relations(eventType, ({ one, many }) => ({
   business: one(business, {
     fields: [eventType.businessId],
     references: [business.id],
+  }),
+  businessUser: one(businessUser, {
+    fields: [eventType.businessUserId],
+    references: [businessUser.id],
   }),
   availabilitySchedule: one(availabilitySchedule, {
     fields: [eventType.availabilityScheduleId],
@@ -174,7 +180,7 @@ export const availabilityRuleRelations = relations(
 )
 
 // Booking relations
-export const bookingRelations = relations(booking, ({ one }) => ({
+export const bookingRelations = relations(booking, ({ one, many }) => ({
   business: one(business, {
     fields: [booking.businessId],
     references: [business.id],
@@ -186,5 +192,14 @@ export const bookingRelations = relations(booking, ({ one }) => ({
   eventType: one(eventType, {
     fields: [booking.eventTypeId],
     references: [eventType.id],
+  }),
+  events: many(bookingEvent),
+}))
+
+// BookingEvent relations (audit log)
+export const bookingEventRelations = relations(bookingEvent, ({ one }) => ({
+  booking: one(booking, {
+    fields: [bookingEvent.bookingId],
+    references: [booking.id],
   }),
 }))

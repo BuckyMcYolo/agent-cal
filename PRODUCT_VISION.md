@@ -60,7 +60,7 @@ We are **two layers removed** from the end user. Our direct customers are develo
 │   │    API Key: sk_live_xxxxx                                       │  │
 │   │    Publishable Key: pk_live_xxxxx                               │  │
 │   │                                                                 │  │
-│   │    Connected Accounts (their customers)                         │  │
+│   │    Businesses (their customers)                                 │  │
 │   │    ┌─────────────────────────────────────────────────────────┐ │  │
 │   │    │  Acme Insurance (acct_456)                              │ │  │
 │   │    │    └── Google Calendar OAuth token                      │ │  │
@@ -101,6 +101,157 @@ Insurance SaaS Dashboard
 └─────────────────────────────────────────────────────┘
 ```
 
+### Core Booking Model
+
+**The bookable entity is the BUSINESS, but bookings are fulfilled by USERS.**
+
+This model gives developers maximum flexibility: they can book with a business (system auto-assigns a user) or book with a specific user when needed.
+
+#### Data Hierarchy
+
+```
+organization (SaaS company - your direct customer)
+  └── business (THE BOOKABLE ENTITY - their customer)
+      ├── slug (globally unique for URLs)
+      ├── eventTypes (belong to business, not users)
+      │   ├── assignmentStrategy (round_robin, least_busy, random, manual)
+      │   ├── eligibleUserIds (optional - null = all users can fulfill)
+      │   └── businessUserId (optional - if set, locks to specific user)
+      │
+      └── businessUsers (the people who fulfill bookings)
+          ├── slug (unique per business)
+          ├── calendarConnection (Google, Microsoft)
+          ├── availabilitySchedule → availabilityRules
+          └── bookings (assigned to them at booking time)
+```
+
+#### Two Booking Modes
+
+| Mode | When to Use | URL | API Call |
+|------|-------------|-----|----------|
+| **Business Booking** | Developer doesn't know/care which user | `/acme-insurance/consultation` | `POST /businesses/:id/bookings` (no user_id) |
+| **User Booking** | Developer wants a specific person | `/acme-insurance/john/consultation` | `POST /businesses/:id/bookings` (with user_id) |
+
+#### Why This Model?
+
+1. **Optimal DX for AI agents**: Developer just says "book at Acme Insurance" - no need to know staff
+2. **Flexibility**: Can still book with specific user when needed (follow-ups, VIPs)
+3. **Scales**: Works for 1-person businesses and 100-person teams
+4. **Clean URLs**: `agentcal.ai/acme-insurance/consultation` for any-user, `agentcal.ai/acme-insurance/john/consultation` for specific user
+
+### Booking Flow
+
+AgentCal supports two booking modes to handle different use cases:
+
+#### Mode 1: "Book with Anyone" (Default for AI Agents)
+
+When an event type has no assigned user (`businessUserId = NULL`), any available staff member can fulfill the booking. This is the primary mode for AI agent integrations.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  AI Agent Booking Flow                                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  1. Customer: "Book me an appointment with Acme Insurance"              │
+│                          │                                              │
+│                          ▼                                              │
+│  2. AI Agent calls: GET /v1/businesses/:id/availability                 │
+│                     ?event_type_id=consultation                         │
+│                     &start_date=2025-01-15                              │
+│                     &end_date=2025-01-22                                │
+│                          │                                              │
+│                          ▼                                              │
+│  3. AgentCal aggregates availability across ALL users:                  │
+│     ┌─────────────────────────────────────────────────────────┐        │
+│     │  John's Calendar    Sarah's Calendar    Mike's Calendar │        │
+│     │  ─────────────────  ─────────────────  ──────────────── │        │
+│     │  Mon 9-10 ✓         Mon 9-10 ✗         Mon 9-10 ✓       │        │
+│     │  Mon 10-11 ✗        Mon 10-11 ✓        Mon 10-11 ✓      │        │
+│     │  Mon 11-12 ✓        Mon 11-12 ✓        Mon 11-12 ✗      │        │
+│     └─────────────────────────────────────────────────────────┘        │
+│                          │                                              │
+│                          ▼                                              │
+│  4. Returns merged slots: [Mon 9-10, Mon 10-11, Mon 11-12]              │
+│     (at least one user available for each slot)                         │
+│                          │                                              │
+│                          ▼                                              │
+│  5. AI Agent books: POST /v1/businesses/:id/bookings                    │
+│                     { start_time: "Mon 10-11", event_type_id: ... }     │
+│                          │                                              │
+│                          ▼                                              │
+│  6. AgentCal assigns to available user (round-robin/least-busy):        │
+│     → Sarah gets the booking (John busy, Mike or Sarah available)       │
+│     → Calendar event created on Sarah's Google Calendar                 │
+│     → Webhook fired: booking.created                                    │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**URL Structure:** `agentcal.ai/acme-insurance/consultation`
+
+**Use Cases:**
+- AI agents booking on behalf of customers
+- "Next available" appointment scheduling
+- Call centers, support teams, sales teams
+
+#### Mode 2: "Book with Specific User"
+
+When an event type has an assigned user (`businessUserId = set`), only that user's availability is considered. Used when the customer specifically wants a particular person.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Specific User Booking Flow                                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  1. Customer: "Book me an appointment with John at Acme Insurance"      │
+│                          │                                              │
+│                          ▼                                              │
+│  2. AI Agent calls: GET /v1/businesses/:id/availability                 │
+│                     ?user_id=john-123                                   │
+│                     &event_type_id=consultation                         │
+│                          │                                              │
+│                          ▼                                              │
+│  3. AgentCal checks ONLY John's calendar                                │
+│                          │                                              │
+│                          ▼                                              │
+│  4. Returns John's available slots only                                 │
+│                          │                                              │
+│                          ▼                                              │
+│  5. AI Agent books with user_id specified                               │
+│     → Booking assigned to John                                          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**URL Structure:** `agentcal.ai/acme-insurance/john/consultation`
+
+**Use Cases:**
+- Follow-up appointments with same person
+- VIP customers with dedicated account managers
+- Specialists with unique skills
+
+#### Assignment Strategies (for "Book with Anyone")
+
+When multiple users are available for a slot, AgentCal uses configurable assignment strategies:
+
+| Strategy | Description |
+|----------|-------------|
+| `round_robin` | Rotate evenly across all available users |
+| `least_busy` | Assign to user with fewest bookings this week |
+| `random` | Random selection among available users |
+| `priority` | Assign based on user priority/seniority |
+
+```typescript
+// Event type configuration
+{
+  "slug": "consultation",
+  "title": "30-Minute Consultation",
+  "businessUserId": null,  // Any user can fulfill
+  "assignmentStrategy": "round_robin",
+  "eligibleUserIds": ["john-123", "sarah-456"]  // Optional: limit which users
+}
+```
+
 ---
 
 ## Product Surface
@@ -110,49 +261,51 @@ Insurance SaaS Dashboard
 The primary interface for AI agents to interact with scheduling.
 
 ```
-# Accounts (Connected Accounts = SaaS's customers)
-POST   /v1/accounts                    # Create connected account
-GET    /v1/accounts                    # List connected accounts
-GET    /v1/accounts/:id                # Get account details
-DELETE /v1/accounts/:id                # Delete account
+# Businesses (SaaS's customers)
+POST   /v1/businesses                    # Create business
+GET    /v1/businesses                    # List businesses
+GET    /v1/businesses/:id                # Get business details
+PATCH  /v1/businesses/:id                # Update business
+DELETE /v1/businesses/:id                # Delete business
 
-# OAuth / Calendar Connections
-GET    /v1/accounts/:id/oauth/google   # Get Google OAuth URL
-GET    /v1/accounts/:id/oauth/microsoft # Get Microsoft OAuth URL
-GET    /v1/accounts/:id/connections    # List calendar connections
-DELETE /v1/accounts/:id/connections/:id # Disconnect calendar
+# Users (Schedulable people within a business)
+POST   /v1/businesses/:id/users          # Create user
+GET    /v1/businesses/:id/users          # List users
+GET    /v1/businesses/:id/users/:id      # Get user
+PATCH  /v1/businesses/:id/users/:id      # Update user
+DELETE /v1/businesses/:id/users/:id      # Delete user
 
-# Users (Schedulable people within an account)
-POST   /v1/accounts/:id/users          # Create user
-GET    /v1/accounts/:id/users          # List users
-GET    /v1/accounts/:id/users/:id      # Get user
-PATCH  /v1/accounts/:id/users/:id      # Update user
-DELETE /v1/accounts/:id/users/:id      # Delete user
+# OAuth / Calendar Connections (per user)
+GET    /v1/businesses/:id/users/:uid/oauth/google   # Get Google OAuth URL
+GET    /v1/businesses/:id/users/:uid/oauth/microsoft # Get Microsoft OAuth URL
+GET    /v1/businesses/:id/users/:uid/connections    # List calendar connections
+DELETE /v1/businesses/:id/users/:uid/connections/:id # Disconnect calendar
 
 # Event Types
-POST   /v1/accounts/:id/event-types    # Create event type
-GET    /v1/accounts/:id/event-types    # List event types
-GET    /v1/accounts/:id/event-types/:id
-PATCH  /v1/accounts/:id/event-types/:id
-DELETE /v1/accounts/:id/event-types/:id
+POST   /v1/businesses/:id/event-types    # Create event type
+GET    /v1/businesses/:id/event-types    # List event types
+GET    /v1/businesses/:id/event-types/:id
+PATCH  /v1/businesses/:id/event-types/:id
+DELETE /v1/businesses/:id/event-types/:id
 
 # Availability
-GET    /v1/accounts/:id/availability   # Get available slots
-       ?user_id=...
-       &event_type_id=...
-       &start_date=...
-       &end_date=...
-       &timezone=...
+GET    /v1/businesses/:id/availability   # Get available slots
+       ?event_type_id=...                # Required
+       &start_date=...                   # Required
+       &end_date=...                     # Required
+       &timezone=...                     # Optional (default: UTC)
+       &user_id=...                      # Optional (omit for pooled availability)
 
-POST   /v1/accounts/:id/availability/query  # Natural language query (optional)
-       { "query": "next Tuesday afternoon, 30 minutes" }
+# Response includes which users are available per slot:
+# { "slots": [{ "startTime": "...", "availableUserIds": ["user_1", "user_2"] }] }
 
 # Bookings
-POST   /v1/accounts/:id/bookings       # Create booking
-GET    /v1/accounts/:id/bookings       # List bookings
-GET    /v1/accounts/:id/bookings/:id   # Get booking
-PATCH  /v1/accounts/:id/bookings/:id   # Reschedule
-DELETE /v1/accounts/:id/bookings/:id   # Cancel
+POST   /v1/businesses/:id/bookings       # Create booking
+       # user_id optional - if omitted, auto-assigns using event type strategy
+GET    /v1/businesses/:id/bookings       # List bookings
+GET    /v1/businesses/:id/bookings/:id   # Get booking (includes assignedTo)
+PATCH  /v1/businesses/:id/bookings/:id   # Reschedule
+DELETE /v1/businesses/:id/bookings/:id   # Cancel
 
 # Webhooks
 POST   /v1/webhooks                    # Register webhook
@@ -162,60 +315,135 @@ DELETE /v1/webhooks/:id                # Delete webhook
 
 ### 2. Embeddable Components
 
-Pre-built UI that SaaS companies embed in their apps for their customers.
+Pre-built UI that SaaS companies embed in their apps for their customers. Components are organized by who uses them.
 
-| Component | Purpose | Auth Required |
-|-----------|---------|---------------|
-| `<agentcal-connect>` | OAuth calendar connection flow | Yes |
-| `<agentcal-availability>` | Configure working hours | Yes |
-| `<agentcal-event-settings>` | Configure event type settings | Yes |
-| `<agentcal-bookings>` | View/manage bookings | Yes |
-| `<agentcal-booking-page>` | Public booking page | No (public) |
+#### Business Admin Embeds
 
-#### Embed Authentication (Simple Approach)
+For business owners/managers to configure their whole business.
 
-For private embeds, use publishable key + account ID:
+| Component | Purpose | Scope |
+|-----------|---------|-------|
+| `<agentcal-event-types>` | Create/edit event types for the business | Business |
+| `<agentcal-team>` | Invite/manage staff members | Business |
+| `<agentcal-business-bookings>` | View all bookings across all staff | Business |
+| `<agentcal-business-settings>` | Business-level settings (name, slug, etc.) | Business |
 
 ```html
 <script src="https://js.agentcal.dev/v1/embeds.js"></script>
 
-<agentcal-bookings
+<!-- Business admin managing event types -->
+<agentcal-event-types
   publishable-key="pk_live_abc123"
-  account-id="acct_456">
-</agentcal-bookings>
+  business-id="biz_456">
+</agentcal-event-types>
+
+<!-- Business admin viewing all bookings -->
+<agentcal-business-bookings
+  publishable-key="pk_live_abc123"
+  business-id="biz_456">
+</agentcal-business-bookings>
 ```
 
-Security: Account IDs are UUIDs (unguessable). Publishable key scopes to the organization.
+#### User Embeds
 
-Optional (for security-conscious customers): Add HMAC signing of account ID.
+For individual staff members to manage their own calendar and availability.
 
-For public booking pages, no auth needed:
+| Component | Purpose | Scope |
+|-----------|---------|-------|
+| `<agentcal-connect>` | OAuth calendar connection flow | User |
+| `<agentcal-availability>` | Configure working hours | User |
+| `<agentcal-user-bookings>` | View/manage user's own bookings | User |
 
 ```html
+<!-- Staff member connecting their calendar -->
+<agentcal-connect
+  publishable-key="pk_live_abc123"
+  business-id="biz_456"
+  user-id="user_john_123">
+</agentcal-connect>
+
+<!-- Staff member setting their availability -->
+<agentcal-availability
+  publishable-key="pk_live_abc123"
+  business-id="biz_456"
+  user-id="user_john_123">
+</agentcal-availability>
+```
+
+#### Public Embeds
+
+For end-customers to book appointments. No authentication required.
+
+| Component | Purpose | Scope |
+|-----------|---------|-------|
+| `<agentcal-booking-page>` | Full booking flow | Public |
+
+```html
+<!-- Public booking page for the business (any available user) -->
 <agentcal-booking-page
-  account-id="acct_456"
-  event-type-id="evt_789">
+  business-slug="acme-insurance"
+  event-type-slug="consultation">
+</agentcal-booking-page>
+
+<!-- Public booking page for a specific user -->
+<agentcal-booking-page
+  business-slug="acme-insurance"
+  user-slug="john"
+  event-type-slug="consultation">
 </agentcal-booking-page>
 ```
 
+#### Embed Authentication
+
+**Private embeds** (admin + user): Use publishable key + IDs. Security relies on:
+- Business/User IDs are UUIDs (unguessable)
+- Publishable key scopes requests to the organization
+- Optional: HMAC signing for security-conscious customers
+
+**Public embeds**: No auth needed. Uses slugs for human-readable URLs.
+
 ### 3. SDKs
 
+**The Happy Path - No User Required:**
+
 ```typescript
-// TypeScript/JavaScript SDK
+// TypeScript/JavaScript SDK - Optimal DX for AI Agents
 import { AgentCal } from '@agentcal/sdk';
 
 const agentcal = new AgentCal({ apiKey: 'sk_live_xxx' });
 
-const slots = await agentcal.availability.list('acct_456', {
-  userId: 'user_123',
-  eventTypeId: 'evt_789',
+// Step 1: Get available slots (NO user_id needed!)
+const slots = await agentcal.availability.list('biz_456', {
+  eventTypeId: 'evt_consultation',
   startDate: '2025-01-15',
   endDate: '2025-01-22',
 });
+// Returns merged availability across ALL eligible users
 
-const booking = await agentcal.bookings.create('acct_456', {
-  userId: 'user_123',
-  eventTypeId: 'evt_789',
+// Step 2: Book a slot (NO user_id needed!)
+const booking = await agentcal.bookings.create('biz_456', {
+  eventTypeId: 'evt_consultation',
+  startTime: slots[0].startTime,
+  attendee: {
+    email: 'customer@example.com',
+    name: 'John Customer',
+  },
+});
+// Returns: {
+//   id: 'booking_123',
+//   businessUserId: 'user_sarah_456',  // Auto-assigned!
+//   assignedTo: { name: 'Sarah Johnson', email: 'sarah@acme.com' },
+//   assignedVia: 'round_robin'
+// }
+```
+
+**With Specific User (for follow-ups, VIPs, etc.):**
+
+```typescript
+// Book with a specific user when needed
+const booking = await agentcal.bookings.create('biz_456', {
+  eventTypeId: 'evt_consultation',
+  businessUserId: 'user_john_123',  // Optional: specify user
   startTime: '2025-01-15T14:00:00Z',
   attendee: {
     email: 'customer@example.com',
@@ -225,25 +453,28 @@ const booking = await agentcal.bookings.create('acct_456', {
 ```
 
 ```python
-# Python SDK
+# Python SDK - Same simplicity
 from agentcal import AgentCal
 
 client = AgentCal(api_key="sk_live_xxx")
 
+# Get available slots (no user needed)
 slots = client.availability.list(
-    account_id="acct_456",
-    user_id="user_123",
+    business_id="biz_456",
+    event_type_id="evt_consultation",
     start_date="2025-01-15",
     end_date="2025-01-22",
 )
 
+# Book a slot (user auto-assigned)
 booking = client.bookings.create(
-    account_id="acct_456",
-    user_id="user_123",
-    event_type_id="evt_789",
-    start_time="2025-01-15T14:00:00Z",
+    business_id="biz_456",
+    event_type_id="evt_consultation",
+    start_time=slots[0].start_time,
     attendee_email="customer@example.com",
+    attendee_name="John Customer",
 )
+# booking.assigned_to -> { "name": "Sarah Johnson", "email": "sarah@acme.com" }
 ```
 
 ### 4. MCP Server (Model Context Protocol)
@@ -319,7 +550,7 @@ const response = await openai.chat.completions.create({
 });
 
 // Handle tool calls - accountId passed at execution time
-const result = await agentcal.handleToolCall(toolCall, { accountId: 'acct_456' });
+const result = await agentcal.executeToolCall(toolCall, { businessId: 'biz_456' });
 ```
 
 #### Full Example
@@ -350,7 +581,7 @@ const message = response.choices[0].message;
 if (message.tool_calls) {
   const toolResults = await Promise.all(
     message.tool_calls.map(tc => 
-      agentcal.handleToolCall(tc, { accountId: 'acct_456' })
+      agentcal.executeToolCall(tc, { businessId: 'biz_456' })
     )
   );
 
@@ -424,63 +655,106 @@ organizations (our customers - SaaS companies)
 ├── plan: enum
 ├── created_at: timestamp
 │
-├── connected_accounts (their customers)
+├── businesses (their customers)
 │   ├── id: uuid
 │   ├── organization_id: fk
+│   ├── reference_customer_id: string (org's internal ID)
 │   ├── name: string
-│   ├── metadata: jsonb (their internal IDs, etc.)
+│   ├── slug: string (globally unique, for URLs like agentcal.ai/acme-insurance)
+│   ├── metadata: jsonb
 │   ├── created_at: timestamp
 │   │
-│   ├── calendar_connections
+│   ├── business_users (schedulable people)
 │   │   ├── id: uuid
-│   │   ├── connected_account_id: fk
+│   │   ├── business_id: fk
+│   │   ├── reference_user_id: string (org's internal ID)
+│   │   ├── email: string
+│   │   ├── name: string
+│   │   ├── slug: string (unique per business, for URLs like /acme/john/consultation)
+│   │   ├── timezone: string
+│   │   ├── metadata: jsonb
+│   │   └── created_at: timestamp
+│   │
+│   ├── calendar_connections (per user)
+│   │   ├── id: uuid
+│   │   ├── business_user_id: fk
 │   │   ├── provider: enum (google, microsoft)
+│   │   ├── provider_account_id: string
+│   │   ├── email: string
 │   │   ├── access_token: encrypted
 │   │   ├── refresh_token: encrypted
 │   │   ├── token_expires_at: timestamp
-│   │   ├── email: string
-│   │   └── created_at: timestamp
-│   │
-│   ├── users (schedulable people)
-│   │   ├── id: uuid
-│   │   ├── connected_account_id: fk
-│   │   ├── email: string
-│   │   ├── name: string
 │   │   ├── calendar_id: string
-│   │   ├── timezone: string
 │   │   └── created_at: timestamp
 │   │
 │   ├── event_types
 │   │   ├── id: uuid
-│   │   ├── connected_account_id: fk
-│   │   ├── name: string
-│   │   ├── slug: string
+│   │   ├── business_id: fk
+│   │   ├── business_user_id: fk (optional - if null, "book with anyone")
+│   │   ├── slug: string (unique per business)
+│   │   ├── title: string
+│   │   ├── description: string
 │   │   ├── duration_minutes: integer
+│   │   ├── location_type: enum (google_meet, zoom, phone, in_person, custom)
 │   │   ├── buffer_before: integer
 │   │   ├── buffer_after: integer
-│   │   ├── min_notice_hours: integer
+│   │   ├── min_notice_minutes: integer
+│   │   ├── max_days_in_advance: integer
+│   │   ├── availability_schedule_id: fk (optional)
+│   │   ├── assignment_strategy: enum (round_robin, least_busy, random, manual)
+│   │   ├── eligible_user_ids: jsonb (optional - null = all business users)
+│   │   ├── metadata: jsonb
 │   │   └── created_at: timestamp
 │   │
-│   ├── availability_rules
+│   ├── availability_schedules (per user)
 │   │   ├── id: uuid
-│   │   ├── user_id: fk (or event_type_id)
-│   │   ├── day_of_week: integer (0-6)
+│   │   ├── business_user_id: fk
+│   │   ├── name: string
+│   │   ├── timezone: string
+│   │   ├── is_default: boolean
+│   │   └── created_at: timestamp
+│   │
+│   ├── availability_rules (per schedule)
+│   │   ├── id: uuid
+│   │   ├── schedule_id: fk
+│   │   ├── day_of_week: integer (0-6, null for date overrides)
+│   │   ├── specific_date: date (for date overrides)
 │   │   ├── start_time: time
 │   │   ├── end_time: time
-│   │   └── timezone: string
+│   │   ├── is_available: boolean
+│   │   └── created_at: timestamp
 │   │
-│   └── bookings
+│   ├── bookings
+│   │   ├── id: uuid
+│   │   ├── business_id: fk
+│   │   ├── business_user_id: fk (assigned at booking time for "book with anyone")
+│   │   ├── event_type_id: fk
+│   │   ├── title: string
+│   │   ├── description: string
+│   │   ├── start_time: timestamp
+│   │   ├── end_time: timestamp
+│   │   ├── timezone: string
+│   │   ├── status: enum (pending, confirmed, cancelled, completed, no_show)
+│   │   ├── location_type: enum (google_meet, zoom, phone, in_person, custom)
+│   │   ├── location: string (address or custom details)
+│   │   ├── meeting_url: string (video call URL)
+│   │   ├── calendar_event_id: string (external calendar ID)
+│   │   ├── assigned_via: string (round_robin, least_busy, manual, event_type_locked)
+│   │   ├── assignment_metadata: jsonb (available users, selection reason)
+│   │   ├── attendee_email: string
+│   │   ├── attendee_name: string
+│   │   ├── attendee_timezone: string
+│   │   ├── cancellation_reason: string
+│   │   ├── metadata: jsonb
+│   │   └── created_at: timestamp
+│   │
+│   └── booking_events (audit log)
 │       ├── id: uuid
-│       ├── connected_account_id: fk
-│       ├── user_id: fk
-│       ├── event_type_id: fk
-│       ├── start_time: timestamp
-│       ├── end_time: timestamp
-│       ├── status: enum (confirmed, cancelled, completed)
-│       ├── attendee_email: string
-│       ├── attendee_name: string
-│       ├── calendar_event_id: string (external calendar ID)
-│       ├── metadata: jsonb
+│       ├── booking_id: fk
+│       ├── event_type: string (created, confirmed, rescheduled, cancelled)
+│       ├── old_status: enum
+│       ├── new_status: enum
+│       ├── metadata: jsonb (reason, previous times, etc.)
 │       └── created_at: timestamp
 │
 └── webhooks

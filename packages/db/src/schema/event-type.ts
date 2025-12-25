@@ -2,6 +2,7 @@ import {
   index,
   integer,
   jsonb,
+  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -11,7 +12,36 @@ import {
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { availabilitySchedule } from "./availability-schedule"
 import { business } from "./business"
+import { businessUser } from "./business-user"
 
+/**
+ * Assignment Strategy - How to pick a user when multiple are available.
+ *
+ * - round_robin: Rotate evenly across all eligible users
+ * - least_busy: Assign to user with fewest bookings this week
+ * - random: Random selection among available users
+ * - manual: Requires businessUserId in booking request (no auto-assign)
+ */
+export const assignmentStrategyEnum = pgEnum("assignment_strategy", [
+  "round_robin",
+  "least_busy",
+  "random",
+  "manual",
+])
+
+/**
+ * Event Type - A bookable appointment type.
+ *
+ * Event types belong to a business and can optionally be assigned to a specific user:
+ *
+ * - businessUserId = NULL: "Book with anyone" - any available user can fulfill
+ *   URL: agentcal.ai/acme-insurance/consultation
+ *   System picks an available user at booking time using assignmentStrategy
+ *
+ * - businessUserId = set: "Book with John specifically"
+ *   URL: agentcal.ai/acme-insurance/john/consultation
+ *   Only that user's availability is considered
+ */
 export const eventType = pgTable(
   "event_type",
   {
@@ -24,6 +54,9 @@ export const eventType = pgTable(
     businessId: uuid("business_id")
       .notNull()
       .references(() => business.id, { onDelete: "cascade" }),
+    businessUserId: uuid("business_user_id").references(() => businessUser.id, {
+      onDelete: "set null",
+    }), // Optional: if null, uses assignmentStrategy to pick user
     slug: text("slug").notNull(),
     title: text("title").notNull(),
     description: text("description"),
@@ -35,12 +68,19 @@ export const eventType = pgTable(
     availabilityScheduleId: uuid("availability_schedule_id").references(
       () => availabilitySchedule.id,
       { onDelete: "set null" }
-    ), // Optional: if null, uses the schedulable user's default schedule
+    ), // Optional: if null, uses the assigned user's default schedule
+    // Assignment configuration (for "book with anyone" mode)
+    assignmentStrategy: assignmentStrategyEnum("assignment_strategy")
+      .notNull()
+      .default("round_robin"),
+    eligibleUserIds: jsonb("eligible_user_ids"), // ["user_123", "user_456"] or null = all business users
     metadata: jsonb("metadata"),
   },
   (table) => [
     index("event_type_business_idx").on(table.businessId),
+    index("event_type_user_idx").on(table.businessUserId),
     index("event_type_slug_idx").on(table.slug),
+    // Slug unique per business - allows simple URLs like /acme/consultation
     unique("event_type_business_slug_unique").on(table.businessId, table.slug),
   ]
 )

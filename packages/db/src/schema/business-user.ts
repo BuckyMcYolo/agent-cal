@@ -4,6 +4,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
@@ -24,6 +25,7 @@ export const businessUser = pgTable(
     referenceUserId: text("reference_user_id"), // The org's internal ID for this user
     email: text("email").notNull(),
     name: text("name").notNull(),
+    slug: text("slug").notNull(), // URL-friendly identifier: /business-slug/user-slug/event-type
     timezone: text("timezone").notNull().default("UTC"),
     metadata: jsonb("metadata"),
   },
@@ -31,6 +33,10 @@ export const businessUser = pgTable(
     index("business_user_business_idx").on(table.businessId),
     index("business_user_reference_user_id_idx").on(table.referenceUserId),
     index("business_user_email_idx").on(table.email),
+    unique("business_user_business_slug_unique").on(
+      table.businessId,
+      table.slug
+    ),
   ]
 )
 

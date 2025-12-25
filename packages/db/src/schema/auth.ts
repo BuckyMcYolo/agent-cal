@@ -117,9 +117,9 @@ export const apikey = pgTable(
     prefix: text("prefix"),
     key: text("key").notNull(),
     userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
-    organizationId: text("organization_id").references(() => organization.id, {
-      onDelete: "cascade",
-    }),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
     refillInterval: integer("refill_interval"),
     refillAmount: integer("refill_amount"),
     lastRefillAt: timestamp("last_refill_at"),
