@@ -144,11 +144,12 @@ This is an open-source project and contributions are welcome. Feel free to open 
 
 ## License
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). This license:
 
-- ✅ Commercial use allowed
-- ✅ Modify and customize as needed
-- ⚠️ Modified versions must be open source
-- ⚠️ Network use triggers distribution (must share source with users)
+- Requires that all modified versions of the code must also be open source
+- Allows commercial use of the software
+- Permits users to customize and modify the code as needed
+- Ensures that derivative works are distributed under the same license
+- Requires making source code available to users who interact with the software over a network
 
-See [LICENSE](./LICENSE) for full details.
+For more details, see the LICENSE file in the repository.
