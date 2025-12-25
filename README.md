@@ -1,33 +1,151 @@
 # AgentCal
 
-An open-source, AI-powered scheduling platform with intelligent phone agents built in.
+**Scheduling infrastructure for AI agents.**
 
-## About
+APIs, SDKs, and embeddable components for SaaS companies building AI-powered scheduling.
 
-AgentCal is an open-source scheduling platform that allows users and teams to schedule events and meetings. It can be hosted on our platform or self-hosted on your own infrastructure.
+---
+
+## What is AgentCal?
+
+AgentCal provides the backend infrastructure that AI agents need to schedule appointments. Instead of building calendar integrations, availability logic, and booking management from scratch, use our APIs and SDKs to add scheduling to your AI product in minutes.
+
+**Built for:**
+- AI phone agent platforms (Vapi, Bland, Retell)
+- AI chatbot/assistant builders
+- Vertical SaaS adding AI scheduling
+- Any product with AI agents that need to book appointments
+
+---
+
+## Quick Example
+
+```typescript
+import { AgentCal } from '@agentcal/sdk'
+
+const agentcal = new AgentCal({ apiKey: 'sk_live_xxx' })
+
+// AI agent checks availability
+const slots = await agentcal.availability.list('acct_456', {
+  userId: 'user_123',
+  startDate: '2025-01-15',
+  endDate: '2025-01-22'
+})
+
+// AI agent books appointment
+const booking = await agentcal.bookings.create('acct_456', {
+  userId: 'user_123',
+  eventTypeId: 'evt_789',
+  startTime: '2025-01-15T14:00:00Z',
+  attendee: {
+    email: 'customer@example.com',
+    name: 'John Customer'
+  }
+})
+```
+
+---
 
 ## Key Features
 
-- **AI Phone Agents**: Built directly into the core platform to handle scheduling calls
-- **Customizable Agents**: Easily customize voice, knowledge base, and prompts using a drag-and-drop canvas interface
-- **Knowledge Integration**: Upload documents to give your AI agents the ability to perform RAG (Retrieval-Augmented Generation) when answering questions
+- **REST API** - Complete scheduling API for AI agents to query availability and manage bookings
+- **TypeScript/Python SDKs** - Type-safe clients with first-class AI support
+- **Calendar Integrations** - Google Calendar, Microsoft 365 (coming soon)
+- **Embeddable Components** - Pre-built UI for calendar connection, booking management, and settings
+- **AI-Native Interfaces** - MCP server for Claude, OpenAI function definitions, tool handlers
+- **Multi-Tenant** - Built for SaaS companies serving multiple customers
+- **Webhooks** - Real-time notifications powered by SVIX
 
-## Motivation
+---
 
-This project was created to build a scheduling platform that integrates modern AI capabilities into the core experience, rather than as an afterthought. The goal is to create a truly intelligent scheduling system that can handle complex interactions through various channels, including phone calls.
+## Architecture
+
+```
+Your SaaS Platform
+    ↓ Uses AgentCal API
+Your Customers (Businesses)
+    ↓ Connect their Google Calendars
+    ↓ Configure availability rules
+End Users
+    ↓ Book appointments via AI
+```
+
+AgentCal sits two layers deep: you integrate our API, your customers connect their calendars, and your AI agents book appointments with their end users.
+
+---
+
+## Documentation
+
+See [PRODUCT_VISION.md](./PRODUCT_VISION.md) for the full product vision and roadmap.
+
+Detailed API documentation coming soon.
+
+---
+
+## Status
+
+**Phase 1 (In Progress):** Core API + Google Calendar integration
+- ✅ Google Calendar OAuth and API operations
+- 🚧 OAuth routes
+- 🚧 Availability calculation engine
+- 🚧 Bookings API
+- 🚧 Background jobs (token refresh)
+
+See the [Product Vision](./PRODUCT_VISION.md) for the complete roadmap.
+
+---
+
+## Tech Stack
+
+**Monorepo (Turborepo + PNPM):**
+- `apps/web` - Next.js 15 developer dashboard
+- `apps/api` - Hono.js REST API with OpenAPI
+- `packages/db` - Drizzle ORM + PostgreSQL
+- `packages/auth` - Better Auth
+- `packages/calendar-integrations` - Google/Microsoft calendar clients
+
+**Infrastructure:**
+- PostgreSQL database
+- Redis (BullMQ for background jobs)
+- SVIX (webhook delivery)
+
+---
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start all apps
+pnpm dev
+
+# Start specific apps
+pnpm dev:web    # Developer dashboard (Next.js)
+pnpm dev:api    # API server (Hono)
+
+# Database
+pnpm db:studio  # Open Drizzle Studio
+pnpm db:push    # Push schema changes
+```
+
+See [CLAUDE.md](./CLAUDE.md) for detailed development guide.
+
+---
 
 ## Contributing
 
 This is an open-source project and contributions are welcome. Feel free to open issues or submit pull requests.
 
+---
+
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). This license:
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-- Requires that all modified versions of the code must also be open source
-- Allows commercial use of the software
-- Permits users to customize and modify the code as needed
-- Ensures that derivative works are distributed under the same license
-- Requires making source code available to users who interact with the software over a network
+- ✅ Commercial use allowed
+- ✅ Modify and customize as needed
+- ⚠️ Modified versions must be open source
+- ⚠️ Network use triggers distribution (must share source with users)
 
-For more details, see the LICENSE file in the repository.
+See [LICENSE](./LICENSE) for full details.
