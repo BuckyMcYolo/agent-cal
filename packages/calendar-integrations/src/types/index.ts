@@ -196,6 +196,12 @@ export interface ICalendarProvider {
     calendarId: string,
     eventId: string
   ): Promise<CalendarEvent | null>
+
+  /**
+   * Revoke OAuth token (disconnect from provider)
+   * Some providers (like Microsoft) don't support this - they should log and return.
+   */
+  revokeToken(token: string): Promise<void>
 }
 
 /**

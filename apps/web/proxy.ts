@@ -1,7 +1,7 @@
 import { getSessionCookie } from "@workspace/auth/utils"
 import { type NextRequest, NextResponse } from "next/server"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request, {
     // Optionally pass config if cookie name or prefix is customized in auth config.
     cookiePrefix: "AC", // AgentCal
