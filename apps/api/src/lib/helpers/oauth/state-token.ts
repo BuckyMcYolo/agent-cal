@@ -1,4 +1,4 @@
-import { createHmac, randomBytes } from "node:crypto"
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto"
 import { serverEnv } from "@workspace/env-config/server"
 
 /**
@@ -46,9 +46,12 @@ export function verifyOAuthStateToken(token: string): OAuthStatePayload {
 
   const [payloadStr, signature] = parts as [string, string]
 
-  // Verify signature
+  // Verify signature using timing-safe comparison
   const expectedSignature = sign(payloadStr)
-  if (signature !== expectedSignature) {
+  const bufSig = Buffer.from(signature)
+  const bufExpected = Buffer.from(expectedSignature)
+
+  if (bufSig.length !== bufExpected.length || !timingSafeEqual(bufSig, bufExpected)) {
     throw new Error("Invalid state token signature")
   }
 
