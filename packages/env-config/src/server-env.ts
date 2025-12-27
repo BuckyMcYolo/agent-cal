@@ -54,6 +54,8 @@ const EnvSchema = z.object({
     "trace",
     "silent",
   ]),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
   // DATABASE_AUTH_TOKEN: z.string().optional(),
 })
 // .superRefine((input, ctx) => {

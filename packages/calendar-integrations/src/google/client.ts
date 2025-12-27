@@ -330,6 +330,19 @@ export class GoogleCalendarClient implements ICalendarProvider {
   }
 
   /**
+   * Revoke OAuth token (disconnect from Google)
+   * This invalidates the access and refresh tokens at Google's end.
+   */
+  async revokeToken(token: string): Promise<void> {
+    try {
+      await this.oauth2Client.revokeToken(token)
+    } catch (error) {
+      // Ignore errors - token may already be revoked or invalid
+      console.warn("Token revocation failed (may already be revoked):", error)
+    }
+  }
+
+  /**
    * Get a single calendar event
    */
   async getEvent(

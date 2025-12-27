@@ -43,10 +43,10 @@ export const organization = pgTable(
   "organization",
   {
     id: text("id").primaryKey(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
     name: text("name").notNull(),
     slug: text("slug").unique(),
     logo: text("logo"),
-    createdAt: timestamp("created_at").notNull(),
     metadata: text("metadata"),
     // AgentCal API extensions
     publishableKey: text("publishable_key"), // pk_live_xxx - public key for embeds
@@ -117,9 +117,9 @@ export const apikey = pgTable(
     prefix: text("prefix"),
     key: text("key").notNull(),
     userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
-    organizationId: text("organization_id")
-      .notNull()
-      .references(() => organization.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id").references(() => organization.id, {
+      onDelete: "cascade",
+    }),
     refillInterval: integer("refill_interval"),
     refillAmount: integer("refill_amount"),
     lastRefillAt: timestamp("last_refill_at"),

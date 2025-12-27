@@ -38,7 +38,7 @@ export const bookingEvent = pgTable(
   },
   (table) => [
     index("booking_event_booking_idx").on(table.bookingId),
-    index("booking_event_type_idx").on(table.eventType),
+    index("booking_event_event_type_idx").on(table.eventType),
     index("booking_event_created_at_idx").on(table.createdAt),
   ]
 )

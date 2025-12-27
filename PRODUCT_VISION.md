@@ -888,20 +888,19 @@ agent-cal/
 ### Phase 1: Core API + Google Calendar (MVP)
 
 #### Step 1.0: Database Audit & Cleanup
-- [ ] Review existing schema in `packages/db/src/schema/`
-- [ ] Remove tables/fields related to old scope (tasks, agent canvas, knowledge base, monitoring)
-- [ ] Identify which existing tables can be repurposed (event_types, availability, bookings, users)
-- [ ] Document schema changes needed for multi-tenant model
-- [ ] Create migration plan for schema updates
+- [x] Review existing schema in `packages/db/src/schema/`
+- [x] Remove tables/fields related to old scope (tasks, agent canvas, knowledge base, monitoring)
+- [x] Identify which existing tables can be repurposed (event_types, availability, bookings, users)
+- [x] Document schema changes needed for multi-tenant model
+- [x] Create migration plan for schema updates
 
 #### Step 1.1: Multi-tenant Data Model
-- [ ] Create `organizations` table (API keys, publishable keys, plan)
-- [ ] Create `connected_accounts` table (belongs to org, stores metadata)
-- [ ] Create `calendar_connections` table (OAuth tokens, encrypted)
-- [ ] Create `users` table (schedulable people within an account)
-- [ ] Update existing `event_types`, `availability_rules`, `bookings` to reference connected accounts
-- [ ] Add API key authentication middleware
-- [ ] Add `X-Account-ID` header parsing for scoping requests
+- [x] Create `organizations` table (API keys, publishable keys, plan)
+- [x] Create `businesses` table (formerly "connected_accounts" - belongs to org, stores metadata)
+- [x] Create `calendar_connections` table (OAuth tokens, encrypted)
+- [x] Create `business_users` table (formerly "users" - schedulable people within a business)
+- [x] Update existing `event_types`, `availability_rules`, `bookings` to reference businesses
+- [x] Add API key authentication middleware
 
 #### Step 1.2: Google Calendar Integration
 - [ ] Set up Google Cloud project + OAuth consent screen
