@@ -11,7 +11,7 @@ import {
   organization,
   session,
   user,
-} from "./auth"
+} from "./better-auth-schema"
 import { availabilityRule } from "./availability-rule"
 import { availabilitySchedule } from "./availability-schedule"
 import { booking } from "./booking"

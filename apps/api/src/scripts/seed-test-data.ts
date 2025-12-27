@@ -4,7 +4,7 @@
  */
 
 import { db } from "@workspace/db"
-import { organization, user } from "@workspace/db/schema/auth"
+import { organization, user } from "@workspace/db/schema/better-auth-schema"
 import { business } from "@workspace/db/schema/business"
 import { businessUser } from "@workspace/db/schema/business-user"
 

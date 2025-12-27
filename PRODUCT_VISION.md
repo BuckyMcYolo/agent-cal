@@ -903,13 +903,13 @@ agent-cal/
 - [x] Add API key authentication middleware
 
 #### Step 1.2: Google Calendar Integration
-- [ ] Set up Google Cloud project + OAuth consent screen
-- [ ] Implement OAuth redirect flow (`/v1/accounts/:id/oauth/google`)
-- [ ] Implement OAuth callback + token exchange
-- [ ] Store encrypted refresh tokens
-- [ ] Build token refresh background job
-- [ ] Implement calendar read (get events/busy times)
-- [ ] Implement calendar write (create/update/delete events)
+- [x] Set up Google Cloud project + OAuth consent screen
+- [x] Implement OAuth redirect flow (`/v1/accounts/:id/oauth/google`)
+- [x] Implement OAuth callback + token exchange
+- [x] Store refresh tokens (encryption at rest is TODO)
+- [x] Build token refresh (on-demand in `getCredentialsWithRefresh`, background job TODO)
+- [x] Implement calendar read (get events/busy times)
+- [x] Implement calendar write (create/update/delete events)
 
 #### Step 1.3: Availability API
 - [ ] `GET /v1/accounts/:id/availability` endpoint

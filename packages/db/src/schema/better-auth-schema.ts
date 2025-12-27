@@ -2,6 +2,8 @@
 // Base tables (user, session, account, etc.) are managed by Better Auth
 // Extensions (organization fields, apikey modifications) are for AgentCal multi-tenant API
 
+// NOTE: We use generateId: false in Better Auth config, so Postgres generates UUIDs via defaultRandom()
+
 import {
   boolean,
   index,
@@ -11,17 +13,21 @@ import {
   text,
   timestamp,
   unique,
+  uuid,
 } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const user = pgTable("user", {
-  id: text("id").primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
   role: text("role"),
   banned: boolean("banned"),
   banReason: text("ban_reason"),
@@ -42,9 +48,12 @@ export const organizationPlanEnum = pgEnum("organization_plan", [
 export const organization = pgTable(
   "organization",
   {
-    id: text("id").primaryKey(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    name: text("name").notNull(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),    name: text("name").notNull(),
     slug: text("slug").unique(),
     logo: text("logo"),
     metadata: text("metadata"),
@@ -59,14 +68,17 @@ export const organization = pgTable(
 export const session = pgTable(
   "session",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique(),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     impersonatedBy: text("impersonated_by"),
@@ -78,10 +90,15 @@ export const session = pgTable(
 export const account = pgTable(
   "account",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
@@ -91,43 +108,51 @@ export const account = pgTable(
     refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
     scope: text("scope"),
     password: text("password"),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
   },
   (t) => [index("account_user_id_idx").on(t.userId)]
 )
 
-export const verification = pgTable("verification", {
-  id: text("id").primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at"),
-  updatedAt: timestamp("updated_at"),
-})
+export const verification = pgTable(
+  "verification",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+  },
+  (t) => [index("verification_identifier_idx").on(t.identifier)]
+)
 
 export const apikey = pgTable(
   "apikey",
   {
-    id: text("id").primaryKey(),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
     name: text("name"),
     start: text("start"),
     prefix: text("prefix"),
     key: text("key").notNull(),
-    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
-    organizationId: text("organization_id").references(() => organization.id, {
+    userId: uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
+    organizationId: uuid("organization_id").references(() => organization.id, {
       onDelete: "cascade",
     }),
     refillInterval: integer("refill_interval"),
     refillAmount: integer("refill_amount"),
     lastRefillAt: timestamp("last_refill_at"),
-    enabled: boolean("enabled"),
-    rateLimitEnabled: boolean("rate_limit_enabled"),
+    enabled: boolean("enabled").default(true),
+    rateLimitEnabled: boolean("rate_limit_enabled").default(true),
     rateLimitTimeWindow: integer("rate_limit_time_window"),
     rateLimitMax: integer("rate_limit_max"),
-    requestCount: integer("request_count"),
+    requestCount: integer("request_count").default(0),
     remaining: integer("remaining"),
     lastRequest: timestamp("last_request"),
     expiresAt: timestamp("expires_at"),
@@ -137,6 +162,7 @@ export const apikey = pgTable(
   (t) => [
     index("apikey_organization_id_idx").on(t.organizationId),
     index("apikey_user_id_idx").on(t.userId),
+    index("apikey_key_idx").on(t.key),
   ]
 )
 
@@ -159,15 +185,15 @@ export const updateApiKeySchema = insertApiKeySchema.partial()
 export const member = pgTable(
   "member",
   {
-    id: text("id").primaryKey(),
-    organizationId: text("organization_id")
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     role: text("role").notNull(),
-    createdAt: timestamp("created_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
     index("member_user_org_idx").on(t.userId, t.organizationId),
@@ -175,16 +201,42 @@ export const member = pgTable(
   ]
 )
 
-export const invitation = pgTable("invitation", {
-  id: text("id").primaryKey(),
-  organizationId: text("organization_id")
-    .notNull()
-    .references(() => organization.id, { onDelete: "cascade" }),
-  email: text("email").notNull(),
-  role: text("role"),
-  status: text("status").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  inviterId: text("inviter_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-})
+export const invitation = pgTable(
+  "invitation",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    role: text("role"),
+    status: text("status").default("pending").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    inviterId: uuid("inviter_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (t) => [
+    index("invitation_organization_id_idx").on(t.organizationId),
+    index("invitation_email_idx").on(t.email),
+  ]
+)
+
+// Two-factor authentication table
+export const twoFactor = pgTable(
+  "two_factor",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (t) => [index("two_factor_user_id_idx").on(t.userId),
+    index("twoFactor_secret_idx").on(t.secret),
+
+
+  ]
+)

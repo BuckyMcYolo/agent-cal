@@ -31,7 +31,7 @@ import postgres from "postgres"
 // Centralized relations (to avoid circular dependencies)
 import * as relationsSchema from "./schema/_relations"
 // Core auth schema (Better Auth + AgentCal extensions)
-import * as authSchema from "./schema/auth"
+import * as authSchema from "./schema/better-auth-schema"
 import * as availabilityRuleSchema from "./schema/availability-rule"
 import * as availabilityScheduleSchema from "./schema/availability-schedule"
 import * as bookingSchema from "./schema/booking"

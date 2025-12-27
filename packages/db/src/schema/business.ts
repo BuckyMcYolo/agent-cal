@@ -8,7 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
-import { organization } from "./auth"
+import { organization } from "./better-auth-schema"
 
 export const business = pgTable(
   "business",
@@ -19,7 +19,7 @@ export const business = pgTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
-    organizationId: text("organization_id")
+    organizationId: uuid("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
     referenceCustomerId: text("reference_customer_id"), // The org's internal ID for this business/customer
