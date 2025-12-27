@@ -54,9 +54,13 @@ const EnvSchema = z.object({
     "trace",
     "silent",
   ]),
+  // Google OAuth
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  // DATABASE_AUTH_TOKEN: z.string().optional(),
+  // Microsoft OAuth (optional - enable Microsoft calendar integration)
+  MICROSOFT_CLIENT_ID: z.string().optional(),
+  MICROSOFT_CLIENT_SECRET: z.string().optional(),
+  MICROSOFT_TENANT_ID: z.string().optional(), // defaults to "common" for multi-tenant
 })
 // .superRefine((input, ctx) => {
 //   if (input.NODE_ENV === "production" && !input.DATABASE_AUTH_TOKEN) {

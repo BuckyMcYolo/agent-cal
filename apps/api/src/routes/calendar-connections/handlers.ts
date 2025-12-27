@@ -8,13 +8,19 @@ import {
   verifyOAuthStateToken,
 } from "@/lib/helpers/oauth/state-token"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import { googleCalendarService } from "@/services/calendar/google-calendar-service"
+import {
+  getCalendarServiceForConnection,
+  googleCalendarService,
+  microsoftCalendarService,
+} from "@/services/calendar"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {
   DeleteConnectionRoute,
   GetConnectionRoute,
   GetGoogleOAuthUrlRoute,
+  GetMicrosoftOAuthUrlRoute,
   HandleGoogleOAuthCallbackRoute,
+  HandleMicrosoftOAuthCallbackRoute,
   ListCalendarsRoute,
   ListConnectionsRoute,
   UpdateConnectionCalendarRoute,
@@ -249,6 +255,217 @@ export const handleGoogleOAuthCallback: AppRouteHandler<
 }
 
 // ============================================================================
+// Microsoft OAuth Handlers (disabled until MICROSOFT_CLIENT_ID is configured)
+// ============================================================================
+
+export const getMicrosoftOAuthUrl: AppRouteHandler<
+  GetMicrosoftOAuthUrlRoute
+> = async (c) => {
+  try {
+    // Check if Microsoft integration is enabled
+    if (!microsoftCalendarService.isEnabled()) {
+      return c.json(
+        {
+          success: false,
+          message:
+            "Microsoft Calendar integration not configured. Set MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET.",
+        },
+        HttpStatusCodes.SERVICE_UNAVAILABLE
+      )
+    }
+
+    const { businessId, userId } = c.req.valid("param")
+    const { redirectUri } = c.req.valid("query")
+    const org = c.var.organization
+
+    if (!org) {
+      return c.json(
+        { success: false, message: "Organization context required" },
+        HttpStatusCodes.FORBIDDEN
+      )
+    }
+
+    // Verify access
+    const access = await verifyBusinessUserAccess(org.id, businessId, userId)
+    if ("error" in access) {
+      return c.json(
+        { success: false, message: access.error },
+        access.status as 404
+      )
+    }
+
+    // Create state token with businessUserId
+    const state = createOAuthStateToken(userId, redirectUri)
+
+    // Build the callback URL
+    const callbackUrl = `${serverEnv.API_URL}/v1/oauth/microsoft/callback`
+
+    // Get OAuth URL from Microsoft
+    const client = microsoftCalendarService.getClient()
+    const url = await client.getOAuthUrl({
+      redirectUri: callbackUrl,
+      state,
+    })
+
+    return c.json({ url }, HttpStatusCodes.OK)
+  } catch (error) {
+    console.error("[Get Microsoft OAuth URL] Error:", error)
+    return c.json(
+      { success: false, message: "Failed to generate OAuth URL" },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+export const handleMicrosoftOAuthCallback: AppRouteHandler<
+  HandleMicrosoftOAuthCallbackRoute
+> = async (c) => {
+  try {
+    // Check if Microsoft integration is enabled
+    if (!microsoftCalendarService.isEnabled()) {
+      return c.json(
+        {
+          success: false,
+          message: "Microsoft Calendar integration not configured",
+        },
+        HttpStatusCodes.SERVICE_UNAVAILABLE
+      )
+    }
+
+    const {
+      code,
+      state,
+      error: oauthError,
+      error_description: errorDescription,
+    } = c.req.valid("query")
+
+    // Handle OAuth errors from Microsoft
+    if (oauthError) {
+      const message = errorDescription
+        ? `OAuth error: ${oauthError} - ${errorDescription}`
+        : `OAuth error: ${oauthError}`
+      return c.json({ success: false, message }, HttpStatusCodes.BAD_REQUEST)
+    }
+
+    // Verify and decode state token
+    let statePayload: ReturnType<typeof verifyOAuthStateToken>
+    try {
+      statePayload = verifyOAuthStateToken(state)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Invalid state token"
+      return c.json({ success: false, message }, HttpStatusCodes.BAD_REQUEST)
+    }
+
+    const { businessUserId, redirectUri } = statePayload
+
+    // Verify the business user exists
+    const userRecord = await db.query.businessUser.findFirst({
+      where: eq(businessUser.id, businessUserId),
+    })
+
+    if (!userRecord) {
+      return c.json(
+        { success: false, message: "Business user not found" },
+        HttpStatusCodes.BAD_REQUEST
+      )
+    }
+
+    // Exchange code for tokens
+    const client = microsoftCalendarService.getClient()
+    const callbackUrl = `${serverEnv.API_URL}/v1/oauth/microsoft/callback`
+
+    const credentials = await client.exchangeCodeForTokens({
+      code,
+      redirectUri: callbackUrl,
+    })
+
+    // Get list of calendars and find the primary/default one
+    const calendars = await client.listCalendars(credentials)
+    const primaryCalendar = calendars.find((cal) => cal.isPrimary)
+    const calendarId = primaryCalendar?.id ?? calendars[0]?.id ?? "primary"
+
+    // Check if connection already exists for this provider/email
+    const existingConnection = await db.query.calendarConnection.findFirst({
+      where: and(
+        eq(calendarConnection.businessUserId, businessUserId),
+        eq(calendarConnection.provider, "microsoft"),
+        eq(calendarConnection.email, credentials.email)
+      ),
+    })
+
+    let connection: typeof calendarConnection.$inferSelect | undefined
+    if (existingConnection) {
+      // Update existing connection
+      const [updated] = await db
+        .update(calendarConnection)
+        .set({
+          accessToken: credentials.accessToken,
+          refreshToken:
+            credentials.refreshToken ?? existingConnection.refreshToken,
+          tokenExpiresAt: credentials.expiresAt ?? null,
+          providerAccountId: credentials.providerAccountId ?? null,
+          calendarId,
+          updatedAt: new Date(),
+        })
+        .where(eq(calendarConnection.id, existingConnection.id))
+        .returning()
+
+      connection = updated
+    } else {
+      // Create new connection
+      const [created] = await db
+        .insert(calendarConnection)
+        .values({
+          businessUserId,
+          provider: "microsoft",
+          providerAccountId: credentials.providerAccountId ?? null,
+          email: credentials.email,
+          accessToken: credentials.accessToken,
+          refreshToken: credentials.refreshToken ?? null,
+          tokenExpiresAt: credentials.expiresAt ?? null,
+          calendarId,
+        })
+        .returning()
+
+      connection = created
+    }
+
+    if (!connection) {
+      return c.json(
+        { success: false, message: "Failed to save calendar connection" },
+        HttpStatusCodes.INTERNAL_SERVER_ERROR
+      )
+    }
+
+    // Return JSON response (omit sensitive fields)
+    return c.json(
+      {
+        success: true,
+        message: "Microsoft Calendar connected successfully",
+        connection: {
+          id: connection.id,
+          createdAt: connection.createdAt,
+          updatedAt: connection.updatedAt,
+          businessUserId: connection.businessUserId,
+          provider: connection.provider,
+          providerAccountId: connection.providerAccountId,
+          email: connection.email,
+          tokenExpiresAt: connection.tokenExpiresAt,
+          calendarId: connection.calendarId,
+        },
+      },
+      HttpStatusCodes.OK
+    )
+  } catch (error) {
+    console.error("[Microsoft OAuth Callback] Error:", error)
+    return c.json(
+      { success: false, message: "Failed to complete OAuth flow" },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+// ============================================================================
 // Connection Management Handlers
 // ============================================================================
 
@@ -389,10 +606,16 @@ export const deleteConnection: AppRouteHandler<DeleteConnectionRoute> = async (
       )
     }
 
-    // Revoke token at Google (best effort - don't fail if this errors)
+    // Revoke token at provider (best effort - don't fail if this errors)
     if (connection.accessToken) {
-      const client = googleCalendarService.getClient()
-      await client.revokeToken(connection.accessToken)
+      try {
+        const service = getCalendarServiceForConnection(connection)
+        const client = service.getClient()
+        await client.revokeToken(connection.accessToken)
+      } catch (err) {
+        // Log but don't fail - token revocation is best effort
+        console.warn("[Delete Connection] Token revocation failed:", err)
+      }
     }
 
     // Delete the connection from DB
@@ -449,11 +672,14 @@ export const listCalendars: AppRouteHandler<ListCalendarsRoute> = async (c) => {
       )
     }
 
+    // Get the appropriate service for this provider
+    const service = getCalendarServiceForConnection(connection)
+
     // Get credentials (refreshing if needed)
-    const credentials = await googleCalendarService.getCredentialsWithRefresh(connection)
+    const credentials = await service.getCredentialsWithRefresh(connection)
 
     // List calendars
-    const client = googleCalendarService.getClient()
+    const client = service.getClient()
     const calendars = await client.listCalendars(credentials)
 
     return c.json({ data: calendars }, HttpStatusCodes.OK)

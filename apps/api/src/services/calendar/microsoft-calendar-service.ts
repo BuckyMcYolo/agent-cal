@@ -1,31 +1,53 @@
 import {
-  GoogleCalendarClient,
+  MicrosoftCalendarClient,
   type OAuthCredentials,
 } from "@workspace/calendar-integrations"
 import { db, eq } from "@workspace/db"
 import { calendarConnection } from "@workspace/db/schema/calendar-connection"
 import { serverEnv } from "@workspace/env-config/server"
 
-class GoogleCalendarService {
-  private client: GoogleCalendarClient | null = null
+/**
+ * Microsoft Calendar Service
+ *
+ * Mirrors the structure of GoogleCalendarService.
+ * Currently disabled - enable by setting MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET.
+ */
+class MicrosoftCalendarService {
+  private client: MicrosoftCalendarClient | null = null
 
   /**
-   * Check if Google integration is enabled (always true - required env vars)
+   * Check if Microsoft integration is enabled
    */
   isEnabled(): boolean {
-    return true
+    return Boolean(
+      serverEnv.MICROSOFT_CLIENT_ID && serverEnv.MICROSOFT_CLIENT_SECRET
+    )
   }
 
-  getClient(): GoogleCalendarClient {
+  /**
+   * Get the Microsoft Calendar client (lazy initialization)
+   */
+  getClient(): MicrosoftCalendarClient {
+    if (!this.isEnabled()) {
+      throw new Error(
+        "Microsoft Calendar integration not configured. Set MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET."
+      )
+    }
+
     if (!this.client) {
-      this.client = new GoogleCalendarClient({
-        clientId: serverEnv.GOOGLE_CLIENT_ID,
-        clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      this.client = new MicrosoftCalendarClient({
+        clientId: serverEnv.MICROSOFT_CLIENT_ID!,
+        clientSecret: serverEnv.MICROSOFT_CLIENT_SECRET!,
+        tenantId: serverEnv.MICROSOFT_TENANT_ID,
       })
     }
     return this.client
   }
 
+  /**
+   * Get OAuth credentials from a calendar connection, refreshing if expired.
+   * Updates the database with new tokens if refreshed.
+   */
   async getCredentialsWithRefresh(
     connection: typeof calendarConnection.$inferSelect
   ): Promise<OAuthCredentials> {
@@ -75,4 +97,4 @@ class GoogleCalendarService {
   }
 }
 
-export const googleCalendarService = new GoogleCalendarService()
+export const microsoftCalendarService = new MicrosoftCalendarService()

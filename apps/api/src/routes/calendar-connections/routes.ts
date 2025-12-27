@@ -277,9 +277,107 @@ export const updateConnectionCalendar = createRoute({
   },
 })
 
+// ============================================================================
+// Microsoft OAuth Routes (disabled until MICROSOFT_CLIENT_ID is configured)
+// ============================================================================
+
+export const getMicrosoftOAuthUrl = createRoute({
+  path: "/v1/businesses/{businessId}/users/{userId}/oauth/microsoft",
+  method: "get",
+  summary: "Get Microsoft OAuth authorization URL",
+  description:
+    "Returns a URL to redirect the user to for Microsoft Calendar authorization. Requires MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET to be configured.",
+  middleware: [authMiddleware] as const,
+  request: {
+    params: BusinessUserParamsSchema,
+    query: z.object({
+      redirectUri: z.string().url().optional().openapi({
+        description: "URL to redirect to after OAuth completion",
+        example: "https://myapp.com/settings/calendar",
+      }),
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: z.object({
+        url: z.string().url(),
+      }),
+      description: "Microsoft OAuth authorization URL",
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: unauthorizedSchema,
+    [HttpStatusCodes.FORBIDDEN]: jsonContent({
+      schema: forbiddenSchema,
+      description: "User does not have access to this business user",
+    }),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent({
+      schema: notFoundSchema,
+      description: "Business or user not found",
+    }),
+    [HttpStatusCodes.SERVICE_UNAVAILABLE]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+      }),
+      description: "Microsoft Calendar integration not configured",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
+export const handleMicrosoftOAuthCallback = createRoute({
+  path: "/v1/oauth/microsoft/callback",
+  method: "get",
+  summary: "Handle Microsoft OAuth callback",
+  description:
+    "Handles the OAuth callback from Microsoft, exchanges the code for tokens, and stores the calendar connection",
+  request: {
+    query: z.object({
+      code: z.string().openapi({
+        description: "Authorization code from Microsoft",
+      }),
+      state: z.string().openapi({
+        description: "State token for CSRF protection",
+      }),
+      error: z.string().optional().openapi({
+        description: "Error code if authorization failed",
+      }),
+      error_description: z.string().optional().openapi({
+        description: "Error description if authorization failed",
+      }),
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+        connection: CalendarConnectionResponseSchema.optional(),
+      }),
+      description: "OAuth completed successfully",
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+      }),
+      description: "Invalid or expired state token, or OAuth error",
+    }),
+    [HttpStatusCodes.SERVICE_UNAVAILABLE]: jsonContent({
+      schema: z.object({
+        success: z.boolean(),
+        message: z.string(),
+      }),
+      description: "Microsoft Calendar integration not configured",
+    }),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: internalServerErrorSchema,
+  },
+})
+
 // Export route types
 export type GetGoogleOAuthUrlRoute = typeof getGoogleOAuthUrl
 export type HandleGoogleOAuthCallbackRoute = typeof handleGoogleOAuthCallback
+export type GetMicrosoftOAuthUrlRoute = typeof getMicrosoftOAuthUrl
+export type HandleMicrosoftOAuthCallbackRoute = typeof handleMicrosoftOAuthCallback
 export type ListConnectionsRoute = typeof listConnections
 export type GetConnectionRoute = typeof getConnection
 export type DeleteConnectionRoute = typeof deleteConnection
