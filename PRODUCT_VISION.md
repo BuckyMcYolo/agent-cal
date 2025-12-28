@@ -912,12 +912,12 @@ agent-cal/
 - [x] Implement calendar write (create/update/delete events)
 
 #### Step 1.3: Availability API
-- [ ] `GET /v1/accounts/:id/availability` endpoint
-- [ ] Availability rule storage (day of week, start/end time, timezone)
-- [ ] Conflict detection against existing calendar events
-- [ ] Timezone conversion (store UTC, accept/return with timezone param)
-- [ ] Buffer time handling (before/after meetings)
-- [ ] Minimum notice period enforcement
+- [x] `GET /v1/businesses/:id/availability` endpoint
+- [x] Availability rule storage (day of week, start/end time, timezone)
+- [x] Conflict detection against existing calendar events
+- [x] Timezone conversion (store UTC, accept/return with timezone param)
+- [x] Buffer time handling (before/after meetings)
+- [x] Minimum notice period enforcement
 
 #### Step 1.4: Bookings API
 - [ ] `POST /v1/accounts/:id/bookings` - create booking

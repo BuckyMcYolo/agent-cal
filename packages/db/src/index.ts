@@ -30,10 +30,11 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 // Centralized relations (to avoid circular dependencies)
 import * as relationsSchema from "./schema/_relations"
-// Core auth schema (Better Auth + AgentCal extensions)
-import * as authSchema from "./schema/better-auth-schema"
+import * as availabilityOverrideSchema from "./schema/availability-override"
 import * as availabilityRuleSchema from "./schema/availability-rule"
 import * as availabilityScheduleSchema from "./schema/availability-schedule"
+// Core auth schema (Better Auth + AgentCal extensions)
+import * as authSchema from "./schema/better-auth-schema"
 import * as bookingSchema from "./schema/booking"
 import * as bookingEventSchema from "./schema/booking-event"
 // New multi-tenant API schema
@@ -54,6 +55,7 @@ export const db = drizzle({
     ...eventTypeSchema,
     ...availabilityScheduleSchema,
     ...availabilityRuleSchema,
+    ...availabilityOverrideSchema,
     ...bookingSchema,
     ...bookingEventSchema,
     ...relationsSchema,

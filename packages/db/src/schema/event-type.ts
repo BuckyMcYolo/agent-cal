@@ -61,6 +61,7 @@ export const eventType = pgTable(
     title: text("title").notNull(),
     description: text("description"),
     durationMinutes: integer("duration_minutes").notNull(),
+    slotStepMinutes: integer("slot_step_minutes"), // Slot interval (defaults to durationMinutes if null)
     bufferBefore: integer("buffer_before").notNull().default(0),
     bufferAfter: integer("buffer_after").notNull().default(0),
     minNoticeMinutes: integer("min_notice_minutes").notNull().default(60),
@@ -73,7 +74,7 @@ export const eventType = pgTable(
     assignmentStrategy: assignmentStrategyEnum("assignment_strategy")
       .notNull()
       .default("round_robin"),
-    eligibleUserIds: jsonb("eligible_user_ids"), // ["user_123", "user_456"] or null = all business users
+    eligibleUserIds: text("eligible_user_ids").array(), // ["user_123", "user_456"] or null = all business users
     metadata: jsonb("metadata"),
   },
   (table) => [
@@ -91,6 +92,7 @@ export const eventType = pgTable(
 export const selectEventTypeSchema = createSelectSchema(eventType)
 export const insertEventTypeSchema = createInsertSchema(eventType, {
   durationMinutes: (schema) => schema.min(5).max(480), // 5 mins to 8 hours
+  slotStepMinutes: (schema) => schema.min(5).max(480).nullable(),
   bufferBefore: (schema) => schema.min(0).max(120),
   bufferAfter: (schema) => schema.min(0).max(120),
   minNoticeMinutes: (schema) => schema.min(0),

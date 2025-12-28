@@ -5,6 +5,7 @@ import createApp from "@/lib/helpers/app/create-app"
 import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import apiKeysRouter from "./routes/api-keys"
+import availabilityRouter from "./routes/availability"
 import calendarConnectionsRouter from "./routes/calendar-connections"
 
 const app = createApp()
@@ -33,7 +34,12 @@ app.use(
 
 configureOpenAPI(app)
 
-const routes = [index, apiKeysRouter, calendarConnectionsRouter] as const
+const routes = [
+  index,
+  apiKeysRouter,
+  availabilityRouter,
+  calendarConnectionsRouter,
+] as const
 
 routes.forEach((route) => app.route("/", route))
 

@@ -1,19 +1,22 @@
 import { and, db, eq } from "@workspace/db"
-import { business } from "@workspace/db/schema/business"
 import { businessUser } from "@workspace/db/schema/business-user"
 import { calendarConnection } from "@workspace/db/schema/calendar-connection"
 import { serverEnv } from "@workspace/env-config/server"
+import {
+  isAccessError,
+  verifyBusinessUserAccess,
+} from "@/lib/helpers/access/verify-business-access"
 import {
   createOAuthStateToken,
   verifyOAuthStateToken,
 } from "@/lib/helpers/oauth/state-token"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
+import type { AppRouteHandler } from "@/lib/types/app-types"
 import {
   getCalendarServiceForConnection,
   googleCalendarService,
   microsoftCalendarService,
 } from "@/services/calendar"
-import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {
   DeleteConnectionRoute,
   GetConnectionRoute,
@@ -25,51 +28,6 @@ import type {
   ListConnectionsRoute,
   UpdateConnectionCalendarRoute,
 } from "./routes"
-
-type BusinessUserAccessError = {
-  error: string
-  status: typeof HttpStatusCodes.NOT_FOUND
-}
-
-type BusinessUserAccessSuccess = {
-  businessRecord: typeof business.$inferSelect
-  userRecord: typeof businessUser.$inferSelect
-}
-
-/**
- * Helper to verify businessUser belongs to the caller's organization
- */
-async function verifyBusinessUserAccess(
-  organizationId: string,
-  businessId: string,
-  userId: string
-): Promise<BusinessUserAccessError | BusinessUserAccessSuccess> {
-  // First verify the business belongs to the organization
-  const businessRecord = await db.query.business.findFirst({
-    where: and(
-      eq(business.id, businessId),
-      eq(business.organizationId, organizationId)
-    ),
-  })
-
-  if (!businessRecord) {
-    return { error: "Business not found", status: HttpStatusCodes.NOT_FOUND }
-  }
-
-  // Then verify the user belongs to that business
-  const userRecord = await db.query.businessUser.findFirst({
-    where: and(
-      eq(businessUser.id, userId),
-      eq(businessUser.businessId, businessId)
-    ),
-  })
-
-  if (!userRecord) {
-    return { error: "User not found", status: HttpStatusCodes.NOT_FOUND }
-  }
-
-  return { businessRecord, userRecord }
-}
 
 // ============================================================================
 // OAuth Handlers
@@ -92,7 +50,7 @@ export const getGoogleOAuthUrl: AppRouteHandler<
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -189,7 +147,8 @@ export const handleGoogleOAuthCallback: AppRouteHandler<
         .update(calendarConnection)
         .set({
           accessToken: credentials.accessToken,
-          refreshToken: credentials.refreshToken ?? existingConnection.refreshToken,
+          refreshToken:
+            credentials.refreshToken ?? existingConnection.refreshToken,
           tokenExpiresAt: credentials.expiresAt ?? null,
           providerAccountId: credentials.providerAccountId ?? null,
           calendarId,
@@ -287,7 +246,7 @@ export const getMicrosoftOAuthUrl: AppRouteHandler<
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -485,7 +444,7 @@ export const listConnections: AppRouteHandler<ListConnectionsRoute> = async (
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -532,7 +491,7 @@ export const getConnection: AppRouteHandler<GetConnectionRoute> = async (c) => {
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -584,7 +543,7 @@ export const deleteConnection: AppRouteHandler<DeleteConnectionRoute> = async (
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -650,7 +609,7 @@ export const listCalendars: AppRouteHandler<ListCalendarsRoute> = async (c) => {
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404
@@ -709,7 +668,7 @@ export const updateConnectionCalendar: AppRouteHandler<
 
     // Verify access
     const access = await verifyBusinessUserAccess(org.id, businessId, userId)
-    if ("error" in access) {
+    if (isAccessError(access)) {
       return c.json(
         { success: false, message: access.error },
         access.status as 404

@@ -107,7 +107,10 @@ type ChartTooltipContentProps = {
   hideLabel?: boolean
   hideIndicator?: boolean
   label?: string
-  labelFormatter?: (value: React.ReactNode, payload: RechartsPrimitive.TooltipProps<number, string>["payload"]) => React.ReactNode
+  labelFormatter?: (
+    value: React.ReactNode,
+    payload: RechartsPrimitive.TooltipProps<number, string>["payload"]
+  ) => React.ReactNode
   labelClassName?: string
   formatter?: RechartsPrimitive.TooltipProps<number, string>["formatter"]
   color?: string

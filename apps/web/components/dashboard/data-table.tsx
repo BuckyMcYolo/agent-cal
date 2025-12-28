@@ -328,7 +328,12 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
     >
       {row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext()) as React.ReactNode}
+          {
+            flexRender(
+              cell.column.columnDef.cell,
+              cell.getContext()
+            ) as React.ReactNode
+          }
         </TableCell>
       ))}
     </TableRow>

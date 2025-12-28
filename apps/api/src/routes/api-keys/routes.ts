@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi"
-import { selectApiKeySchema } from "@workspace/db/schema/auth"
+import { selectApiKeySchema } from "@workspace/db/schema/better-auth-schema"
 import { forbiddenSchema } from "@/lib/helpers/openapi/schemas/error/forbidden-schema"
 import { internalServerErrorSchema } from "@/lib/helpers/openapi/schemas/error/internal-server-error-schema"
 import { notFoundSchema } from "@/lib/helpers/openapi/schemas/error/not-found-schema"

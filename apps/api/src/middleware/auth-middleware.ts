@@ -1,6 +1,6 @@
 import { auth } from "@workspace/auth"
 import { and, db, eq } from "@workspace/db"
-import { apikey, member } from "@workspace/db/schema/auth"
+import { apikey, member } from "@workspace/db/schema/better-auth-schema"
 import { serverEnv } from "@workspace/env-config/server"
 import type { Context, Next } from "hono"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"

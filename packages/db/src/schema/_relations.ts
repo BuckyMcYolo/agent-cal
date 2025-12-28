@@ -3,6 +3,9 @@
  * All Drizzle relations are defined here.
  */
 import { relations } from "drizzle-orm"
+import { availabilityOverride } from "./availability-override"
+import { availabilityRule } from "./availability-rule"
+import { availabilitySchedule } from "./availability-schedule"
 import {
   account,
   apikey,
@@ -12,8 +15,6 @@ import {
   session,
   user,
 } from "./better-auth-schema"
-import { availabilityRule } from "./availability-rule"
-import { availabilitySchedule } from "./availability-schedule"
 import { booking } from "./booking"
 import { bookingEvent } from "./booking-event"
 import { business } from "./business"
@@ -164,6 +165,7 @@ export const availabilityScheduleRelations = relations(
       references: [businessUser.id],
     }),
     rules: many(availabilityRule),
+    overrides: many(availabilityOverride),
     eventTypes: many(eventType),
   })
 )
@@ -174,6 +176,17 @@ export const availabilityRuleRelations = relations(
   ({ one }) => ({
     schedule: one(availabilitySchedule, {
       fields: [availabilityRule.scheduleId],
+      references: [availabilitySchedule.id],
+    }),
+  })
+)
+
+// AvailabilityOverride relations
+export const availabilityOverrideRelations = relations(
+  availabilityOverride,
+  ({ one }) => ({
+    schedule: one(availabilitySchedule, {
+      fields: [availabilityOverride.scheduleId],
       references: [availabilitySchedule.id],
     }),
   })

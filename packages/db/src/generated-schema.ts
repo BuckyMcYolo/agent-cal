@@ -1,13 +1,13 @@
-import { relations } from "drizzle-orm";
+import { relations } from "drizzle-orm"
 import {
+  boolean,
+  index,
+  integer,
   pgTable,
   text,
   timestamp,
-  boolean,
-  integer,
-  index,
   uniqueIndex,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/pg-core"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -27,7 +27,7 @@ export const user = pgTable("user", {
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
   twoFactorEnabled: boolean("two_factor_enabled").default(false),
-});
+})
 
 export const session = pgTable(
   "session",
@@ -47,8 +47,8 @@ export const session = pgTable(
     impersonatedBy: text("impersonated_by"),
     activeOrganizationId: text("active_organization_id"),
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
-);
+  (table) => [index("session_userId_idx").on(table.userId)]
+)
 
 export const account = pgTable(
   "account",
@@ -71,8 +71,8 @@ export const account = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
-);
+  (table) => [index("account_userId_idx").on(table.userId)]
+)
 
 export const verification = pgTable(
   "verification",
@@ -87,8 +87,8 @@ export const verification = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
-);
+  (table) => [index("verification_identifier_idx").on(table.identifier)]
+)
 
 export const apikey = pgTable(
   "apikey",
@@ -120,8 +120,8 @@ export const apikey = pgTable(
   (table) => [
     index("apikey_key_idx").on(table.key),
     index("apikey_userId_idx").on(table.userId),
-  ],
-);
+  ]
+)
 
 export const organization = pgTable(
   "organization",
@@ -133,8 +133,8 @@ export const organization = pgTable(
     createdAt: timestamp("created_at").notNull(),
     metadata: text("metadata"),
   },
-  (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
-);
+  (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)]
+)
 
 export const member = pgTable(
   "member",
@@ -152,8 +152,8 @@ export const member = pgTable(
   (table) => [
     index("member_organizationId_idx").on(table.organizationId),
     index("member_userId_idx").on(table.userId),
-  ],
-);
+  ]
+)
 
 export const invitation = pgTable(
   "invitation",
@@ -174,8 +174,8 @@ export const invitation = pgTable(
   (table) => [
     index("invitation_organizationId_idx").on(table.organizationId),
     index("invitation_email_idx").on(table.email),
-  ],
-);
+  ]
+)
 
 export const twoFactor = pgTable(
   "two_factor",
@@ -190,8 +190,8 @@ export const twoFactor = pgTable(
   (table) => [
     index("twoFactor_secret_idx").on(table.secret),
     index("twoFactor_userId_idx").on(table.userId),
-  ],
-);
+  ]
+)
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
@@ -200,33 +200,33 @@ export const userRelations = relations(user, ({ many }) => ({
   members: many(member),
   invitations: many(invitation),
   twoFactors: many(twoFactor),
-}));
+}))
 
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const apikeyRelations = relations(apikey, ({ one }) => ({
   user: one(user, {
     fields: [apikey.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const organizationRelations = relations(organization, ({ many }) => ({
   members: many(member),
   invitations: many(invitation),
-}));
+}))
 
 export const memberRelations = relations(member, ({ one }) => ({
   organization: one(organization, {
@@ -237,7 +237,7 @@ export const memberRelations = relations(member, ({ one }) => ({
     fields: [member.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const invitationRelations = relations(invitation, ({ one }) => ({
   organization: one(organization, {
@@ -248,11 +248,11 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
     fields: [invitation.inviterId],
     references: [user.id],
   }),
-}));
+}))
 
 export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
   user: one(user, {
     fields: [twoFactor.userId],
     references: [user.id],
   }),
-}));
+}))

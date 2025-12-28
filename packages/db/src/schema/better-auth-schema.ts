@@ -36,6 +36,9 @@ export const user = pgTable("user", {
   phoneNumberVerified: boolean("phone_number_verified")
     .default(false)
     .notNull(),
+  twoFactorEnabled: boolean("two_factor_enabled")
+    .default(false)
+    .notNull(),
 })
 
 // Organization plan enum for billing tiers
@@ -53,7 +56,8 @@ export const organization = pgTable(
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => new Date())
-      .notNull(),    name: text("name").notNull(),
+      .notNull(),
+    name: text("name").notNull(),
     slug: text("slug").unique(),
     logo: text("logo"),
     metadata: text("metadata"),
@@ -234,9 +238,8 @@ export const twoFactor = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (t) => [index("two_factor_user_id_idx").on(t.userId),
+  (t) => [
+    index("two_factor_user_id_idx").on(t.userId),
     index("twoFactor_secret_idx").on(t.secret),
-
-
   ]
 )

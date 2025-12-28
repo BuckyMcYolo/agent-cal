@@ -4,7 +4,7 @@
  */
 
 import { db } from "@workspace/db"
-import { organization, user } from "@workspace/db/schema/better-auth-schema"
+import { organization } from "@workspace/db/schema/better-auth-schema"
 import { business } from "@workspace/db/schema/business"
 import { businessUser } from "@workspace/db/schema/business-user"
 
@@ -78,7 +78,9 @@ async function seed() {
   console.log(`Business ID:     ${biz.id}`)
   console.log(`Business User ID: ${bizUser.id}`)
   console.log("\nTo test OAuth flow:")
-  console.log(`curl -H "x-api-key: YOUR_API_KEY" "http://localhost:8080/v1/businesses/${biz.id}/users/${bizUser.id}/oauth/google"`)
+  console.log(
+    `curl -H "x-api-key: YOUR_API_KEY" "http://localhost:8080/v1/businesses/${biz.id}/users/${bizUser.id}/oauth/google"`
+  )
 
   process.exit(0)
 }
