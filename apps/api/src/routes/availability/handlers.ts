@@ -1,4 +1,4 @@
-import { and, db, eq, gte, lte } from "@workspace/db"
+import { and, db, eq, gte, lte, ne } from "@workspace/db"
 import { availabilityOverride } from "@workspace/db/schema/availability-override"
 import { availabilityRule } from "@workspace/db/schema/availability-rule"
 import { availabilitySchedule } from "@workspace/db/schema/availability-schedule"
@@ -221,7 +221,7 @@ export const updateSchedule: AppRouteHandler<UpdateScheduleRoute> = async (
         .where(
           and(
             eq(availabilitySchedule.businessUserId, userId),
-            eq(availabilitySchedule.id, scheduleId) // exclude current one (will be set below)
+            ne(availabilitySchedule.id, scheduleId) // exclude current one (will be set below)
           )
         )
     }

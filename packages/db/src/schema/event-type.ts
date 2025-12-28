@@ -74,7 +74,7 @@ export const eventType = pgTable(
     assignmentStrategy: assignmentStrategyEnum("assignment_strategy")
       .notNull()
       .default("round_robin"),
-    eligibleUserIds: text("eligible_user_ids").array(), // ["user_123", "user_456"] or null = all business users
+    eligibleUserIds: uuid("eligible_user_ids").array(), // UUIDs of eligible users, or null = all business users
     metadata: jsonb("metadata"),
   },
   (table) => [
