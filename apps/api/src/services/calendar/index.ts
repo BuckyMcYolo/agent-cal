@@ -1,4 +1,7 @@
-import type { ICalendarProvider, OAuthCredentials } from "@workspace/calendar-integrations"
+import type {
+  ICalendarProvider,
+  OAuthCredentials,
+} from "@workspace/calendar-integrations"
 import type { calendarConnection } from "@workspace/db/schema/calendar-connection"
 import { googleCalendarService } from "./google-calendar-service"
 import { microsoftCalendarService } from "./microsoft-calendar-service"
@@ -16,7 +19,9 @@ export interface CalendarService {
 /**
  * Get the calendar service for a given provider
  */
-export function getCalendarService(provider: CalendarProvider): CalendarService {
+export function getCalendarService(
+  provider: CalendarProvider
+): CalendarService {
   switch (provider) {
     case "google":
       return googleCalendarService

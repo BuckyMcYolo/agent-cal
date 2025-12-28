@@ -29,7 +29,7 @@ export const availabilityRule = pgTable(
     scheduleId: uuid("schedule_id")
       .notNull()
       .references(() => availabilitySchedule.id, { onDelete: "cascade" }),
-    dayOfWeek: integer("day_of_week").notNull(), // 0-6, Sunday=0
+    dayOfWeek: integer("day_of_week").notNull(), // 1-7 ISO weekday (Monday=1, Sunday=7)
     startTime: time("start_time").notNull(),
     endTime: time("end_time").notNull(),
   },
@@ -38,7 +38,7 @@ export const availabilityRule = pgTable(
     index("availability_rule_day_idx").on(table.dayOfWeek),
     check(
       "day_of_week_check",
-      sql`${table.dayOfWeek} >= 0 AND ${table.dayOfWeek} <= 6`
+      sql`${table.dayOfWeek} >= 1 AND ${table.dayOfWeek} <= 7`
     ),
   ]
 )
@@ -49,7 +49,7 @@ export const selectAvailabilityRuleSchema = createSelectSchema(availabilityRule)
 export const insertAvailabilityRuleSchema = createInsertSchema(
   availabilityRule,
   {
-    dayOfWeek: (schema) => schema.min(0).max(6),
+    dayOfWeek: (schema) => schema.min(1).max(7),
   }
 ).omit({
   id: true,

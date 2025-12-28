@@ -1,5 +1,5 @@
 import { db, eq } from "@workspace/db"
-import { user } from "@workspace/db/schema/auth"
+import { user } from "@workspace/db/schema/better-auth-schema"
 import { serverEnv } from "@workspace/env-config"
 import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
@@ -10,7 +10,12 @@ import {
   openAPI,
   organization,
   phoneNumber,
+  twoFactor,
 } from "better-auth/plugins"
+
+// Environment helpers
+const isProduction = () => serverEnv.NODE_ENV === "production"
+const isDevelopment = () => serverEnv.NODE_ENV === "development"
 
 const options = {
   appName: "AgentCal",
@@ -19,26 +24,58 @@ const options = {
   }),
   advanced: {
     cookiePrefix: "AC", // AgentCal session
+    database: {
+      generateId: false, // Let Postgres generate UUIDs via defaultRandom()
+    },
+    // Cross-subdomain cookies for app.agentcal.ai + api.agentcal.ai
+    crossSubDomainCookies: isProduction()
+      ? {
+          enabled: true,
+          domain: ".agentcal.ai",
+        }
+      : undefined,
   },
-  // Cookie cache
-  // This is used to cache the session in a cookie for faster access
+  // Cookie cache for faster session access
   session: {
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60, // 5 minutes
     },
   },
-  //rate limiting
+  // Rate limiting
   rateLimit: {
     enabled: true,
-    storage: "memory", //will add secondary storage later
-    max: 50, // max requests
-    window: 60, //60 seconds
+    storage: "memory", // TODO: add Redis as secondary storage
+    max: 60, // max requests
+    window: 60, // 60 seconds
   },
 
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
+    requireEmailVerification: true,
+    sendResetPassword: async (
+      { user, token, url },
+      _request
+    ): Promise<void> => {
+      // TODO: Implement password reset email
+      console.log("[Better Auth] Password reset requested", {
+        email: user.email,
+        url,
+      })
+    },
+  },
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, token, url }, _request) => {
+      // TODO: Implement email verification sending
+      console.log("[Better Auth] Email verification requested", {
+        email: user.email,
+        url,
+      })
+    },
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
   },
 
   databaseHooks: {
@@ -104,15 +141,19 @@ const options = {
     },
   },
   secret: serverEnv.BETTER_AUTH_SECRET,
-  trustedOrigins: [
-    serverEnv.NODE_ENV === "production"
-      ? "https://agentcal.ai"
-      : "http://localhost:3000",
-  ],
+  // Environment-aware trusted origins
+  trustedOrigins: isProduction()
+    ? ["https://app.agentcal.ai", "https://api.agentcal.ai"]
+    : [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://localhost:4000",
+      ],
   plugins: [
     phoneNumber({
       sendOTP: ({ phoneNumber, code }, _request) => {
-        // Implement sending OTP code via SMS
+        // TODO: Implement sending OTP code via SMS
+        console.log("[Better Auth] Phone OTP requested", { phoneNumber })
       },
     }),
     admin({
@@ -124,7 +165,7 @@ const options = {
       rateLimit: {
         enabled: true,
         timeWindow: 1000 * 60, // 1 minute
-        maxRequests: 100, //  100 requests per minute
+        maxRequests: 100, // 100 requests per minute
       },
       permissions: {
         defaultPermissions: {
@@ -133,12 +174,31 @@ const options = {
       },
     }),
     openAPI(),
-    organization(),
-    emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
-        // Implement the sendVerificationOTP method to send the OTP to the user's email address
+    organization({
+      sendInvitationEmail: async (
+        { invitation, organization, inviter, email, id, role },
+        _request
+      ) => {
+        const inviteUrl = isDevelopment()
+          ? `http://localhost:3000/accept-invitation?inviteId=${id}`
+          : `https://app.agentcal.ai/accept-invitation?inviteId=${id}`
+
+        // TODO: Implement invitation email
+        console.log("[Better Auth] Invitation email requested", {
+          email,
+          inviteUrl,
+          orgName: organization.name,
+          inviterName: inviter.user.name,
+        })
       },
     }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        // TODO: Implement sending OTP to user's email
+        console.log("[Better Auth] Email OTP requested", { email, type })
+      },
+    }),
+    twoFactor(), // TOTP apps (Google Authenticator, etc.)
   ],
 } satisfies BetterAuthOptions
 
