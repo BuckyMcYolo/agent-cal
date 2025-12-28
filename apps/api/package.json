@@ -34,8 +34,8 @@
   },
   "exports": {
     "./app": {
-      "default": "./dist/app.js",
-      "types": "./dist/app.d.ts"
+      "types": "./dist/app.d.ts",
+      "default": "./dist/app.js"
     }
   }
 }

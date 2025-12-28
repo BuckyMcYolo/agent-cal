@@ -22,35 +22,50 @@ import { authMiddleware } from "@/middleware/auth-middleware"
 // ============================================================================
 
 const BusinessUserParamsSchema = z.object({
-  businessId: z.string().uuid().openapi({
-    param: { name: "businessId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440000",
-  }),
-  userId: z.string().uuid().openapi({
-    param: { name: "userId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440001",
-  }),
+  businessId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "businessId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440000",
+    }),
+  userId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "userId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440001",
+    }),
 })
 
 const ScheduleParamsSchema = BusinessUserParamsSchema.extend({
-  scheduleId: z.string().uuid().openapi({
-    param: { name: "scheduleId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440002",
-  }),
+  scheduleId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "scheduleId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440002",
+    }),
 })
 
 const RuleParamsSchema = ScheduleParamsSchema.extend({
-  ruleId: z.string().uuid().openapi({
-    param: { name: "ruleId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440003",
-  }),
+  ruleId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "ruleId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440003",
+    }),
 })
 
 const BusinessParamsSchema = z.object({
-  businessId: z.string().uuid().openapi({
-    param: { name: "businessId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440000",
-  }),
+  businessId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "businessId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440000",
+    }),
 })
 
 // ============================================================================

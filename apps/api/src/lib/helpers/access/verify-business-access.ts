@@ -77,7 +77,10 @@ export async function verifyBusinessUserAccess(
  * Type guard to check if result is an error
  */
 export function isAccessError(
-  result: BusinessAccessError | BusinessAccessSuccess | BusinessUserAccessSuccess
+  result:
+    | BusinessAccessError
+    | BusinessAccessSuccess
+    | BusinessUserAccessSuccess
 ): result is BusinessAccessError {
   return "error" in result
 }

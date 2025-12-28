@@ -36,9 +36,7 @@ export const user = pgTable("user", {
   phoneNumberVerified: boolean("phone_number_verified")
     .default(false)
     .notNull(),
-  twoFactorEnabled: boolean("two_factor_enabled")
-    .default(false)
-    .notNull(),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false).notNull(),
 })
 
 // Organization plan enum for billing tiers

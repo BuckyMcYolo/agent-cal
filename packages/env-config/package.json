@@ -11,16 +11,16 @@
   },
   "exports": {
     ".": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./client": {
-      "default": "./dist/client-env.js",
-      "types": "./dist/client-env.d.ts"
+      "types": "./dist/client-env.d.ts",
+      "default": "./dist/client-env.js"
     },
     "./server": {
-      "default": "./dist/server-env.js",
-      "types": "./dist/server-env.d.ts"
+      "types": "./dist/server-env.d.ts",
+      "default": "./dist/server-env.js"
     }
   },
   "dependencies": {

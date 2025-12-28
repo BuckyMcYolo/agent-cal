@@ -1,6 +1,9 @@
 import type { OpenAPIHono, RouteConfig, RouteHandler } from "@hono/zod-openapi"
 import type { Session, User } from "@workspace/auth"
-import type { member, organization } from "@workspace/db/schema/better-auth-schema"
+import type {
+  member,
+  organization,
+} from "@workspace/db/schema/better-auth-schema"
 import type { Schema } from "hono"
 import type { PinoLogger } from "hono-pino"
 
