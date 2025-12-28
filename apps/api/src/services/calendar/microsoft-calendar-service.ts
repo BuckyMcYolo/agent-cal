@@ -34,10 +34,16 @@ class MicrosoftCalendarService {
       )
     }
 
+    if (!serverEnv.MICROSOFT_CLIENT_ID || !serverEnv.MICROSOFT_CLIENT_SECRET) {
+      throw new Error(
+        "Microsoft Calendar integration not configured. Set MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET."
+      )
+    }
+
     if (!this.client) {
       this.client = new MicrosoftCalendarClient({
-        clientId: serverEnv.MICROSOFT_CLIENT_ID!,
-        clientSecret: serverEnv.MICROSOFT_CLIENT_SECRET!,
+        clientId: serverEnv.MICROSOFT_CLIENT_ID,
+        clientSecret: serverEnv.MICROSOFT_CLIENT_SECRET,
         tenantId: serverEnv.MICROSOFT_TENANT_ID,
       })
     }

@@ -903,21 +903,21 @@ agent-cal/
 - [x] Add API key authentication middleware
 
 #### Step 1.2: Google Calendar Integration
-- [ ] Set up Google Cloud project + OAuth consent screen
-- [ ] Implement OAuth redirect flow (`/v1/accounts/:id/oauth/google`)
-- [ ] Implement OAuth callback + token exchange
-- [ ] Store encrypted refresh tokens
-- [ ] Build token refresh background job
-- [ ] Implement calendar read (get events/busy times)
-- [ ] Implement calendar write (create/update/delete events)
+- [x] Set up Google Cloud project + OAuth consent screen
+- [x] Implement OAuth redirect flow (`/v1/accounts/:id/oauth/google`)
+- [x] Implement OAuth callback + token exchange
+- [x] Store refresh tokens (encryption at rest is TODO)
+- [x] Build token refresh (on-demand in `getCredentialsWithRefresh`, background job TODO)
+- [x] Implement calendar read (get events/busy times)
+- [x] Implement calendar write (create/update/delete events)
 
 #### Step 1.3: Availability API
-- [ ] `GET /v1/accounts/:id/availability` endpoint
-- [ ] Availability rule storage (day of week, start/end time, timezone)
-- [ ] Conflict detection against existing calendar events
-- [ ] Timezone conversion (store UTC, accept/return with timezone param)
-- [ ] Buffer time handling (before/after meetings)
-- [ ] Minimum notice period enforcement
+- [x] `GET /v1/businesses/:id/availability` endpoint
+- [x] Availability rule storage (day of week, start/end time, timezone)
+- [x] Conflict detection against existing calendar events
+- [x] Timezone conversion (store UTC, accept/return with timezone param)
+- [x] Buffer time handling (before/after meetings)
+- [x] Minimum notice period enforcement
 
 #### Step 1.4: Bookings API
 - [ ] `POST /v1/accounts/:id/bookings` - create booking

@@ -10,21 +10,30 @@ import { authMiddleware } from "@/middleware/auth-middleware"
 
 // Path params for business/user routes
 const BusinessUserParamsSchema = z.object({
-  businessId: z.string().uuid().openapi({
-    param: { name: "businessId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440000",
-  }),
-  userId: z.string().uuid().openapi({
-    param: { name: "userId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440001",
-  }),
+  businessId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "businessId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440000",
+    }),
+  userId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "userId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440001",
+    }),
 })
 
 const ConnectionIdParamsSchema = BusinessUserParamsSchema.extend({
-  connectionId: z.string().uuid().openapi({
-    param: { name: "connectionId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440002",
-  }),
+  connectionId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "connectionId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440002",
+    }),
 })
 
 // Response schemas
@@ -215,8 +224,7 @@ export const listCalendars = createRoute({
   path: "/v1/businesses/{businessId}/users/{userId}/connections/{connectionId}/calendars",
   method: "get",
   summary: "List available calendars",
-  description:
-    "Returns all calendars available through a calendar connection",
+  description: "Returns all calendars available through a calendar connection",
   middleware: [authMiddleware] as const,
   request: {
     params: ConnectionIdParamsSchema,
@@ -377,7 +385,8 @@ export const handleMicrosoftOAuthCallback = createRoute({
 export type GetGoogleOAuthUrlRoute = typeof getGoogleOAuthUrl
 export type HandleGoogleOAuthCallbackRoute = typeof handleGoogleOAuthCallback
 export type GetMicrosoftOAuthUrlRoute = typeof getMicrosoftOAuthUrl
-export type HandleMicrosoftOAuthCallbackRoute = typeof handleMicrosoftOAuthCallback
+export type HandleMicrosoftOAuthCallbackRoute =
+  typeof handleMicrosoftOAuthCallback
 export type ListConnectionsRoute = typeof listConnections
 export type GetConnectionRoute = typeof getConnection
 export type DeleteConnectionRoute = typeof deleteConnection

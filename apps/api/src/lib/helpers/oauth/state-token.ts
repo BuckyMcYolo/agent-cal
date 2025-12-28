@@ -51,7 +51,10 @@ export function verifyOAuthStateToken(token: string): OAuthStatePayload {
   const bufSig = Buffer.from(signature)
   const bufExpected = Buffer.from(expectedSignature)
 
-  if (bufSig.length !== bufExpected.length || !timingSafeEqual(bufSig, bufExpected)) {
+  if (
+    bufSig.length !== bufExpected.length ||
+    !timingSafeEqual(bufSig, bufExpected)
+  ) {
     throw new Error("Invalid state token signature")
   }
 

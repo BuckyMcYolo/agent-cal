@@ -1,6 +1,6 @@
 import { auth } from "@workspace/auth"
 import { and, db, desc, eq, sql } from "@workspace/db"
-import { apikey, user } from "@workspace/db/schema/auth"
+import { apikey, user } from "@workspace/db/schema/better-auth-schema"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
 import type { AppRouteHandler } from "@/lib/types/app-types"
 import type {

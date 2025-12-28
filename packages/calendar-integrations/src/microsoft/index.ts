@@ -1,2 +1,2 @@
-export { MicrosoftCalendarClient } from "./client"
 export type { MicrosoftCalendarConfig } from "./client"
+export { MicrosoftCalendarClient } from "./client"
