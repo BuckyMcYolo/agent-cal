@@ -606,8 +606,8 @@ async function fetchUserAvailabilityData(
     db.query.availabilityOverride.findMany({
       where: and(
         eq(availabilityOverride.scheduleId, schedule.id),
-        gte(availabilityOverride.date, queryStart.toISODate()!),
-        lte(availabilityOverride.date, queryEnd.toISODate()!)
+        gte(availabilityOverride.date, queryStart.toISODate() ?? ""),
+        lte(availabilityOverride.date, queryEnd.toISODate() ?? "")
       ),
     }),
     db.query.calendarConnection.findFirst({
@@ -618,7 +618,7 @@ async function fetchUserAvailabilityData(
   // Get busy times from calendar
   let busyBlocks: BusyBlock[] = []
 
-  if (connection && connection.calendarId) {
+  if (connection?.calendarId) {
     try {
       const service = getCalendarServiceForConnection(connection)
       const credentials = await service.getCredentialsWithRefresh(connection)
@@ -780,7 +780,7 @@ export const getAvailability: AppRouteHandler<GetAvailabilityRoute> = async (
       const endDate_ = queryEnd.setZone(scheduleTimezone).endOf("day")
 
       while (currentDate <= endDate_) {
-        const dateStr = currentDate.toISODate()!
+        const dateStr = currentDate.toISODate() ?? ""
 
         // Check for date override first
         const override = overrides.find((o) => o.date === dateStr)

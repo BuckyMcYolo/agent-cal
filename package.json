@@ -19,6 +19,7 @@
     "format": "biome format . --write",
     "lint": "biome lint . ",
     "lint:fix": "biome check . --write",
+    "typecheck": "turbo typecheck",
     "db:studio": "pnpm --filter @workspace/db exec drizzle-kit studio",
     "db:pull": "pnpm --filter @workspace/db exec drizzle-kit pull",
     "db:push": "pnpm --filter @workspace/db exec drizzle-kit push",

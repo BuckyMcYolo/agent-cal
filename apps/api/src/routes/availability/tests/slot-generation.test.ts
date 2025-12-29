@@ -39,10 +39,10 @@ describe("generateDaySlots", () => {
 
       // 9:00-17:00 = 8 hours = 480 mins / 30 = 16 slots
       expect(slots).toHaveLength(16)
-      expect(slots[0]!.start.hour).toBe(9)
-      expect(slots[0]!.start.minute).toBe(0)
-      expect(slots[15]!.start.hour).toBe(16)
-      expect(slots[15]!.start.minute).toBe(30)
+      expect(slots[0]?.start.hour).toBe(9)
+      expect(slots[0]?.start.minute).toBe(0)
+      expect(slots[15]?.start.hour).toBe(16)
+      expect(slots[15]?.start.minute).toBe(30)
     })
 
     it("generates correct number of 60-min slots for 9am-5pm", () => {
@@ -92,10 +92,10 @@ describe("generateDaySlots", () => {
 
       // 9:00, 9:15, 9:30 = 3 slots that can fit 30-min duration before 10:00
       expect(slots).toHaveLength(3)
-      expect(slots[0]!.start.hour).toBe(9)
-      expect(slots[0]!.start.minute).toBe(0)
-      expect(slots[1]!.start.minute).toBe(15)
-      expect(slots[2]!.start.minute).toBe(30)
+      expect(slots[0]?.start.hour).toBe(9)
+      expect(slots[0]?.start.minute).toBe(0)
+      expect(slots[1]?.start.minute).toBe(15)
+      expect(slots[2]?.start.minute).toBe(30)
     })
 
     it("generates fewer slots with larger step than duration", () => {
@@ -112,8 +112,8 @@ describe("generateDaySlots", () => {
 
       // 9:00 and 10:00 = 2 slots
       expect(slots).toHaveLength(2)
-      expect(slots[0]!.start.hour).toBe(9)
-      expect(slots[1]!.start.hour).toBe(10)
+      expect(slots[0]?.start.hour).toBe(9)
+      expect(slots[1]?.start.hour).toBe(10)
     })
   })
 
@@ -265,8 +265,8 @@ describe("generateDaySlots", () => {
       // All slots before 10:30 should be excluded
       const hasEarlySlot = slots.some((s) => s.start < minNotice)
       expect(hasEarlySlot).toBe(false)
-      expect(slots[0]!.start.hour).toBe(10)
-      expect(slots[0]!.start.minute).toBe(30)
+      expect(slots[0]?.start.hour).toBe(10)
+      expect(slots[0]?.start.minute).toBe(30)
     })
   })
 
@@ -317,10 +317,10 @@ describe("generateDaySlots", () => {
 
       expect(slots).toHaveLength(3)
       // Slots should be in NY timezone
-      expect(slots[0]!.start.zoneName).toBe("America/New_York")
-      expect(slots[0]!.start.hour).toBe(9)
+      expect(slots[0]?.start.zoneName).toBe("America/New_York")
+      expect(slots[0]?.start.hour).toBe(9)
       // 9am NY = 2pm UTC (EST is UTC-5)
-      expect(slots[0]!.start.toUTC().hour).toBe(14)
+      expect(slots[0]?.start.toUTC().hour).toBe(14)
     })
 
     it("handles busy blocks across timezone boundaries", () => {
@@ -356,8 +356,8 @@ describe("generateDaySlots", () => {
       // 10am NY = 3pm UTC, conflicts with busy block
       // Should have 2 slots: 9am and 11am
       expect(slots).toHaveLength(2)
-      expect(slots[0]!.start.hour).toBe(9)
-      expect(slots[1]!.start.hour).toBe(11)
+      expect(slots[0]?.start.hour).toBe(9)
+      expect(slots[1]?.start.hour).toBe(11)
     })
 
     it("handles DST transition day - spring forward", () => {
@@ -384,8 +384,8 @@ describe("generateDaySlots", () => {
       // So we should get 1am and 3am = 2 slots
       // Note: Luxon handles this - 2am on this day is invalid
       expect(slots).toHaveLength(2)
-      expect(slots[0]!.start.hour).toBe(1)
-      expect(slots[1]!.start.hour).toBe(3)
+      expect(slots[0]?.start.hour).toBe(1)
+      expect(slots[1]?.start.hour).toBe(3)
     })
 
     it("handles DST transition day - fall back", () => {
@@ -411,8 +411,8 @@ describe("generateDaySlots", () => {
       // 9am, 10am, 11am, 12pm = 4 slots
       // DST transition at 2am shouldn't affect daytime slots
       expect(slots).toHaveLength(4)
-      expect(slots[0]!.start.hour).toBe(9)
-      expect(slots[3]!.start.hour).toBe(12)
+      expect(slots[0]?.start.hour).toBe(9)
+      expect(slots[3]?.start.hour).toBe(12)
     })
 
     it("converts slots to different output timezone", () => {
@@ -442,9 +442,9 @@ describe("generateDaySlots", () => {
       }))
 
       // 9am NY = 6am LA (3 hour difference)
-      expect(laSlots[0]!.start.hour).toBe(6)
-      expect(laSlots[1]!.start.hour).toBe(6)
-      expect(laSlots[1]!.start.minute).toBe(30)
+      expect(laSlots[0]?.start.hour).toBe(6)
+      expect(laSlots[1]?.start.hour).toBe(6)
+      expect(laSlots[1]?.start.minute).toBe(30)
     })
 
     it("handles minimum notice across timezones", () => {
@@ -472,7 +472,7 @@ describe("generateDaySlots", () => {
       // Slots at 0am, 1am are before min notice (2am Tokyo)
       // Slots at 2am, 3am, 4am, 5am, 6am, 7am = 6 slots should be available
       expect(slots).toHaveLength(6)
-      expect(slots[0]!.start.hour).toBe(2)
+      expect(slots[0]?.start.hour).toBe(2)
     })
   })
 })
