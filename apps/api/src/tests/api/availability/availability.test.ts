@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createRouter } from "@/lib/helpers/app/create-app"
-import * as routes from "../routes"
+import * as routes from "@/routes/v1/availability/routes"
 import {
   createMockBusiness,
   createMockBusinessUser,
@@ -157,7 +157,7 @@ vi.mock("@/services/calendar", () => ({
 // Test Setup
 // ============================================================================
 
-import * as handlers from "../handlers"
+import * as handlers from "@/routes/v1/availability/handlers"
 
 function createTestRouter() {
   return createRouter().openapi(
