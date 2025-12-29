@@ -103,7 +103,7 @@ export const handleGoogleOAuthCallback: AppRouteHandler<
       return c.json({ success: false, message }, HttpStatusCodes.BAD_REQUEST)
     }
 
-    const { businessUserId, redirectUri } = statePayload
+    const { businessUserId } = statePayload
 
     // Verify the business user exists
     const userRecord = await db.query.businessUser.findFirst({
@@ -315,7 +315,7 @@ export const handleMicrosoftOAuthCallback: AppRouteHandler<
       return c.json({ success: false, message }, HttpStatusCodes.BAD_REQUEST)
     }
 
-    const { businessUserId, redirectUri } = statePayload
+    const { businessUserId } = statePayload
 
     // Verify the business user exists
     const userRecord = await db.query.businessUser.findFirst({

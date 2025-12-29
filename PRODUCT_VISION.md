@@ -658,7 +658,7 @@ organizations (our customers - SaaS companies)
 ├── businesses (their customers)
 │   ├── id: uuid
 │   ├── organization_id: fk
-│   ├── reference_customer_id: string (org's internal ID)
+│   ├── external_business_id: string (org's internal ID)
 │   ├── name: string
 │   ├── slug: string (globally unique, for URLs like agentcal.ai/acme-insurance)
 │   ├── metadata: jsonb
@@ -667,7 +667,7 @@ organizations (our customers - SaaS companies)
 │   ├── business_users (schedulable people)
 │   │   ├── id: uuid
 │   │   ├── business_id: fk
-│   │   ├── reference_user_id: string (org's internal ID)
+│   │   ├── external_user_id: string (org's internal ID)
 │   │   ├── email: string
 │   │   ├── name: string
 │   │   ├── slug: string (unique per business, for URLs like /acme/john/consultation)
@@ -920,11 +920,11 @@ agent-cal/
 - [x] Minimum notice period enforcement
 
 #### Step 1.4: Bookings API
-- [ ] `POST /v1/accounts/:id/bookings` - create booking
-- [ ] `GET /v1/accounts/:id/bookings` - list bookings
-- [ ] `GET /v1/accounts/:id/bookings/:id` - get booking
-- [ ] `PATCH /v1/accounts/:id/bookings/:id` - reschedule
-- [ ] `DELETE /v1/accounts/:id/bookings/:id` - cancel
+- [ ] `POST /v1/businesses/:id/bookings` - create booking
+- [ ] `GET /v1/businesses/:id/bookings` - list bookings
+- [ ] `GET /v1/businesses/:id/bookings/:bookingId` - get booking
+- [ ] `PATCH /v1/businesses/:id/bookings/:bookingId` - reschedule
+- [ ] `DELETE /v1/businesses/:id/bookings/:bookingId` - cancel
 - [ ] Create Google Calendar event on booking
 - [ ] Send calendar invite (.ics) to attendee via email
 - [ ] Update/delete calendar event on reschedule/cancel

@@ -56,7 +56,7 @@ const CalendarListItemSchema = z.object({
 // ============================================================================
 
 export const getGoogleOAuthUrl = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/oauth/google",
+  path: "/businesses/{businessId}/users/{userId}/oauth/google",
   method: "get",
   summary: "Get Google OAuth authorization URL",
   description:
@@ -92,7 +92,7 @@ export const getGoogleOAuthUrl = createRoute({
 })
 
 export const handleGoogleOAuthCallback = createRoute({
-  path: "/v1/oauth/google/callback",
+  path: "/oauth/google/callback",
   method: "get",
   summary: "Handle Google OAuth callback",
   description:
@@ -135,7 +135,7 @@ export const handleGoogleOAuthCallback = createRoute({
 // ============================================================================
 
 export const listConnections = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/connections",
+  path: "/businesses/{businessId}/users/{userId}/connections",
   method: "get",
   summary: "List calendar connections",
   description: "Returns all calendar connections for a business user",
@@ -164,7 +164,7 @@ export const listConnections = createRoute({
 })
 
 export const getConnection = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/connections/{connectionId}",
+  path: "/businesses/{businessId}/users/{userId}/connections/{connectionId}",
   method: "get",
   summary: "Get a calendar connection",
   description: "Returns details of a specific calendar connection",
@@ -191,7 +191,7 @@ export const getConnection = createRoute({
 })
 
 export const deleteConnection = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/connections/{connectionId}",
+  path: "/businesses/{businessId}/users/{userId}/connections/{connectionId}",
   method: "delete",
   summary: "Delete a calendar connection",
   description: "Disconnects a calendar from a business user",
@@ -221,7 +221,7 @@ export const deleteConnection = createRoute({
 })
 
 export const listCalendars = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/connections/{connectionId}/calendars",
+  path: "/businesses/{businessId}/users/{userId}/connections/{connectionId}/calendars",
   method: "get",
   summary: "List available calendars",
   description: "Returns all calendars available through a calendar connection",
@@ -250,7 +250,7 @@ export const listCalendars = createRoute({
 })
 
 export const updateConnectionCalendar = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/connections/{connectionId}",
+  path: "/businesses/{businessId}/users/{userId}/connections/{connectionId}",
   method: "patch",
   summary: "Update calendar connection",
   description: "Update the selected calendar for a connection",
@@ -290,7 +290,7 @@ export const updateConnectionCalendar = createRoute({
 // ============================================================================
 
 export const getMicrosoftOAuthUrl = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/oauth/microsoft",
+  path: "/businesses/{businessId}/users/{userId}/oauth/microsoft",
   method: "get",
   summary: "Get Microsoft OAuth authorization URL",
   description:
@@ -333,7 +333,7 @@ export const getMicrosoftOAuthUrl = createRoute({
 })
 
 export const handleMicrosoftOAuthCallback = createRoute({
-  path: "/v1/oauth/microsoft/callback",
+  path: "/oauth/microsoft/callback",
   method: "get",
   summary: "Handle Microsoft OAuth callback",
   description:

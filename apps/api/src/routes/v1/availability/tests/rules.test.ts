@@ -232,7 +232,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$post({
         param: {
@@ -262,7 +262,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$post({
         param: {
@@ -288,7 +288,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$post({
         param: {
@@ -315,7 +315,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$patch({
         param: {
@@ -343,7 +343,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$patch({
         param: {
@@ -369,7 +369,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$patch({
         param: {
@@ -391,7 +391,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$patch({
         param: {
@@ -417,7 +417,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$delete({
         param: {
@@ -439,7 +439,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules[":ruleId"].$delete({
         param: {
@@ -465,7 +465,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$put({
         param: {
@@ -494,7 +494,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$put({
         param: {
@@ -516,7 +516,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$put({
         param: {
@@ -543,7 +543,7 @@ describe("Availability Rules CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].rules.$put({
         param: {

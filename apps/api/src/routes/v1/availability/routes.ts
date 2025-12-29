@@ -100,7 +100,7 @@ const AvailabilityResponseSchema = z.object({
 // ============================================================================
 
 export const listSchedules = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules",
+  path: "/businesses/{businessId}/users/{userId}/schedules",
   method: "get",
   summary: "List availability schedules",
   description: "Returns all availability schedules for a business user",
@@ -129,7 +129,7 @@ export const listSchedules = createRoute({
 })
 
 export const createSchedule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules",
+  path: "/businesses/{businessId}/users/{userId}/schedules",
   method: "post",
   summary: "Create availability schedule",
   description: "Creates a new availability schedule for a business user",
@@ -160,7 +160,7 @@ export const createSchedule = createRoute({
 })
 
 export const getSchedule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
   method: "get",
   summary: "Get availability schedule",
   description: "Returns a specific availability schedule with its rules",
@@ -187,7 +187,7 @@ export const getSchedule = createRoute({
 })
 
 export const updateSchedule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
   method: "patch",
   summary: "Update availability schedule",
   description: "Updates an existing availability schedule",
@@ -218,7 +218,7 @@ export const updateSchedule = createRoute({
 })
 
 export const deleteSchedule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}",
   method: "delete",
   summary: "Delete availability schedule",
   description: "Deletes an availability schedule and all its rules",
@@ -252,7 +252,7 @@ export const deleteSchedule = createRoute({
 // ============================================================================
 
 export const createRule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules",
   method: "post",
   summary: "Create availability rule",
   description: "Adds a new availability rule to a schedule",
@@ -290,7 +290,7 @@ export const createRule = createRoute({
 })
 
 export const updateRule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules/{ruleId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules/{ruleId}",
   method: "patch",
   summary: "Update availability rule",
   description: "Updates an existing availability rule",
@@ -328,7 +328,7 @@ export const updateRule = createRoute({
 })
 
 export const deleteRule = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules/{ruleId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules/{ruleId}",
   method: "delete",
   summary: "Delete availability rule",
   description: "Deletes an availability rule from a schedule",
@@ -370,7 +370,7 @@ const BatchRulesRequestSchema = z.object({
 })
 
 export const replaceRules = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/rules",
   method: "put",
   summary: "Replace all availability rules",
   description:
@@ -415,7 +415,7 @@ export const replaceRules = createRoute({
 // ============================================================================
 
 export const getAvailability = createRoute({
-  path: "/v1/businesses/{businessId}/availability",
+  path: "/businesses/{businessId}/availability",
   method: "get",
   summary: "Get available time slots",
   description:

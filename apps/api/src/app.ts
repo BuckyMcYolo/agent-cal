@@ -5,8 +5,8 @@ import createApp from "@/lib/helpers/app/create-app"
 import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import apiKeysRouter from "./routes/api-keys"
-import availabilityRouter from "./routes/availability"
-import calendarConnectionsRouter from "./routes/calendar-connections"
+import availabilityRouter from "./routes/v1/availability"
+import calendarConnectionsRouter from "./routes/v1/calendar-connections"
 
 const app = createApp()
 
@@ -34,14 +34,19 @@ app.use(
 
 configureOpenAPI(app)
 
-const routes = [
-  index,
-  apiKeysRouter,
-  availabilityRouter,
-  calendarConnectionsRouter,
-] as const
+// Health check at root
+app.route("/", index)
 
-routes.forEach((route) => app.route("/", route))
+// Internal routes (not versioned)
+const internalRoutes = [apiKeysRouter] as const
+internalRoutes.forEach((route) => app.route("/", route))
+
+// Versioned public API routes
+const v1Routes = [availabilityRouter, calendarConnectionsRouter] as const
+v1Routes.forEach((route) => app.route("/v1", route))
+
+// All routes for frontend client types
+const allRoutes = [...internalRoutes, ...v1Routes] as const
 
 app.get("/docs/auth", async (c) => {
   const openAPIAuth = await auth.api.generateOpenAPISchema()
@@ -52,6 +57,6 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
   return auth.handler(c.req.raw)
 })
 
-export type AppType = (typeof routes)[number]
+export type AppType = (typeof allRoutes)[number]
 
 export default app
