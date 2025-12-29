@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createRouter } from "@/lib/helpers/app/create-app"
-import * as overrideRoutes from "../overrides/routes"
+import * as overrideRoutes from "@/routes/v1/availability/overrides/routes"
 import {
   createMockBusiness,
   createMockBusinessUser,
@@ -167,7 +167,7 @@ vi.mock("@/lib/helpers/access/verify-business-access", () => ({
 // Test Setup
 // ============================================================================
 
-import * as overrideHandlers from "../overrides/handlers"
+import * as overrideHandlers from "@/routes/v1/availability/overrides/handlers"
 
 function createTestRouter() {
   return createRouter()
