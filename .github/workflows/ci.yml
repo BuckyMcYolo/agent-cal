@@ -3,12 +3,12 @@ name: CI
 on:
   pull_request:
     branches: [main, dev]
-  push:
-    branches: [main, dev]
 
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
 
     steps:
       - name: Checkout
