@@ -6,6 +6,7 @@ import configureOpenAPI from "@/lib/helpers/openapi/configure-openapi"
 import index from "@/routes/index.route"
 import apiKeysRouter from "./routes/api-keys"
 import availabilityRouter from "./routes/v1/availability"
+import bookingsRouter from "./routes/v1/bookings"
 import calendarConnectionsRouter from "./routes/v1/calendar-connections"
 
 const app = createApp()
@@ -42,7 +43,11 @@ const internalRoutes = [apiKeysRouter] as const
 internalRoutes.forEach((route) => app.route("/", route))
 
 // Versioned public API routes
-const v1Routes = [availabilityRouter, calendarConnectionsRouter] as const
+const v1Routes = [
+  availabilityRouter,
+  bookingsRouter,
+  calendarConnectionsRouter,
+] as const
 v1Routes.forEach((route) => app.route("/v1", route))
 
 // All routes for frontend client types
