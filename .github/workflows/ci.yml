@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_API_URL: http://localhost:8080
+      API_URL: http://localhost:8080
+      DATABASE_URL: postgres://localhost:5432/test
+      BETTER_AUTH_SECRET: test-secret-for-ci
+      GOOGLE_CLIENT_ID: test-client-id
+      GOOGLE_CLIENT_SECRET: test-client-secret
 
     steps:
       - name: Checkout
@@ -28,6 +33,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
       - name: Lint
         run: pnpm lint
