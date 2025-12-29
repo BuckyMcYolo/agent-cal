@@ -214,9 +214,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -241,9 +239,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -266,9 +262,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -288,9 +282,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: "00000000-0000-0000-0000-000000000000",
         },
@@ -308,9 +300,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -331,9 +321,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -360,9 +348,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -388,9 +374,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -420,9 +404,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -452,9 +434,7 @@ describe("Availability Calculation", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },
@@ -482,9 +462,7 @@ describe("Availability Calculation", () => {
       const client = testClient(app)
 
       // Query for a date far in the future
-      const res = await client["v1"]["businesses"][":businessId"][
-        "availability"
-      ].$get({
+      const res = await client.v1.businesses[":businessId"].availability.$get({
         param: {
           businessId: mockUUIDs.businessId,
         },

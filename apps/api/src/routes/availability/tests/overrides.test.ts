@@ -205,9 +205,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$get({
+      ].schedules[":scheduleId"].overrides.$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -228,9 +228,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$get({
+      ].schedules[":scheduleId"].overrides.$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -251,9 +251,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$get({
+      ].schedules[":scheduleId"].overrides.$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -271,9 +271,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$post({
+      ].schedules[":scheduleId"].overrides.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -295,9 +295,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$post({
+      ].schedules[":scheduleId"].overrides.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -326,9 +326,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$post({
+      ].schedules[":scheduleId"].overrides.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -351,9 +351,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$post({
+      ].schedules[":scheduleId"].overrides.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -380,9 +380,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"].$post({
+      ].schedules[":scheduleId"].overrides.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -406,9 +406,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$patch({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -444,9 +444,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$patch({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -476,9 +476,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$patch({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -497,9 +497,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$patch({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -523,9 +523,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$delete({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$delete({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -544,9 +544,9 @@ describe("Date Overrides CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"]["overrides"][":overrideId"].$delete({
+      ].schedules[":scheduleId"].overrides[":overrideId"].$delete({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,

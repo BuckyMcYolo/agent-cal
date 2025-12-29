@@ -203,9 +203,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"].$get({
+      ].schedules.$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -223,9 +223,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"].$get({
+      ].schedules.$get({
         param: {
           businessId: "00000000-0000-0000-0000-000000000000", // Valid UUID format but not found
           userId: mockUUIDs.userId,
@@ -241,9 +241,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"].$get({
+      ].schedules.$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: "00000000-0000-0000-0000-000000000000", // Valid UUID format but not found
@@ -259,9 +259,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"].$post({
+      ].schedules.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -283,9 +283,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"].$post({
+      ].schedules.$post({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -313,9 +313,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$get({
+      ].schedules[":scheduleId"].$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -334,9 +334,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$get({
+      ].schedules[":scheduleId"].$get({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -356,9 +356,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$patch({
+      ].schedules[":scheduleId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -381,9 +381,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$patch({
+      ].schedules[":scheduleId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -412,9 +412,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$patch({
+      ].schedules[":scheduleId"].$patch({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -437,9 +437,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$delete({
+      ].schedules[":scheduleId"].$delete({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
@@ -458,9 +458,9 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client["v1"]["businesses"][":businessId"]["users"][
+      const res = await client.v1.businesses[":businessId"].users[
         ":userId"
-      ]["schedules"][":scheduleId"].$delete({
+      ].schedules[":scheduleId"].$delete({
         param: {
           businessId: mockUUIDs.businessId,
           userId: mockUUIDs.userId,
