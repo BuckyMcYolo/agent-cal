@@ -17,25 +17,37 @@ import { authMiddleware } from "@/middleware/auth-middleware"
 // ============================================================================
 
 const ScheduleParamsSchema = z.object({
-  businessId: z.string().uuid().openapi({
-    param: { name: "businessId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440000",
-  }),
-  userId: z.string().uuid().openapi({
-    param: { name: "userId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440001",
-  }),
-  scheduleId: z.string().uuid().openapi({
-    param: { name: "scheduleId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440002",
-  }),
+  businessId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "businessId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440000",
+    }),
+  userId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "userId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440001",
+    }),
+  scheduleId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "scheduleId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440002",
+    }),
 })
 
 const OverrideParamsSchema = ScheduleParamsSchema.extend({
-  overrideId: z.string().uuid().openapi({
-    param: { name: "overrideId", in: "path", required: true },
-    example: "550e8400-e29b-41d4-a716-446655440005",
-  }),
+  overrideId: z
+    .string()
+    .uuid()
+    .openapi({
+      param: { name: "overrideId", in: "path", required: true },
+      example: "550e8400-e29b-41d4-a716-446655440005",
+    }),
 })
 
 // ============================================================================

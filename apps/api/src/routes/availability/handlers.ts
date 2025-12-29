@@ -2,19 +2,24 @@ import { and, db, eq, gte, lte, ne } from "@workspace/db"
 import { availabilityOverride } from "@workspace/db/schema/availability-override"
 import { availabilityRule } from "@workspace/db/schema/availability-rule"
 import { availabilitySchedule } from "@workspace/db/schema/availability-schedule"
+import { business } from "@workspace/db/schema/business"
 import { businessUser } from "@workspace/db/schema/business-user"
 import { calendarConnection } from "@workspace/db/schema/calendar-connection"
 import { eventType } from "@workspace/db/schema/event-type"
-import { business } from "@workspace/db/schema/business"
-import { DateTime, Interval } from "luxon"
+import { DateTime } from "luxon"
 import {
   isAccessError,
   verifyBusinessAccess,
   verifyBusinessUserAccess,
 } from "@/lib/helpers/access/verify-business-access"
 import * as HttpStatusCodes from "@/lib/misc/http-status-codes"
-import { getCalendarServiceForConnection } from "@/services/calendar"
+import {
+  type BusyBlock,
+  generateDaySlots,
+  type TimeSlot,
+} from "@/lib/time/slot-generation"
 import type { AppRouteHandler } from "@/lib/types/app-types"
+import { getCalendarServiceForConnection } from "@/services/calendar"
 import type {
   CreateRuleRoute,
   CreateScheduleRoute,
@@ -549,94 +554,8 @@ export const replaceRules: AppRouteHandler<ReplaceRulesRoute> = async (c) => {
 }
 
 // ============================================================================
-// Availability Calculation with Luxon
+// Availability Calculation
 // ============================================================================
-
-interface TimeSlot {
-  start: DateTime
-  end: DateTime
-}
-
-interface BusyBlock {
-  start: DateTime
-  end: DateTime
-}
-
-/**
- * Parse time string (HH:MM:SS or HH:MM) to { hour, minute }
- */
-function parseTimeString(timeStr: string): { hour: number; minute: number } {
-  const [hours, minutes] = timeStr.split(":").map(Number)
-  return { hour: hours ?? 0, minute: minutes ?? 0 }
-}
-
-/**
- * Generate available slots for a single day using Luxon
- */
-function generateDaySlots(
-  date: DateTime,
-  rules: Array<{ startTime: string; endTime: string }>,
-  durationMinutes: number,
-  slotStepMinutes: number,
-  busyBlocks: BusyBlock[],
-  bufferBefore: number,
-  bufferAfter: number,
-  minNoticeTime: DateTime
-): TimeSlot[] {
-  const slots: TimeSlot[] = []
-
-  for (const rule of rules) {
-    const ruleStart = parseTimeString(rule.startTime)
-    const ruleEnd = parseTimeString(rule.endTime)
-
-    // Create DateTime for rule boundaries on this day
-    let slotStart = date.set({
-      hour: ruleStart.hour,
-      minute: ruleStart.minute,
-      second: 0,
-      millisecond: 0,
-    })
-
-    const ruleEndTime = date.set({
-      hour: ruleEnd.hour,
-      minute: ruleEnd.minute,
-      second: 0,
-      millisecond: 0,
-    })
-
-    // Generate slots within this rule's time window
-    while (slotStart.plus({ minutes: durationMinutes }) <= ruleEndTime) {
-      const slotEnd = slotStart.plus({ minutes: durationMinutes })
-
-      // Check minimum notice
-      if (slotStart < minNoticeTime) {
-        slotStart = slotStart.plus({ minutes: slotStepMinutes })
-        continue
-      }
-
-      // Check conflicts with busy blocks (including buffers)
-      const slotWithBufferStart = slotStart.minus({ minutes: bufferBefore })
-      const slotWithBufferEnd = slotEnd.plus({ minutes: bufferAfter })
-      const slotInterval = Interval.fromDateTimes(
-        slotWithBufferStart,
-        slotWithBufferEnd
-      )
-
-      const hasConflict = busyBlocks.some((busy) => {
-        const busyInterval = Interval.fromDateTimes(busy.start, busy.end)
-        return slotInterval.overlaps(busyInterval)
-      })
-
-      if (!hasConflict) {
-        slots.push({ start: slotStart, end: slotEnd })
-      }
-
-      slotStart = slotStart.plus({ minutes: slotStepMinutes })
-    }
-  }
-
-  return slots
-}
 
 /**
  * Fetch user availability data (schedule, rules, overrides, busy times) in parallel
@@ -801,8 +720,12 @@ export const getAvailability: AppRouteHandler<GetAvailabilityRoute> = async (
     }
 
     // Parse date range using Luxon
-    const queryStart = DateTime.fromISO(startDate, { zone: responseTimezone }).startOf("day")
-    const queryEnd = DateTime.fromISO(endDate, { zone: responseTimezone }).endOf("day")
+    const queryStart = DateTime.fromISO(startDate, {
+      zone: responseTimezone,
+    }).startOf("day")
+    const queryEnd = DateTime.fromISO(endDate, {
+      zone: responseTimezone,
+    }).endOf("day")
 
     if (!queryStart.isValid || !queryEnd.isValid) {
       return c.json(
@@ -826,7 +749,9 @@ export const getAvailability: AppRouteHandler<GetAvailabilityRoute> = async (
     }
 
     // Minimum notice time
-    const minNoticeTime = now.plus({ minutes: eventTypeRecord.minNoticeMinutes })
+    const minNoticeTime = now.plus({
+      minutes: eventTypeRecord.minNoticeMinutes,
+    })
 
     // Compute effective slot step (defaults to duration if not set)
     const effectiveStepMinutes =
