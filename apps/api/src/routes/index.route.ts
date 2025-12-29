@@ -7,7 +7,7 @@ const router = createRouter().openapi(
   createRoute({
     method: "get",
     path: "/",
-    tags: ["users"],
+    tags: ["health"],
     responses: {
       [HttpStatusCodes.OK]: jsonContent({
         schema: z.object({
@@ -16,6 +16,7 @@ const router = createRouter().openapi(
         description: "Server is running",
       }),
     },
+    hide: true,
   }),
   (c) => {
     return c.json(

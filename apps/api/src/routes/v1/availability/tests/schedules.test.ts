@@ -203,7 +203,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules.$get({
         param: {
@@ -223,7 +223,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules.$get({
         param: {
@@ -241,7 +241,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules.$get({
         param: {
@@ -259,7 +259,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules.$post({
         param: {
@@ -283,7 +283,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules.$post({
         param: {
@@ -313,7 +313,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$get({
         param: {
@@ -334,7 +334,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$get({
         param: {
@@ -356,7 +356,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$patch({
         param: {
@@ -381,7 +381,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$patch({
         param: {
@@ -412,7 +412,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$patch({
         param: {
@@ -437,7 +437,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$delete({
         param: {
@@ -458,7 +458,7 @@ describe("Availability Schedule CRUD", () => {
       const app = createTestRouter()
       const client = testClient(app)
 
-      const res = await client.v1.businesses[":businessId"].users[
+      const res = await client.businesses[":businessId"].users[
         ":userId"
       ].schedules[":scheduleId"].$delete({
         param: {

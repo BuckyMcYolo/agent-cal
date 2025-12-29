@@ -22,7 +22,7 @@ export const businessUser = pgTable(
     businessId: uuid("business_id")
       .notNull()
       .references(() => business.id, { onDelete: "cascade" }),
-    referenceUserId: text("reference_user_id"), // The org's internal ID for this user
+    externalUserId: text("external_user_id"), // The org's internal ID for this user
     email: text("email").notNull(),
     name: text("name").notNull(),
     slug: text("slug").notNull(), // URL-friendly identifier: /business-slug/user-slug/event-type
@@ -31,7 +31,7 @@ export const businessUser = pgTable(
   },
   (table) => [
     index("business_user_business_idx").on(table.businessId),
-    index("business_user_reference_user_id_idx").on(table.referenceUserId),
+    index("business_user_external_user_id_idx").on(table.externalUserId),
     index("business_user_email_idx").on(table.email),
     unique("business_user_business_slug_unique").on(
       table.businessId,

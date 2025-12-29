@@ -55,7 +55,7 @@ const OverrideParamsSchema = ScheduleParamsSchema.extend({
 // ============================================================================
 
 export const listOverrides = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides",
   method: "get",
   summary: "List date overrides",
   description: "Returns all date overrides for a schedule",
@@ -94,7 +94,7 @@ export const listOverrides = createRoute({
 })
 
 export const createOverride = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides",
   method: "post",
   summary: "Create date override",
   description: "Creates a date override for a schedule",
@@ -132,7 +132,7 @@ export const createOverride = createRoute({
 })
 
 export const updateOverride = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides/{overrideId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides/{overrideId}",
   method: "patch",
   summary: "Update date override",
   description: "Updates an existing date override",
@@ -170,7 +170,7 @@ export const updateOverride = createRoute({
 })
 
 export const deleteOverride = createRoute({
-  path: "/v1/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides/{overrideId}",
+  path: "/businesses/{businessId}/users/{userId}/schedules/{scheduleId}/overrides/{overrideId}",
   method: "delete",
   summary: "Delete date override",
   description: "Deletes a date override",

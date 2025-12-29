@@ -22,14 +22,14 @@ export const business = pgTable(
     organizationId: uuid("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
-    referenceCustomerId: text("reference_customer_id"), // The org's internal ID for this business/customer
+    externalBusinessId: text("external_business_id"), // The org's internal ID for this business
     name: text("name").notNull(),
     slug: text("slug").notNull(), // URL-friendly identifier for public booking pages
     metadata: jsonb("metadata"),
   },
   (table) => [
     index("business_org_idx").on(table.organizationId),
-    index("business_reference_customer_id_idx").on(table.referenceCustomerId),
+    index("business_external_business_id_idx").on(table.externalBusinessId),
     unique("business_slug_unique").on(table.slug),
   ]
 )
