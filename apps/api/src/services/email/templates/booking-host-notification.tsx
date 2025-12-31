@@ -2,28 +2,26 @@
 import { serverEnv } from "@workspace/env-config/server"
 import { getResendClient } from "../client"
 
-interface BookingConfirmationEmailProps {
-  attendeeName: string
+interface BookingHostNotificationEmailProps {
   hostName: string
+  attendeeName: string
+  attendeeEmail: string
   eventTitle: string
-  startTime: string // formatted date/time string
+  startTime: string
   endTime: string
   timezone: string
   location?: string | null
   meetingUrl?: string | null
-  cancelUrl: string
-  rescheduleUrl: string
+  manageUrl: string
 }
 
-export interface SendBookingConfirmationParams
-  extends BookingConfirmationEmailProps {
+export interface SendBookingHostNotificationParams
+  extends BookingHostNotificationEmailProps {
   to: string
-  hostEmail: string
-  icsContent?: string
 }
 
-export async function sendBookingConfirmation(
-  params: SendBookingConfirmationParams
+export async function sendBookingHostNotification(
+  params: SendBookingHostNotificationParams
 ): Promise<{ success: boolean; error?: string }> {
   const resend = getResendClient()
 
@@ -36,42 +34,32 @@ export async function sendBookingConfirmation(
     const { data, error } = await resend.emails.send({
       from: serverEnv.EMAIL_FROM,
       to: [params.to],
-      cc: [params.hostEmail],
-      subject: `Booking Confirmed: ${params.eventTitle}`,
+      subject: `New Booking: ${params.eventTitle} with ${params.attendeeName}`,
       react: (
-        <BookingConfirmationEmail
-          attendeeName={params.attendeeName}
+        <BookingHostNotificationEmail
           hostName={params.hostName}
+          attendeeName={params.attendeeName}
+          attendeeEmail={params.attendeeEmail}
           eventTitle={params.eventTitle}
           startTime={params.startTime}
           endTime={params.endTime}
           timezone={params.timezone}
           location={params.location}
           meetingUrl={params.meetingUrl}
-          cancelUrl={params.cancelUrl}
-          rescheduleUrl={params.rescheduleUrl}
+          manageUrl={params.manageUrl}
         />
       ),
-      attachments: params.icsContent
-        ? [
-            {
-              filename: "invite.ics",
-              content: Buffer.from(params.icsContent, "utf-8"),
-              contentType: "text/calendar",
-            },
-          ]
-        : undefined,
     })
 
     if (error) {
-      console.error("[Email] Failed to send booking confirmation:", error)
+      console.error("[Email] Failed to send host notification:", error)
       return { success: false, error: error.message }
     }
 
-    console.log("[Email] Booking confirmation sent:", data?.id)
+    console.log("[Email] Host notification sent:", data?.id)
     return { success: true }
   } catch (err) {
-    console.error("[Email] Error sending booking confirmation:", err)
+    console.error("[Email] Error sending host notification:", err)
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",
@@ -79,18 +67,18 @@ export async function sendBookingConfirmation(
   }
 }
 
-function BookingConfirmationEmail({
-  attendeeName,
+function BookingHostNotificationEmail({
   hostName,
+  attendeeName,
+  attendeeEmail,
   eventTitle,
   startTime,
   endTime,
   timezone,
   location,
   meetingUrl,
-  cancelUrl,
-  rescheduleUrl,
-}: BookingConfirmationEmailProps) {
+  manageUrl,
+}: BookingHostNotificationEmailProps) {
   return (
     <div
       style={{
@@ -99,12 +87,12 @@ function BookingConfirmationEmail({
         margin: "0 auto",
       }}
     >
-      <h1 style={{ color: "#333", fontSize: "24px" }}>Booking Confirmed</h1>
+      <h1 style={{ color: "#333", fontSize: "24px" }}>New Booking</h1>
 
-      <p style={{ color: "#666", fontSize: "16px" }}>Hi {attendeeName},</p>
+      <p style={{ color: "#666", fontSize: "16px" }}>Hi {hostName},</p>
 
       <p style={{ color: "#666", fontSize: "16px" }}>
-        Your booking with <strong>{hostName}</strong> has been confirmed.
+        You have a new booking with <strong>{attendeeName}</strong>.
       </p>
 
       <div
@@ -121,6 +109,10 @@ function BookingConfirmationEmail({
 
         <p style={{ color: "#666", fontSize: "14px", margin: "8px 0" }}>
           <strong>When:</strong> {startTime} - {endTime} ({timezone})
+        </p>
+
+        <p style={{ color: "#666", fontSize: "14px", margin: "8px 0" }}>
+          <strong>Attendee:</strong> {attendeeName} ({attendeeEmail})
         </p>
 
         {location && (
@@ -141,7 +133,7 @@ function BookingConfirmationEmail({
 
       <div style={{ margin: "30px 0" }}>
         <a
-          href={rescheduleUrl}
+          href={manageUrl}
           style={{
             display: "inline-block",
             padding: "12px 24px",
@@ -149,29 +141,14 @@ function BookingConfirmationEmail({
             color: "#ffffff",
             textDecoration: "none",
             borderRadius: "6px",
-            marginRight: "10px",
           }}
         >
-          Reschedule
-        </a>
-        <a
-          href={cancelUrl}
-          style={{
-            display: "inline-block",
-            padding: "12px 24px",
-            backgroundColor: "#ffffff",
-            color: "#cc0000",
-            textDecoration: "none",
-            borderRadius: "6px",
-            border: "1px solid #cc0000",
-          }}
-        >
-          Cancel
+          View Booking
         </a>
       </div>
 
       <p style={{ color: "#999", fontSize: "12px" }}>
-        If you need to make changes to this booking, use the links above.
+        This booking has been added to your calendar.
       </p>
     </div>
   )

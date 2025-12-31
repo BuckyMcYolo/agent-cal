@@ -11,7 +11,11 @@ import {
   selectUserForBooking,
   updateCalendarEvent,
 } from "@/lib/bookings"
-import { notifyBookingCreated } from "@/lib/notifications"
+import {
+  notifyBookingCreated,
+  notifyBookingCancelled,
+  notifyBookingRescheduled,
+} from "@/lib/notifications"
 import {
   isAccessError,
   verifyBusinessAccess,
@@ -489,6 +493,33 @@ export const rescheduleBooking: AppRouteHandler<
       },
     })
 
+    // Send reschedule notifications (non-blocking - don't fail reschedule if notifications fail)
+    try {
+      const host = await db.query.businessUser.findFirst({
+        where: eq(businessUser.id, existingBooking.businessUserId),
+      })
+
+      if (host) {
+        await notifyBookingRescheduled({
+          booking: updatedBooking,
+          host,
+          eventType: eventTypeRecord ?? null,
+          previousStartTime,
+          previousEndTime,
+        })
+      }
+    } catch (notificationError) {
+      c.var.logger.error(
+        {
+          err: notificationError,
+          bookingId: updatedBooking.id,
+          businessUserId: existingBooking.businessUserId,
+          eventTypeId: existingBooking.eventTypeId,
+        },
+        "Failed to send reschedule notifications"
+      )
+    }
+
     return c.json(updatedBooking, HttpStatusCodes.OK)
   } catch (error) {
     console.error("[Reschedule Booking] Error:", error)
@@ -565,6 +596,38 @@ export const cancelBooking: AppRouteHandler<CancelBookingRoute> = async (c) => {
         reason: body.reason,
       },
     })
+
+    // Send cancellation notifications (non-blocking - don't fail cancellation if notifications fail)
+    try {
+      const host = await db.query.businessUser.findFirst({
+        where: eq(businessUser.id, existingBooking.businessUserId),
+      })
+
+      if (host) {
+        const eventTypeRecord = existingBooking.eventTypeId
+          ? await db.query.eventType.findFirst({
+              where: eq(eventType.id, existingBooking.eventTypeId),
+            })
+          : null
+
+        await notifyBookingCancelled({
+          booking: existingBooking,
+          host,
+          eventType: eventTypeRecord ?? null,
+          reason: body.reason,
+        })
+      }
+    } catch (notificationError) {
+      c.var.logger.error(
+        {
+          err: notificationError,
+          bookingId: existingBooking.id,
+          businessUserId: existingBooking.businessUserId,
+          eventTypeId: existingBooking.eventTypeId,
+        },
+        "Failed to send cancellation notifications"
+      )
+    }
 
     return c.json(
       { success: true, message: "Booking cancelled" },
