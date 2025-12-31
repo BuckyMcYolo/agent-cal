@@ -61,6 +61,13 @@ const EnvSchema = z.object({
   MICROSOFT_CLIENT_ID: z.string().optional(),
   MICROSOFT_CLIENT_SECRET: z.string().optional(),
   MICROSOFT_TENANT_ID: z.string().optional(), // defaults to "common" for multi-tenant
+  // Resend (email)
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default("AgentCal <notifications@agentcal.ai>"),
+  BOOKING_MANAGE_BASE_URL: z
+    .string()
+    .url()
+    .default("https://app.agentcal.ai/bookings"),
 })
 // .superRefine((input, ctx) => {
 //   if (input.NODE_ENV === "production" && !input.DATABASE_AUTH_TOKEN) {

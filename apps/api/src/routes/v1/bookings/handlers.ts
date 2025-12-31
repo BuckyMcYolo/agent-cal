@@ -1,5 +1,6 @@
 import { and, count, db, eq, gte, lte } from "@workspace/db"
 import { booking } from "@workspace/db/schema/booking"
+import { businessUser } from "@workspace/db/schema/business-user"
 import { eventType } from "@workspace/db/schema/event-type"
 import { DateTime } from "luxon"
 import {
@@ -10,6 +11,7 @@ import {
   selectUserForBooking,
   updateCalendarEvent,
 } from "@/lib/bookings"
+import { notifyBookingCreated } from "@/lib/notifications"
 import {
   isAccessError,
   verifyBusinessAccess,
@@ -184,6 +186,19 @@ export const createBooking: AppRouteHandler<CreateBookingRoute> = async (c) => {
         assignedVia: assignment.assignedVia,
       },
     })
+
+    // Send notifications (best effort - don't fail booking if notifications fail)
+    const host = await db.query.businessUser.findFirst({
+      where: eq(businessUser.id, assignment.userId),
+    })
+
+    if (host) {
+      await notifyBookingCreated({
+        booking: newBooking,
+        host,
+        eventType: eventTypeRecord,
+      })
+    }
 
     return c.json(newBooking, HttpStatusCodes.CREATED)
   } catch (error) {
