@@ -252,6 +252,58 @@ When multiple users are available for a slot, AgentCal uses configurable assignm
 }
 ```
 
+### Source of Truth Philosophy
+
+**AgentCal is the source of truth for all booking state.** This is a deliberate architectural decision with important implications.
+
+#### How It Works
+
+All booking mutations flow through AgentCal:
+
+```
+User action → AgentCal API → Updates DB → Fires webhook → Syncs to Google Calendar
+```
+
+This means:
+- **Reschedules and cancellations** happen via AgentCal (API, embeds, or email links)
+- **Calendar events are synced TO external calendars**, not synced FROM them
+- **Webhooks fire reliably** because we control all mutations
+
+#### What We Don't Do
+
+We do NOT attempt to sync changes made directly in Google/Microsoft Calendar back to AgentCal. If a user deletes an event directly in Google Calendar:
+- The booking still exists in AgentCal
+- We don't detect or react to this change
+- This matches how Cal.com and Calendly handle it
+
+#### Why This Approach?
+
+1. **Reliable webhooks** — Customers can trust that `booking.cancelled` means it was cancelled through AgentCal. No race conditions or missed events from external calendar polling.
+
+2. **Simpler architecture** — No webhook renewal jobs (Google webhooks expire after 7 days), no polling infrastructure, no complex reconciliation logic.
+
+3. **Industry standard** — Cal.com, Calendly, and other scheduling platforms work this way.
+
+4. **Clear contract** — Developers know exactly what triggers events.
+
+#### How Users Cancel/Reschedule
+
+Instead of detecting calendar changes, we provide clear paths for users to manage bookings:
+
+1. **Email confirmations** include cancel/reschedule links
+2. **Calendar event description** includes management links:
+   ```
+   Manage this booking: https://app.agentcal.ai/bookings/abc123/manage
+   Cancel: https://app.agentcal.ai/bookings/abc123/cancel
+   Reschedule: https://app.agentcal.ai/bookings/abc123/reschedule
+   ```
+3. **Embeds** allow viewing and managing bookings
+4. **API** supports programmatic cancellation/rescheduling
+
+#### Future Consideration
+
+If needed, we can add an optional daily reconciliation job that checks for orphaned calendar events and marks bookings as `cancelled_external`. This is a data hygiene feature, not a core sync mechanism.
+
 ---
 
 ## Product Surface
@@ -920,23 +972,83 @@ agent-cal/
 - [x] Minimum notice period enforcement
 
 #### Step 1.4: Bookings API
-- [ ] `POST /v1/businesses/:id/bookings` - create booking
-- [ ] `GET /v1/businesses/:id/bookings` - list bookings
-- [ ] `GET /v1/businesses/:id/bookings/:bookingId` - get booking
-- [ ] `PATCH /v1/businesses/:id/bookings/:bookingId` - reschedule
-- [ ] `DELETE /v1/businesses/:id/bookings/:bookingId` - cancel
-- [ ] Create Google Calendar event on booking
-- [ ] Send calendar invite (.ics) to attendee via email
-- [ ] Update/delete calendar event on reschedule/cancel
+- [x] `POST /v1/businesses/:id/bookings` - create booking
+- [x] `GET /v1/businesses/:id/bookings` - list bookings
+- [x] `GET /v1/businesses/:id/bookings/:bookingId` - get booking
+- [x] `PATCH /v1/businesses/:id/bookings/:bookingId` - reschedule
+- [x] `DELETE /v1/businesses/:id/bookings/:bookingId` - cancel
+- [x] Create Google Calendar event on booking
+- [x] Update/delete calendar event on reschedule/cancel
+
+#### Step 1.4.1: Email Notifications (via Resend)
+- [x] Set up Resend integration (`RESEND_API_KEY`, `EMAIL_FROM` env vars)
+- [x] Create email service with React templates (`apps/api/src/services/email/`)
+- [x] Create notifications helper (`apps/api/src/lib/notifications/`)
+- [x] Booking confirmation email to attendee (with cancel/reschedule links)
+- [ ] Booking notification email to host
+- [ ] Cancellation email to attendee and host
+- [ ] Reschedule email to attendee and host
+- [ ] Send calendar invite (.ics) attachment
 
 #### Step 1.5: Webhooks (via SVIX)
+
+Using managed SVIX for MVP. Can self-host later for the Railway one-click deploy story (Phase 4.4).
+
 - [ ] Set up SVIX account + get API keys
 - [ ] Integrate SVIX SDK into API
 - [ ] `POST /v1/webhooks` - register webhook endpoint (via SVIX)
 - [ ] `GET /v1/webhooks` - list webhooks
 - [ ] `DELETE /v1/webhooks/:id` - delete webhook
-- [ ] Configure webhook event types: `booking.created`, `booking.cancelled`, `booking.rescheduled`
 - [ ] SVIX handles delivery, retries, and signature verification
+
+**MVP Events (3 events):**
+
+| Event | Trigger | Notes |
+|-------|---------|-------|
+| `booking.created` | New booking confirmed | Includes assigned user, meeting details |
+| `booking.cancelled` | Booking cancelled via API/embed/link | Includes cancellation reason if provided |
+| `booking.rescheduled` | Booking time changed | Includes old and new times |
+
+**Post-MVP Events:**
+
+| Event | Trigger | Notes |
+|-------|---------|-------|
+| `booking.reminder` | X hours before meeting | Requires BullMQ job (Step 1.6) |
+| `booking.completed` | Meeting time has passed | For follow-up workflows |
+| `booking.no_show` | Manually marked as no-show | Analytics, follow-up sequences |
+
+**Webhook Payload Shape:**
+```json
+{
+  "id": "evt_abc123",
+  "type": "booking.created",
+  "created_at": "2025-01-15T10:30:00Z",
+  "data": {
+    "booking": {
+      "id": "booking_xyz",
+      "business_id": "biz_456",
+      "business_user_id": "user_789",
+      "event_type_id": "evt_type_123",
+      "start_time": "2025-01-20T14:00:00Z",
+      "end_time": "2025-01-20T14:30:00Z",
+      "status": "confirmed",
+      "attendee": {
+        "email": "customer@example.com",
+        "name": "John Customer"
+      },
+      "assigned_to": {
+        "id": "user_789",
+        "name": "Sarah Smith",
+        "email": "sarah@acme.com"
+      },
+      "meeting_url": "https://meet.google.com/abc-xyz",
+      "metadata": {}
+    }
+  }
+}
+```
+
+See [Source of Truth Philosophy](#source-of-truth-philosophy) for why webhooks only fire for changes made through AgentCal.
 
 #### Step 1.6: Background Jobs (BullMQ)
 - [ ] Set up Redis instance for job queue
