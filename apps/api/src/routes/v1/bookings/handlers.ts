@@ -11,7 +11,11 @@ import {
   selectUserForBooking,
   updateCalendarEvent,
 } from "@/lib/bookings"
-import { notifyBookingCreated } from "@/lib/notifications"
+import {
+  notifyBookingCreated,
+  notifyBookingCancelled,
+  notifyBookingRescheduled,
+} from "@/lib/notifications"
 import {
   isAccessError,
   verifyBusinessAccess,
@@ -489,6 +493,21 @@ export const rescheduleBooking: AppRouteHandler<
       },
     })
 
+    // Send reschedule notifications
+    const host = await db.query.businessUser.findFirst({
+      where: eq(businessUser.id, existingBooking.businessUserId),
+    })
+
+    if (host) {
+      await notifyBookingRescheduled({
+        booking: updatedBooking,
+        host,
+        eventType: eventTypeRecord ?? null,
+        previousStartTime,
+        previousEndTime,
+      })
+    }
+
     return c.json(updatedBooking, HttpStatusCodes.OK)
   } catch (error) {
     console.error("[Reschedule Booking] Error:", error)
@@ -565,6 +584,26 @@ export const cancelBooking: AppRouteHandler<CancelBookingRoute> = async (c) => {
         reason: body.reason,
       },
     })
+
+    // Send cancellation notifications
+    const host = await db.query.businessUser.findFirst({
+      where: eq(businessUser.id, existingBooking.businessUserId),
+    })
+
+    if (host) {
+      const eventTypeRecord = existingBooking.eventTypeId
+        ? await db.query.eventType.findFirst({
+            where: eq(eventType.id, existingBooking.eventTypeId),
+          })
+        : null
+
+      await notifyBookingCancelled({
+        booking: existingBooking,
+        host,
+        eventType: eventTypeRecord ?? null,
+        reason: body.reason,
+      })
+    }
 
     return c.json(
       { success: true, message: "Booking cancelled" },

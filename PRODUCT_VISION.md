@@ -981,14 +981,14 @@ agent-cal/
 - [x] Update/delete calendar event on reschedule/cancel
 
 #### Step 1.4.1: Email Notifications (via Resend)
-- [x] Set up Resend integration (`RESEND_API_KEY`, `EMAIL_FROM` env vars)
+- [x] Set up Resend integration (`RESEND_API_KEY`, `EMAIL_FROM`, `BOOKING_MANAGE_BASE_URL` env vars)
 - [x] Create email service with React templates (`apps/api/src/services/email/`)
 - [x] Create notifications helper (`apps/api/src/lib/notifications/`)
 - [x] Booking confirmation email to attendee (with cancel/reschedule links)
-- [ ] Booking notification email to host
-- [ ] Cancellation email to attendee and host
-- [ ] Reschedule email to attendee and host
-- [ ] Send calendar invite (.ics) attachment
+- [x] Booking notification email to host
+- [x] Cancellation email to attendee and host
+- [x] Reschedule email to attendee and host
+- [x] Send calendar invite (.ics) attachment (using `ical-generator`)
 
 #### Step 1.5: Webhooks (via SVIX)
 
